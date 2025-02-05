@@ -1,0 +1,86 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{BF86E58C-044B-49B3-BC80-1B573E925F38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.Domain", "FrancoHotel.Domain\FrancoHotel.Domain.csproj", "{D0C487AF-C56B-4DB6-9456-34D454B659D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infraestructure", "Infraestructure", "{3032F001-7E66-4192-9E87-92B57BCBF62B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{E67B45C2-4994-4228-80D9-5F47E0F2DC76}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{BE0BAEC4-3EB4-42DB-8CAF-A3B54762BDCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.Application", "FrancoHotel.Application\FrancoHotel.Application.csproj", "{432AE989-C46C-4AB2-9A9A-CF21B1584575}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.Infraesctructure", "FrancoHotel.Infraesctructure\FrancoHotel.Infraesctructure.csproj", "{7ED54DD1-EB79-44C6-9985-37239D94BF8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.Web", "FrancoHotel.Web\FrancoHotel.Web.csproj", "{122783D0-9B90-4309-87C8-5E5633D20DE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.Persistence", "FrancoHotel.Persistence\FrancoHotel.Persistence.csproj", "{92A4E8E3-FD50-4A1A-B39D-8985E764569C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{14E45715-57B0-488C-ACC1-89ACC12822A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.Persistence.Test", "FrancoHotel.Persistence.Test\FrancoHotel.Persistence.Test.csproj", "{F166E5ED-824B-4051-9DEC-947EFE178BF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.Application.Test", "FrancoHotel.Application.Test\FrancoHotel.Application.Test.csproj", "{A10D9378-159A-4F59-9533-B5FCC0AED45D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{B1A9F619-C814-4F81-AFCB-B27F600DB518}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.Api", "FrancoHotel.Api\FrancoHotel.Api.csproj", "{40288F54-7CA5-428F-9BDA-69B16FE84D8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0C487AF-C56B-4DB6-9456-34D454B659D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0C487AF-C56B-4DB6-9456-34D454B659D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0C487AF-C56B-4DB6-9456-34D454B659D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0C487AF-C56B-4DB6-9456-34D454B659D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{432AE989-C46C-4AB2-9A9A-CF21B1584575}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{432AE989-C46C-4AB2-9A9A-CF21B1584575}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{432AE989-C46C-4AB2-9A9A-CF21B1584575}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{432AE989-C46C-4AB2-9A9A-CF21B1584575}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ED54DD1-EB79-44C6-9985-37239D94BF8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ED54DD1-EB79-44C6-9985-37239D94BF8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ED54DD1-EB79-44C6-9985-37239D94BF8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ED54DD1-EB79-44C6-9985-37239D94BF8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{122783D0-9B90-4309-87C8-5E5633D20DE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{122783D0-9B90-4309-87C8-5E5633D20DE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{122783D0-9B90-4309-87C8-5E5633D20DE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{122783D0-9B90-4309-87C8-5E5633D20DE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92A4E8E3-FD50-4A1A-B39D-8985E764569C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92A4E8E3-FD50-4A1A-B39D-8985E764569C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92A4E8E3-FD50-4A1A-B39D-8985E764569C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92A4E8E3-FD50-4A1A-B39D-8985E764569C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F166E5ED-824B-4051-9DEC-947EFE178BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F166E5ED-824B-4051-9DEC-947EFE178BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F166E5ED-824B-4051-9DEC-947EFE178BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F166E5ED-824B-4051-9DEC-947EFE178BF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A10D9378-159A-4F59-9533-B5FCC0AED45D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A10D9378-159A-4F59-9533-B5FCC0AED45D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A10D9378-159A-4F59-9533-B5FCC0AED45D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A10D9378-159A-4F59-9533-B5FCC0AED45D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40288F54-7CA5-428F-9BDA-69B16FE84D8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40288F54-7CA5-428F-9BDA-69B16FE84D8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40288F54-7CA5-428F-9BDA-69B16FE84D8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40288F54-7CA5-428F-9BDA-69B16FE84D8B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D0C487AF-C56B-4DB6-9456-34D454B659D4} = {BF86E58C-044B-49B3-BC80-1B573E925F38}
+		{432AE989-C46C-4AB2-9A9A-CF21B1584575} = {E67B45C2-4994-4228-80D9-5F47E0F2DC76}
+		{7ED54DD1-EB79-44C6-9985-37239D94BF8C} = {3032F001-7E66-4192-9E87-92B57BCBF62B}
+		{122783D0-9B90-4309-87C8-5E5633D20DE1} = {BE0BAEC4-3EB4-42DB-8CAF-A3B54762BDCA}
+		{92A4E8E3-FD50-4A1A-B39D-8985E764569C} = {3032F001-7E66-4192-9E87-92B57BCBF62B}
+		{F166E5ED-824B-4051-9DEC-947EFE178BF1} = {14E45715-57B0-488C-ACC1-89ACC12822A6}
+		{A10D9378-159A-4F59-9533-B5FCC0AED45D} = {14E45715-57B0-488C-ACC1-89ACC12822A6}
+		{40288F54-7CA5-428F-9BDA-69B16FE84D8B} = {B1A9F619-C814-4F81-AFCB-B27F600DB518}
+	EndGlobalSection
+EndGlobal
