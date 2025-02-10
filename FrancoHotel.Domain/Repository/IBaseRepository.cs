@@ -10,12 +10,11 @@ namespace FrancoHotel.Domain.Repository
     /// <typeparam name="Ttype">El Tipo de dato del primmary Key para realizar consulta.</typeparam>
     public interface IBaseRepository<TEntity, Ttype> where TEntity : class
     {
-        Task SaveEntityAsync(TEntity entity);
-        Task UpdateEntityAsync(TEntity entity);
-        Task DeleteEntityAsync(TEntity entity);
-        Task<TEntity> GetEntityByIdAsync(int id);
+        Task<OperationResult> SaveEntityAsync(TEntity entity);
+        Task<OperationResult> UpdateEntityAsync(TEntity entity);
+        Task<TEntity> GetEntityByIdAsync(Ttype id);
         Task<List<TEntity>> GetAllAsync();
-        Task<OperationResult> GetAll(Expression<Func<TEntity, bool>> filter);
+        Task<OperationResult> GetAllAsync(Expression<Func<TEntity, bool>> filter);
         Task<bool> Exists(Expression<Func<TEntity, bool>> filter);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace FrancoHotel.IOC
 {
-    public class Class1
+    public class Depen
     {
 
     }

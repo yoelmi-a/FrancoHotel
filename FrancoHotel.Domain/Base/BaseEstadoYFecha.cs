@@ -1,6 +1,8 @@
-﻿namespace FrancoHotel.Domain.Base
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace FrancoHotel.Domain.Base
 {
-    //[Owned]
+    [Owned]
     public sealed class BaseEstadoYFecha
     {
         public bool? Estado { get; set; } 
