@@ -4,13 +4,12 @@ using FrancoHotel.Domain.Base;
 
 namespace FrancoHotel.Domain.Entities
 {
-    public sealed class Piso : BaseEntity<int>
+    public sealed class EstadoHabitacion : BaseEntity<int>
     {
-        [Column("IdPiso")]
+        [Column("IdEstadoHabitacion")]
         [Key]
         public override int Id { get; set; }
         public string? Descripcion { get; set; }
         public BaseEstadoYFecha EstadoYFecha { get; set; } = new BaseEstadoYFecha();
-
     }
 }
