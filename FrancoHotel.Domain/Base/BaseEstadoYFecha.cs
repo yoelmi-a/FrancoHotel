@@ -1,6 +1,7 @@
 ﻿namespace FrancoHotel.Domain.Base
 {
-    public interface IAuditEntity
+    //[Owned]
+    public sealed class BaseEstadoYFecha
     {
         public bool? Estado { get; set; } 
         public DateTime? FechaCreacion { get; set; }
