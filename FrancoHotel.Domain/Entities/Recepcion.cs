@@ -23,3 +23,4 @@ namespace FrancoHotel.Domain.Entities
         public bool? Estado { get; set; }
     }
 }
+
