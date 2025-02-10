@@ -2,31 +2,14 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using FrancoHotel.Domain.Base;
 
-public sealed class RolUsuario : BaseEntity<int>, IAuditEntity
+namespace FrancoHotel.Domain.Entities
 {
-    [Key]
-    [Column("IdRolUsuario")]
-    public override int Id { get; set; }
-
-    public string? Descripcion { get; set; }
-    public bool? Estado { get; set; }
-    public DateTime? FechaCreacion { get; set; }
-
-    public RolUsuario() { }
-
-    public RolUsuario(string? descripcion = null)
+    public sealed class RolUsuario : BaseEntity<int>
     {
-        Descripcion = descripcion;
-        Estado = null;
-        FechaCreacion = null;
-    }
-
-    public RolUsuario(int id, string? descripcion = null, bool? estado = null,
-        DateTime? fechaCreacion = null)
-    {
-        Id = id;
-        Descripcion = descripcion;
-        Estado = estado;
-        FechaCreacion = fechaCreacion;
+        [Column("IdRolUsuario")]
+        [Key]
+        public override int Id { get; set; }
+        public string? Descripcion { get; set; }
+        public BaseEstadoYFecha EstadoYFecha { get; set; } = new BaseEstadoYFecha();
     }
 }
