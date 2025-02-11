@@ -1,6 +1,5 @@
 ﻿using FrancoHotel.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 
 namespace FrancoHotel.Persistence.Context
 {
@@ -21,5 +20,6 @@ namespace FrancoHotel.Persistence.Context
         public DbSet<Servicios> Servicios { get; set; }
         public DbSet<Tarifas> Tarifas { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public object RolesUsuario { get; internal set; }
     }
 }
