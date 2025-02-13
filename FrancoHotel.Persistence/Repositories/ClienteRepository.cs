@@ -1,4 +1,5 @@
-﻿using FrancoHotel.Domain.Base;
+﻿using System.Linq.Expressions;
+using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Base;
 using FrancoHotel.Persistence.Context;
@@ -24,33 +25,110 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public async Task<Cliente> GetClienteByDocumento(string documento)
     {
-        ArgumentException.ThrowIfNullOrEmpty(documento, nameof(documento));
-
-        var cliente = await _context.Clientes
+        return await _context.Clientes
             .FirstOrDefaultAsync(c => c.Documento == documento)
             .ConfigureAwait(false);
-
-        if (cliente == null)
-        {
-            _logger.LogWarning("No se encontró ningún cliente con el documento {Documento}.", documento);
-        }
-
-        return cliente;
     }
 
     public async Task<List<Cliente>> GetClientesByEstado(bool estado)
     {
-        var clientes = await _context.Clientes
+        return await _context.Clientes
             .Where(c => c.EstadoYFecha != null && c.EstadoYFecha.Estado == estado)
             .ToListAsync()
             .ConfigureAwait(false);
+    }
 
-        if (!clientes.Any())
+    public async Task<Cliente> GetClienteByIdAsync(int idCliente)
+    {
+        return await _context.Clientes.FindAsync(idCliente);
+    }
+
+    public override async Task<bool> Exists(Expression<Func<Cliente, bool>> filter)
+    {
+        return await _context.Clientes.AnyAsync(filter).ConfigureAwait(false);
+    }
+
+    public override async Task<List<Cliente>> GetAllAsync()
+    {
+        return await _context.Clientes.ToListAsync().ConfigureAwait(false);
+    }
+
+    public override async Task<OperationResult> GetAllAsync(Expression<Func<Cliente, bool>> filter)
+    {
+        var clientes = await _context.Clientes.Where(filter).ToListAsync().ConfigureAwait(false);
+        return new OperationResult
         {
-            _logger.LogWarning("No se encontraron clientes con el estado {Estado}.", estado);
+            Success = true,
+            Data = clientes
+        };
+    }
+
+    public override async Task<Cliente> GetEntityByIdAsync(int id)
+    {
+        return await _context.Clientes.FindAsync(id);
+    }
+
+    public override async Task<OperationResult> SaveEntityAsync(Cliente entity)
+    {
+        OperationResult result = new OperationResult();
+        try
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), "El cliente no puede ser nulo.");
+            }
+
+            await _context.Clientes.AddAsync(entity).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            result.Success = true;
+            result.Message = "Cliente guardado correctamente.";
+            _logger.LogInformation(result.Message);
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Ocurrió un error al guardar el cliente.";
+            _logger.LogError(ex, result.Message);
         }
 
-        return clientes;
+        return result;
+    }
+
+    public override async Task<OperationResult> UpdateEntityAsync(Cliente entity)
+    {
+        OperationResult result = new OperationResult();
+        try
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), "El cliente no puede ser nulo.");
+            }
+
+            var clienteExistente = await GetEntityByIdAsync(entity.Id);
+
+            if (clienteExistente == null)
+            {
+                result.Success = false;
+                result.Message = "El cliente no existe en la base de datos.";
+                return result;
+            }
+
+            _context.Entry(clienteExistente).CurrentValues.SetValues(entity);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            result.Success = true;
+            result.Message = "Cliente actualizado correctamente.";
+            _logger.LogInformation(result.Message);
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Ocurrió un error al actualizar el cliente.";
+            _logger.LogError(ex, result.Message);
+        }
+
+        return result;
     }
 
     public async Task<OperationResult> UpdateTipoDocumento(int idCliente, string nuevoTipoDocumento)
@@ -58,14 +136,29 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         OperationResult result = new OperationResult();
         try
         {
-            var cliente = await GetClienteByIdAsync(idCliente);
+            if (idCliente <= 0)
+            {
+                result.Success = false;
+                result.Message = "El ID del cliente debe ser mayor que cero.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
 
-            ArgumentException.ThrowIfNullOrEmpty(nuevoTipoDocumento, nameof(nuevoTipoDocumento));
+            if (string.IsNullOrWhiteSpace(nuevoTipoDocumento))
+            {
+                result.Success = false;
+                result.Message = "El nuevo tipo de documento no puede estar vacío o ser nulo.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            var cliente = await GetClienteByIdAsync(idCliente);
 
             if (cliente.TipoDocumento == nuevoTipoDocumento)
             {
                 result.Success = false;
                 result.Message = "El nuevo tipo de documento es el mismo que el actual.";
+                _logger.LogWarning(result.Message);
                 return result;
             }
 
@@ -74,6 +167,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
             result.Success = true;
             result.Message = "Tipo de documento actualizado correctamente.";
+            _logger.LogInformation(result.Message);
         }
         catch (Exception ex)
         {
@@ -81,6 +175,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
             result.Message = "Ocurrió un error actualizando el tipo de documento.";
             _logger.LogError(ex, result.Message);
         }
+
         return result;
     }
 
@@ -89,12 +184,21 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         OperationResult result = new OperationResult();
         try
         {
+            if (idCliente <= 0)
+            {
+                result.Success = false;
+                result.Message = "El ID del cliente debe ser mayor que cero.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
             var cliente = await GetClienteByIdAsync(idCliente);
 
             if (cliente.EstadoYFecha.Estado == nuevoEstado)
             {
                 result.Success = false;
                 result.Message = "El nuevo estado es el mismo que el actual.";
+                _logger.LogWarning(result.Message);
                 return result;
             }
 
@@ -103,6 +207,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
             result.Success = true;
             result.Message = "Estado actualizado correctamente.";
+            _logger.LogInformation(result.Message);
         }
         catch (Exception ex)
         {
@@ -110,16 +215,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
             result.Message = "Ocurrió un error actualizando el estado del cliente.";
             _logger.LogError(ex, result.Message);
         }
-        return result;
-    }
 
-    private async Task<Cliente> GetClienteByIdAsync(int idCliente)
-    {
-        var cliente = await _context.Clientes.FindAsync(idCliente);
-        if (cliente == null)
-        {
-            throw new KeyNotFoundException($"Cliente con ID {idCliente} no encontrado.");
-        }
-        return cliente;
+        return result;
     }
 }

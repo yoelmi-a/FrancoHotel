@@ -1,4 +1,5 @@
-﻿using FrancoHotel.Domain.Base;
+﻿using System.Linq.Expressions;
+using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Models.Models;
 using FrancoHotel.Persistence.Base;
@@ -31,11 +32,6 @@ namespace FrancoHotel.Persistence.Repositories
 
         public async Task<Usuario> GetUsuarioByClave(string clave)
         {
-            if (string.IsNullOrWhiteSpace(clave))
-            {
-                throw new ArgumentException("La clave no puede estar vacía o ser nula.", nameof(clave));
-            }
-
             return await _context.Usuarios
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(u => u.Clave == clave);
@@ -43,11 +39,6 @@ namespace FrancoHotel.Persistence.Repositories
 
         public async Task<Usuario> GetUsuarioByIdRolUsuario(int idRolUsuario)
         {
-            if (idRolUsuario <= 0)
-            {
-                throw new ArgumentException("El ID del rol de usuario debe ser mayor que cero.", nameof(idRolUsuario));
-            }
-
             return await _context.Usuarios
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(u => u.IdRolUsuario == idRolUsuario);
@@ -61,78 +52,124 @@ namespace FrancoHotel.Persistence.Repositories
                                   .ToListAsync();
         }
 
+        public override async Task<bool> Exists(Expression<Func<Usuario, bool>> filter)
+        {
+            return await _context.Usuarios.AnyAsync(filter).ConfigureAwait(false);
+        }
+
+        public override async Task<List<Usuario>> GetAllAsync()
+        {
+            return await _context.Usuarios
+                                 .AsNoTracking()
+                                 .ToListAsync()
+                                 .ConfigureAwait(false);
+        }
+
+        public override async Task<OperationResult> GetAllAsync(Expression<Func<Usuario, bool>> filter)
+        {
+            var usuarios = await _context.Usuarios
+                                         .AsNoTracking()
+                                         .Where(filter)
+                                         .ToListAsync()
+                                         .ConfigureAwait(false);
+
+            return new OperationResult
+            {
+                Success = true,
+                Data = usuarios
+            };
+        }
+
+        public override async Task<Usuario> GetEntityByIdAsync(int id)
+        {
+            return await _context.Usuarios
+                                 .AsNoTracking()
+                                 .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
         public async Task<OperationResult> UpdateClave(int idUsuario, string nuevaClave)
         {
             OperationResult result = new OperationResult();
-            if (idUsuario <= 0)
-            {
-                result.Success = false;
-                result.Message = "El ID del usuario debe ser mayor que cero.";
-                return result;
-            }
-
-            if (string.IsNullOrWhiteSpace(nuevaClave))
-            {
-                result.Success = false;
-                result.Message = "La nueva clave no puede estar vacía o ser nula.";
-                return result;
-            }
-
             try
             {
+                if (idUsuario <= 0)
+                {
+                    result.Success = false;
+                    result.Message = "El ID del usuario debe ser mayor que cero.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
+                if (string.IsNullOrWhiteSpace(nuevaClave))
+                {
+                    result.Success = false;
+                    result.Message = "La nueva clave no puede estar vacía o ser nula.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
                 var usuario = await _context.Usuarios.FindAsync(idUsuario);
                 if (usuario == null)
                 {
                     result.Success = false;
                     result.Message = "Usuario no encontrado.";
+                    _logger.LogWarning(result.Message);
                     return result;
                 }
 
                 usuario.Clave = nuevaClave;
                 await _context.SaveChangesAsync();
+
                 result.Success = true;
                 result.Message = "Clave actualizada correctamente.";
+                _logger.LogInformation(result.Message);
             }
             catch (Exception ex)
             {
                 result.Success = false;
                 result.Message = "Ocurrió un error actualizando la clave del usuario.";
-                _logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(ex, result.Message);
             }
+
             return result;
         }
 
         public async Task<OperationResult> UpdateEstado(int idUsuario, bool nuevoEstado)
         {
             OperationResult result = new OperationResult();
-            if (idUsuario <= 0)
-            {
-                result.Success = false;
-                result.Message = "El ID del usuario debe ser mayor que cero.";
-                return result;
-            }
-
             try
             {
+                if (idUsuario <= 0)
+                {
+                    result.Success = false;
+                    result.Message = "El ID del usuario debe ser mayor que cero.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
                 var usuario = await _context.Usuarios.FindAsync(idUsuario);
                 if (usuario == null)
                 {
                     result.Success = false;
                     result.Message = "Usuario no encontrado.";
+                    _logger.LogWarning(result.Message);
                     return result;
                 }
 
                 usuario.EstadoYFecha.Estado = nuevoEstado;
                 await _context.SaveChangesAsync();
+
                 result.Success = true;
                 result.Message = "Estado actualizado correctamente.";
+                _logger.LogInformation(result.Message);
             }
             catch (Exception ex)
             {
                 result.Success = false;
                 result.Message = "Ocurrió un error actualizando el estado del usuario.";
-                _logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(ex, result.Message);
             }
+
             return result;
         }
 
@@ -159,10 +196,74 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = _configuration["ErrorUsuarioRepository:GetUsuariosByEstadoYFechaCreacion"] ?? "Ocurrió un error al obtener los usuarios.";
                 result.Success = false;
+                result.Message = _configuration["ErrorUsuarioRepository:GetUsuariosByEstadoYFechaCreacion"] ?? "Ocurrió un error al obtener los usuarios.";
                 _logger.LogError(ex, result.Message);
             }
+
+            return result;
+        }
+
+        public override async Task<OperationResult> SaveEntityAsync(Usuario entity)
+        {
+            OperationResult result = new OperationResult();
+            try
+            {
+                if (entity == null)
+                {
+                    throw new ArgumentNullException(nameof(entity), "El usuario no puede ser nulo.");
+                }
+
+                await _context.Usuarios.AddAsync(entity).ConfigureAwait(false);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                result.Success = true;
+                result.Message = "Usuario guardado correctamente.";
+                _logger.LogInformation(result.Message);
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Ocurrió un error al guardar el usuario.";
+                _logger.LogError(ex, result.Message);
+            }
+
+            return result;
+        }
+
+        public override async Task<OperationResult> UpdateEntityAsync(Usuario entity)
+        {
+            OperationResult result = new OperationResult();
+            try
+            {
+                if (entity == null)
+                {
+                    throw new ArgumentNullException(nameof(entity), "El usuario no puede ser nulo.");
+                }
+
+                var usuarioExistente = await GetEntityByIdAsync(entity.Id);
+
+                if (usuarioExistente == null)
+                {
+                    result.Success = false;
+                    result.Message = "El usuario no existe en la base de datos.";
+                    return result;
+                }
+
+                _context.Entry(usuarioExistente).CurrentValues.SetValues(entity);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                result.Success = true;
+                result.Message = "Usuario actualizado correctamente.";
+                _logger.LogInformation(result.Message);
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Ocurrió un error al actualizar el usuario.";
+                _logger.LogError(ex, result.Message);
+            }
+
             return result;
         }
     }

@@ -1,10 +1,8 @@
-﻿using System.Formats.Tar;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using FrancoHotel.Domain.Repository;
 using FrancoHotel.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using FrancoHotel.Domain.Base;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace FrancoHotel.Persistence.Base
 {
