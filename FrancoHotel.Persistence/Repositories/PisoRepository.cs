@@ -30,9 +30,8 @@ namespace FrancoHotel.Persistence.Repositories
         public async Task<OperationResult> GetPisoByEstado(bool? estado)
         {
             OperationResult result = new OperationResult();
-            try
-            {
-                var query = await (from piso in _context.Pisos
+
+            var query = await (from piso in _context.Pisos
                                    where piso.EstadoYFecha.Estado == estado
                                    select new PisoModel()
                                    {
@@ -40,22 +39,15 @@ namespace FrancoHotel.Persistence.Repositories
                                        Descripcion = piso.Descripcion,
                                        Estado = piso.EstadoYFecha.Estado,
                                        FechaCreacion = piso.EstadoYFecha.FechaCreacion
-                                   }).ToListAsync();
+                                   }).AsNoTracking().ToListAsync();
                 
-                result.Data = query;
-            }
-            catch (Exception ex)
-            {
-                result.Message = this._configuration["ErrorPisoRepository:GetPisoByEstado"];
-                result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
-            }
+            result.Data = query;
             return result;
         }
 
         public override async Task<List<Piso>> GetAllAsync()
         {
-            return await _context.Pisos.ToListAsync();
+            return await _context.Pisos.AsNoTracking().ToListAsync();
         }
 
         public override async Task<bool> Exists(Expression<Func<Piso, bool>> filter)
@@ -66,19 +58,18 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> GetAllAsync(Expression<Func<Piso, bool>> filter)
         {
             OperationResult result = new OperationResult(); 
-            result.Data = await _context.Pisos.Where(filter).ToListAsync();
+            result.Data = await _context.Pisos.Where(filter).AsNoTracking().ToListAsync();
             return result;
         }
 
-        public override Task<Piso> GetEntityByIdAsync(int id)
+        public override async Task<Piso> GetEntityByIdAsync(int id)
         {
             if(id <= 0)
             {
                 return null;
             }
-            var piso = base.GetEntityByIdAsync(id);
 
-            return piso;
+            return await _context.Pisos.FindAsync(id);
         }
 
         public override async Task<OperationResult> SaveEntityAsync(Piso entity)
@@ -86,9 +77,9 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity == null)
+                if (entity.Descripcion.IsNullOrEmpty())
                 {
-                    throw new Exception("El piso no debe ser nulo");
+                    throw new ArgumentNullException("El piso debe tener descripcion");
                 }
 
                 _context.Pisos.Add(entity);
@@ -104,9 +95,27 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override Task<OperationResult> UpdateEntityAsync(Piso entity)
+        public override async Task<OperationResult> UpdateEntityAsync(Piso entity)
         {
-            return base.UpdateEntityAsync(entity);
+            OperationResult result = new OperationResult();
+            try
+            {
+                if (entity.Descripcion.IsNullOrEmpty())
+                {
+                    throw new ArgumentNullException("El piso debe tener descripcion");
+                }
+
+                _context.Pisos.Update(entity);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                result.Message = this._configuration["ErrorPisoRepository:UpdateEntityAsync"];
+                result.Success = false;
+                this._logger.LogError(result.Message, ex.ToString());
+            }
+            return result;
         }
     }
 }
