@@ -25,7 +25,13 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public async Task<Cliente> GetClienteByDocumento(string documento)
     {
+        if (string.IsNullOrWhiteSpace(documento))
+        {
+            throw new ArgumentException("El documento no puede estar vacío o ser nulo.", nameof(documento));
+        }
+
         return await _context.Clientes
+            .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Documento == documento)
             .ConfigureAwait(false);
     }
@@ -33,14 +39,10 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
     public async Task<List<Cliente>> GetClientesByEstado(bool estado)
     {
         return await _context.Clientes
+            .AsNoTracking()
             .Where(c => c.EstadoYFecha != null && c.EstadoYFecha.Estado == estado)
             .ToListAsync()
             .ConfigureAwait(false);
-    }
-
-    public async Task<Cliente> GetClienteByIdAsync(int idCliente)
-    {
-        return await _context.Clientes.FindAsync(idCliente);
     }
 
     public override async Task<bool> Exists(Expression<Func<Cliente, bool>> filter)
@@ -50,12 +52,20 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public override async Task<List<Cliente>> GetAllAsync()
     {
-        return await _context.Clientes.ToListAsync().ConfigureAwait(false);
+        return await _context.Clientes
+            .AsNoTracking()
+            .ToListAsync()
+            .ConfigureAwait(false);
     }
 
     public override async Task<OperationResult> GetAllAsync(Expression<Func<Cliente, bool>> filter)
     {
-        var clientes = await _context.Clientes.Where(filter).ToListAsync().ConfigureAwait(false);
+        var clientes = await _context.Clientes
+            .AsNoTracking()
+            .Where(filter)
+            .ToListAsync()
+            .ConfigureAwait(false);
+
         return new OperationResult
         {
             Success = true,
@@ -65,7 +75,10 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public override async Task<Cliente> GetEntityByIdAsync(int id)
     {
-        return await _context.Clientes.FindAsync(id);
+        return await _context.Clientes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id)
+            .ConfigureAwait(false);
     }
 
     public override async Task<OperationResult> SaveEntityAsync(Cliente entity)
@@ -83,7 +96,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
             result.Success = true;
             result.Message = "Cliente guardado correctamente.";
-            _logger.LogInformation(result.Message);
+            _logger.LogInformation("Cliente guardado con ID: {IdCliente}", entity.Id);
         }
         catch (Exception ex)
         {
@@ -105,21 +118,21 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
                 throw new ArgumentNullException(nameof(entity), "El cliente no puede ser nulo.");
             }
 
-            var clienteExistente = await GetEntityByIdAsync(entity.Id);
-
-            if (clienteExistente == null)
+            var existingEntity = await _context.Clientes.FindAsync(entity.Id);
+            if (existingEntity == null)
             {
                 result.Success = false;
-                result.Message = "El cliente no existe en la base de datos.";
+                result.Message = "El cliente no fue encontrado.";
+                _logger.LogWarning(result.Message);
                 return result;
             }
 
-            _context.Entry(clienteExistente).CurrentValues.SetValues(entity);
+            _context.Entry(existingEntity).CurrentValues.SetValues(entity);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
             result.Success = true;
             result.Message = "Cliente actualizado correctamente.";
-            _logger.LogInformation(result.Message);
+            _logger.LogInformation("Cliente actualizado con ID: {IdCliente}", entity.Id);
         }
         catch (Exception ex)
         {
@@ -152,7 +165,14 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
                 return result;
             }
 
-            var cliente = await GetClienteByIdAsync(idCliente);
+            var cliente = await GetEntityByIdAsync(idCliente);
+            if (cliente == null)
+            {
+                result.Success = false;
+                result.Message = "El cliente no fue encontrado.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
 
             if (cliente.TipoDocumento == nuevoTipoDocumento)
             {
@@ -167,7 +187,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
             result.Success = true;
             result.Message = "Tipo de documento actualizado correctamente.";
-            _logger.LogInformation(result.Message);
+            _logger.LogInformation("Tipo de documento actualizado para el cliente con ID: {IdCliente}", idCliente);
         }
         catch (Exception ex)
         {
@@ -192,7 +212,14 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
                 return result;
             }
 
-            var cliente = await GetClienteByIdAsync(idCliente);
+            var cliente = await GetEntityByIdAsync(idCliente);
+            if (cliente == null)
+            {
+                result.Success = false;
+                result.Message = "El cliente no fue encontrado.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
 
             if (cliente.EstadoYFecha.Estado == nuevoEstado)
             {
@@ -207,7 +234,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
             result.Success = true;
             result.Message = "Estado actualizado correctamente.";
-            _logger.LogInformation(result.Message);
+            _logger.LogInformation("Estado actualizado para el cliente con ID: {IdCliente}", idCliente);
         }
         catch (Exception ex)
         {

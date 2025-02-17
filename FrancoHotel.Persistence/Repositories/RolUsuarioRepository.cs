@@ -215,7 +215,7 @@ namespace FrancoHotel.Persistence.Repositories
                 await _context.SaveChangesAsync().ConfigureAwait(false);
 
                 result.Success = true;
-                result.Message = "Rol de usuario actualizado correctamente.";
+                result.Message = "Rol de usuario actualizado correctamente .";
                 _logger.LogInformation(result.Message);
             }
             catch (Exception ex)

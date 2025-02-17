@@ -32,6 +32,12 @@ namespace FrancoHotel.Persistence.Repositories
 
         public async Task<Usuario> GetUsuarioByClave(string clave)
         {
+            if (string.IsNullOrWhiteSpace(clave))
+            {
+                _logger.LogWarning("La clave proporcionada es nula o vacía.");
+                return null;
+            }
+
             return await _context.Usuarios
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(u => u.Clave == clave);
@@ -39,6 +45,12 @@ namespace FrancoHotel.Persistence.Repositories
 
         public async Task<Usuario> GetUsuarioByIdRolUsuario(int idRolUsuario)
         {
+            if (idRolUsuario <= 0)
+            {
+                _logger.LogWarning("El ID del rol de usuario debe ser mayor que cero.");
+                return null;
+            }
+
             return await _context.Usuarios
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(u => u.IdRolUsuario == idRolUsuario);
@@ -82,6 +94,12 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<Usuario> GetEntityByIdAsync(int id)
         {
+            if (id <= 0)
+            {
+                _logger.LogWarning("El ID del usuario debe ser mayor que cero.");
+                return null;
+            }
+
             return await _context.Usuarios
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(u => u.Id == id);
@@ -104,6 +122,14 @@ namespace FrancoHotel.Persistence.Repositories
                 {
                     result.Success = false;
                     result.Message = "La nueva clave no puede estar vacía o ser nula.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
+                if (nuevaClave.Length < 8)
+                {
+                    result.Success = false;
+                    result.Message = "La clave debe tener al menos 8 caracteres.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
@@ -211,7 +237,10 @@ namespace FrancoHotel.Persistence.Repositories
             {
                 if (entity == null)
                 {
-                    throw new ArgumentNullException(nameof(entity), "El usuario no puede ser nulo.");
+                    result.Success = false;
+                    result.Message = "El usuario no puede ser nulo.";
+                    _logger.LogWarning(result.Message);
+                    return result;
                 }
 
                 await _context.Usuarios.AddAsync(entity).ConfigureAwait(false);
@@ -238,7 +267,10 @@ namespace FrancoHotel.Persistence.Repositories
             {
                 if (entity == null)
                 {
-                    throw new ArgumentNullException(nameof(entity), "El usuario no puede ser nulo.");
+                    result.Success = false;
+                    result.Message = "El usuario no puede ser nulo.";
+                    _logger.LogWarning(result.Message);
+                    return result;
                 }
 
                 var usuarioExistente = await GetEntityByIdAsync(entity.Id);
