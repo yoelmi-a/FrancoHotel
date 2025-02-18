@@ -3,7 +3,7 @@ using FrancoHotel.Domain.Repository;
 
 namespace FrancoHotel.Persistence.Interfaces
 {
-    public interface IServiciosRepository : IBaseRepository<Servicios, short>
+    public interface IEstadoHabitacionRepository : IBaseRepository<EstadoHabitacion, int>
     {
     }
 }

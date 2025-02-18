@@ -77,9 +77,9 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (string.IsNullOrWhiteSpace(entity.Descripcion))
+                if (string.IsNullOrWhiteSpace(entity.Descripcion) || !entity.EstadoYFecha.Estado.HasValue)
                 {
-                    throw new ArgumentNullException("El piso debe tener descripcion");
+                    throw new ArgumentNullException("El piso debe tener descripcion y estado");
                 }
 
                 _context.Pisos.Add(entity);
@@ -100,7 +100,7 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (string.IsNullOrWhiteSpace(entity.Descripcion))
+                if (!string.IsNullOrWhiteSpace(entity.Descripcion))
                 {
                     throw new ArgumentNullException("El piso debe tener descripcion");
                 }

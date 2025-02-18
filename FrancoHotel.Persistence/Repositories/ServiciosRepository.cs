@@ -31,9 +31,9 @@ namespace FrancoHotel.Persistence.Repositories
             _configuration = configuration;
         }
 
-        public override Task<bool> Exists(Expression<Func<Servicios, bool>> filter)
+        public override async Task<bool> Exists(Expression<Func<Servicios, bool>> filter)
         {
-            return base.Exists(filter);
+            return await _context.Servicios.AnyAsync();
         }
 
         public override async Task<OperationResult> GetAllAsync(Expression<Func<Servicios, bool>> filter)
@@ -103,6 +103,5 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return result;
         }
-    }
     }
 }
