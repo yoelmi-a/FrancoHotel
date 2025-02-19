@@ -29,7 +29,7 @@ namespace FrancoHotel.Persistence.Base
             OperationResult result = new OperationResult();
             try
             {
-                var Datos = Entity.Where(filter).ToListAsync();
+                var Datos = await Entity.Where(filter).ToListAsync();
                 result.Data = Datos;
             }
             catch (Exception)
