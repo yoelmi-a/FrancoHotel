@@ -21,13 +21,9 @@ namespace FrancoHotel.Persistence.Repositories
                                  ILogger<UsuarioRepository> logger,
                                  IConfiguration configuration) : base(context)
         {
-            ArgumentNullException.ThrowIfNull(context, nameof(context));
-            ArgumentNullException.ThrowIfNull(logger, nameof(logger));
-            ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
-
-            _context = context;
-            _logger = logger;
-            _configuration = configuration;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         public async Task<Usuario> GetUsuarioByClave(string clave)
@@ -223,7 +219,8 @@ namespace FrancoHotel.Persistence.Repositories
             catch (Exception ex)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorUsuarioRepository:GetUsuariosByEstadoYFechaCreacion"] ?? "Ocurrió un error al obtener los usuarios.";
+                result.Message = _configuration["ErrorUsuarioRepository:GetUsuariosByEstadoYFechaCreacion"]
+                    ?? "Ocurrió un error al obtener los usuarios.";
                 _logger.LogError(ex, result.Message);
             }
 
@@ -235,10 +232,34 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity == null)
+                if (entity.Id <= 0)
                 {
                     result.Success = false;
-                    result.Message = "El usuario no puede ser nulo.";
+                    result.Message = "El ID del usuario debe ser mayor que cero.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
+                if (entity.NombreCompleto != null && entity.NombreCompleto.Length > 50)
+                {
+                    result.Success = false;
+                    result.Message = "El nombre completo no puede exceder los 50 caracteres.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
+                if (entity.Correo != null && entity.Correo.Length > 50)
+                {
+                    result.Success = false;
+                    result.Message = "El correo no puede exceder los 50 caracteres.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
+                if (entity.Clave != null && entity.Clave.Length > 50)
+                {
+                    result.Success = false;
+                    result.Message = "La clave no puede exceder los 50 caracteres.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
@@ -265,10 +286,34 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity == null)
+                if (entity.Id <= 0)
                 {
                     result.Success = false;
-                    result.Message = "El usuario no puede ser nulo.";
+                    result.Message = "El ID del usuario debe ser mayor que cero.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
+                if (entity.NombreCompleto != null && entity.NombreCompleto.Length > 50)
+                {
+                    result.Success = false;
+                    result.Message = "El nombre completo no puede exceder los 50 caracteres.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
+                if (entity.Correo != null && entity.Correo.Length > 50)
+                {
+                    result.Success = false;
+                    result.Message = "El correo no puede exceder los 50 caracteres.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
+                if (entity.Clave != null && entity.Clave.Length > 50)
+                {
+                    result.Success = false;
+                    result.Message = "La clave no puede exceder los 50 caracteres.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }

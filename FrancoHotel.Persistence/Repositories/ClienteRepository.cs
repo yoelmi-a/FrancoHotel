@@ -86,9 +86,49 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         OperationResult result = new OperationResult();
         try
         {
+            if (entity.Id <= 0)
+            {
+                result.Success = false;
+                result.Message = "El ID generado para el cliente no es válido.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity), "El cliente no puede ser nulo.");
+            }
+
+            if (entity.TipoDocumento != null && entity.TipoDocumento.Length > 15)
+            {
+                result.Success = false;
+                result.Message = "El campo TipoDocumento no puede exceder los 15 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.Documento != null && entity.Documento.Length > 15)
+            {
+                result.Success = false;
+                result.Message = "El campo Documento no puede exceder los 15 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.NombreCompleto != null && entity.NombreCompleto.Length > 50)
+            {
+                result.Success = false;
+                result.Message = "El campo NombreCompleto no puede exceder los 50 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.Correo != null && entity.Correo.Length > 50)
+            {
+                result.Success = false;
+                result.Message = "El campo Correo no puede exceder los 50 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
             }
 
             await _context.Clientes.AddAsync(entity).ConfigureAwait(false);
@@ -116,6 +156,46 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity), "El cliente no puede ser nulo.");
+            }
+
+            if (entity.Id <= 0)
+            {
+                result.Success = false;
+                result.Message = "El ID del cliente debe ser mayor que cero.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.TipoDocumento != null && entity.TipoDocumento.Length > 15)
+            {
+                result.Success = false;
+                result.Message = "El campo TipoDocumento no puede exceder los 15 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.Documento != null && entity.Documento.Length > 15)
+            {
+                result.Success = false;
+                result.Message = "El campo Documento no puede exceder los 15 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.NombreCompleto != null && entity.NombreCompleto.Length > 50)
+            {
+                result.Success = false;
+                result.Message = "El campo NombreCompleto no puede exceder los 50 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.Correo != null && entity.Correo.Length > 50)
+            {
+                result.Success = false;
+                result.Message = "El campo Correo no puede exceder los 50 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
             }
 
             var existingEntity = await _context.Clientes.FindAsync(entity.Id);
@@ -161,6 +241,14 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
             {
                 result.Success = false;
                 result.Message = "El nuevo tipo de documento no puede estar vacío o ser nulo.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (nuevoTipoDocumento.Length > 15)
+            {
+                result.Success = false;
+                result.Message = "El campo TipoDocumento no puede exceder los 15 caracteres.";
                 _logger.LogWarning(result.Message);
                 return result;
             }

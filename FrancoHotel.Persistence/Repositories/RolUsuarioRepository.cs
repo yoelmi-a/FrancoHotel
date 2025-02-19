@@ -20,20 +20,22 @@ namespace FrancoHotel.Persistence.Repositories
                                     ILogger<RolUsuarioRepository> logger,
                                     IConfiguration configuration) : base(context)
         {
-            ArgumentNullException.ThrowIfNull(context, nameof(context));
-            ArgumentNullException.ThrowIfNull(logger, nameof(logger));
-            ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
-
-            _context = context;
-            _logger = logger;
-            _configuration = configuration;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         public async Task<RolUsuario> GetRolUsuarioByDescripcion(string descripcion)
         {
+            if (string.IsNullOrWhiteSpace(descripcion))
+            {
+                throw new ArgumentException("La descripción no puede estar vacía o ser nula.", nameof(descripcion));
+            }
+
             return await _context.RolUsuarios
                                  .AsNoTracking()
-                                 .FirstOrDefaultAsync(r => r.Descripcion == descripcion);
+                                 .FirstOrDefaultAsync(r => r.Descripcion == descripcion)
+                                 .ConfigureAwait(false);
         }
 
         public async Task<List<RolUsuario>> GetRolesUsuarioByEstado(bool estado)
@@ -41,7 +43,8 @@ namespace FrancoHotel.Persistence.Repositories
             return await _context.RolUsuarios
                                   .AsNoTracking()
                                   .Where(r => r.EstadoYFecha.Estado == estado)
-                                  .ToListAsync();
+                                  .ToListAsync()
+                                  .ConfigureAwait(false);
         }
 
         public override async Task<bool> Exists(Expression<Func<RolUsuario, bool>> filter)
@@ -74,9 +77,15 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<RolUsuario> GetEntityByIdAsync(int id)
         {
+            if (id <= 0)
+            {
+                throw new ArgumentException("El ID debe ser mayor que cero.", nameof(id));
+            }
+
             return await _context.RolUsuarios
                                  .AsNoTracking()
-                                 .FirstOrDefaultAsync(r => r.Id == id);
+                                 .FirstOrDefaultAsync(r => r.Id == id)
+                                 .ConfigureAwait(false);
         }
 
         public async Task<OperationResult> UpdateDescripcion(int idRolUsuario, string nuevaDescripcion)
@@ -96,6 +105,14 @@ namespace FrancoHotel.Persistence.Repositories
                 {
                     result.Success = false;
                     result.Message = "La nueva descripción no puede estar vacía o ser nula.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
+                if (nuevaDescripcion.Length > 50)
+                {
+                    result.Success = false;
+                    result.Message = "La descripción no puede exceder los 50 caracteres.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
@@ -170,9 +187,25 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
+                if (entity.Id <= 0)
+                {
+                    result.Success = false;
+                    result.Message = "El ID generado para el rol de usuario no es válido.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
                 if (entity == null)
                 {
                     throw new ArgumentNullException(nameof(entity), "El rol de usuario no puede ser nulo.");
+                }
+
+                if (entity.Descripcion != null && entity.Descripcion.Length > 50)
+                {
+                    result.Success = false;
+                    result.Message = "La descripción no puede exceder los 50 caracteres.";
+                    _logger.LogWarning(result.Message);
+                    return result;
                 }
 
                 await _context.RolUsuarios.AddAsync(entity).ConfigureAwait(false);
@@ -202,6 +235,22 @@ namespace FrancoHotel.Persistence.Repositories
                     throw new ArgumentNullException(nameof(entity), "El rol de usuario no puede ser nulo.");
                 }
 
+                if (entity.Id <= 0)
+                {
+                    result.Success = false;
+                    result.Message = "El ID del rol de usuario debe ser mayor que cero.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
+                if (entity.Descripcion != null && entity.Descripcion.Length > 50)
+                {
+                    result.Success = false;
+                    result.Message = "La descripción no puede exceder los 50 caracteres.";
+                    _logger.LogWarning(result.Message);
+                    return result;
+                }
+
                 var rolUsuarioExistente = await GetEntityByIdAsync(entity.Id);
 
                 if (rolUsuarioExistente == null)
@@ -215,7 +264,7 @@ namespace FrancoHotel.Persistence.Repositories
                 await _context.SaveChangesAsync().ConfigureAwait(false);
 
                 result.Success = true;
-                result.Message = "Rol de usuario actualizado correctamente .";
+                result.Message = "Rol de usuario actualizado correctamente.";
                 _logger.LogInformation(result.Message);
             }
             catch (Exception ex)
