@@ -65,7 +65,11 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if(entity.Precio <= 0)
+                if(entity.Detalle.Length > 50)
+                {
+                    throw new ArgumentNullException("Los detalles no pueden pasar de 50 caracteres");
+                }
+                else if(entity.Precio <= 0)
                 {
                     throw new ArgumentNullException("El precio de la habitacion debe ser mayor a 0");
                 }
