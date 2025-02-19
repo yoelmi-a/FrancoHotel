@@ -1,10 +1,8 @@
-﻿using System.Formats.Tar;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using FrancoHotel.Domain.Repository;
 using FrancoHotel.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using FrancoHotel.Domain.Base;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace FrancoHotel.Persistence.Base
 {
@@ -29,7 +27,7 @@ namespace FrancoHotel.Persistence.Base
             OperationResult result = new OperationResult();
             try
             {
-                var Datos = Entity.Where(filter).ToListAsync();
+                var Datos = await Entity.Where(filter).ToListAsync();
                 result.Data = Datos;
             }
             catch (Exception)
