@@ -1,4 +1,5 @@
-﻿using FrancoHotel.Domain.Base;
+﻿using System.Linq.Expressions;
+using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Base;
 using FrancoHotel.Persistence.Context;
@@ -24,33 +25,203 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public async Task<Cliente> GetClienteByDocumento(string documento)
     {
-        ArgumentException.ThrowIfNullOrEmpty(documento, nameof(documento));
-
-        var cliente = await _context.Clientes
-            .FirstOrDefaultAsync(c => c.Documento == documento)
-            .ConfigureAwait(false);
-
-        if (cliente == null)
+        if (string.IsNullOrWhiteSpace(documento))
         {
-            _logger.LogWarning("No se encontró ningún cliente con el documento {Documento}.", documento);
+            throw new ArgumentException("El documento no puede estar vacío o ser nulo.", nameof(documento));
         }
 
-        return cliente;
+        return await _context.Clientes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Documento == documento)
+            .ConfigureAwait(false);
     }
 
     public async Task<List<Cliente>> GetClientesByEstado(bool estado)
     {
-        var clientes = await _context.Clientes
+        return await _context.Clientes
+            .AsNoTracking()
             .Where(c => c.EstadoYFecha != null && c.EstadoYFecha.Estado == estado)
             .ToListAsync()
             .ConfigureAwait(false);
+    }
 
-        if (!clientes.Any())
+    public override async Task<bool> Exists(Expression<Func<Cliente, bool>> filter)
+    {
+        return await _context.Clientes.AnyAsync(filter).ConfigureAwait(false);
+    }
+
+    public override async Task<List<Cliente>> GetAllAsync()
+    {
+        return await _context.Clientes
+            .AsNoTracking()
+            .ToListAsync()
+            .ConfigureAwait(false);
+    }
+
+    public override async Task<OperationResult> GetAllAsync(Expression<Func<Cliente, bool>> filter)
+    {
+        var clientes = await _context.Clientes
+            .AsNoTracking()
+            .Where(filter)
+            .ToListAsync()
+            .ConfigureAwait(false);
+
+        return new OperationResult
         {
-            _logger.LogWarning("No se encontraron clientes con el estado {Estado}.", estado);
+            Success = true,
+            Data = clientes
+        };
+    }
+
+    public override async Task<Cliente> GetEntityByIdAsync(int id)
+    {
+        return await _context.Clientes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id)
+            .ConfigureAwait(false);
+    }
+
+    public override async Task<OperationResult> SaveEntityAsync(Cliente entity)
+    {
+        OperationResult result = new OperationResult();
+        try
+        {
+            if (entity.Id <= 0)
+            {
+                result.Success = false;
+                result.Message = "El ID generado para el cliente no es válido.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), "El cliente no puede ser nulo.");
+            }
+
+            if (entity.TipoDocumento != null && entity.TipoDocumento.Length > 15)
+            {
+                result.Success = false;
+                result.Message = "El campo TipoDocumento no puede exceder los 15 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.Documento != null && entity.Documento.Length > 15)
+            {
+                result.Success = false;
+                result.Message = "El campo Documento no puede exceder los 15 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.NombreCompleto != null && entity.NombreCompleto.Length > 50)
+            {
+                result.Success = false;
+                result.Message = "El campo NombreCompleto no puede exceder los 50 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.Correo != null && entity.Correo.Length > 50)
+            {
+                result.Success = false;
+                result.Message = "El campo Correo no puede exceder los 50 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            await _context.Clientes.AddAsync(entity).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            result.Success = true;
+            result.Message = "Cliente guardado correctamente.";
+            _logger.LogInformation("Cliente guardado con ID: {IdCliente}", entity.Id);
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Ocurrió un error al guardar el cliente.";
+            _logger.LogError(ex, result.Message);
         }
 
-        return clientes;
+        return result;
+    }
+
+    public override async Task<OperationResult> UpdateEntityAsync(Cliente entity)
+    {
+        OperationResult result = new OperationResult();
+        try
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), "El cliente no puede ser nulo.");
+            }
+
+            if (entity.Id <= 0)
+            {
+                result.Success = false;
+                result.Message = "El ID del cliente debe ser mayor que cero.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.TipoDocumento != null && entity.TipoDocumento.Length > 15)
+            {
+                result.Success = false;
+                result.Message = "El campo TipoDocumento no puede exceder los 15 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.Documento != null && entity.Documento.Length > 15)
+            {
+                result.Success = false;
+                result.Message = "El campo Documento no puede exceder los 15 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.NombreCompleto != null && entity.NombreCompleto.Length > 50)
+            {
+                result.Success = false;
+                result.Message = "El campo NombreCompleto no puede exceder los 50 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (entity.Correo != null && entity.Correo.Length > 50)
+            {
+                result.Success = false;
+                result.Message = "El campo Correo no puede exceder los 50 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            var existingEntity = await _context.Clientes.FindAsync(entity.Id);
+            if (existingEntity == null)
+            {
+                result.Success = false;
+                result.Message = "El cliente no fue encontrado.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            _context.Entry(existingEntity).CurrentValues.SetValues(entity);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            result.Success = true;
+            result.Message = "Cliente actualizado correctamente.";
+            _logger.LogInformation("Cliente actualizado con ID: {IdCliente}", entity.Id);
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Ocurrió un error al actualizar el cliente.";
+            _logger.LogError(ex, result.Message);
+        }
+
+        return result;
     }
 
     public async Task<OperationResult> UpdateTipoDocumento(int idCliente, string nuevoTipoDocumento)
@@ -58,14 +229,44 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         OperationResult result = new OperationResult();
         try
         {
-            var cliente = await GetClienteByIdAsync(idCliente);
+            if (idCliente <= 0)
+            {
+                result.Success = false;
+                result.Message = "El ID del cliente debe ser mayor que cero.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
 
-            ArgumentException.ThrowIfNullOrEmpty(nuevoTipoDocumento, nameof(nuevoTipoDocumento));
+            if (string.IsNullOrWhiteSpace(nuevoTipoDocumento))
+            {
+                result.Success = false;
+                result.Message = "El nuevo tipo de documento no puede estar vacío o ser nulo.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            if (nuevoTipoDocumento.Length > 15)
+            {
+                result.Success = false;
+                result.Message = "El campo TipoDocumento no puede exceder los 15 caracteres.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            var cliente = await GetEntityByIdAsync(idCliente);
+            if (cliente == null)
+            {
+                result.Success = false;
+                result.Message = "El cliente no fue encontrado.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
 
             if (cliente.TipoDocumento == nuevoTipoDocumento)
             {
                 result.Success = false;
                 result.Message = "El nuevo tipo de documento es el mismo que el actual.";
+                _logger.LogWarning(result.Message);
                 return result;
             }
 
@@ -74,6 +275,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
             result.Success = true;
             result.Message = "Tipo de documento actualizado correctamente.";
+            _logger.LogInformation("Tipo de documento actualizado para el cliente con ID: {IdCliente}", idCliente);
         }
         catch (Exception ex)
         {
@@ -81,6 +283,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
             result.Message = "Ocurrió un error actualizando el tipo de documento.";
             _logger.LogError(ex, result.Message);
         }
+
         return result;
     }
 
@@ -89,12 +292,28 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         OperationResult result = new OperationResult();
         try
         {
-            var cliente = await GetClienteByIdAsync(idCliente);
+            if (idCliente <= 0)
+            {
+                result.Success = false;
+                result.Message = "El ID del cliente debe ser mayor que cero.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+
+            var cliente = await GetEntityByIdAsync(idCliente);
+            if (cliente == null)
+            {
+                result.Success = false;
+                result.Message = "El cliente no fue encontrado.";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
 
             if (cliente.EstadoYFecha.Estado == nuevoEstado)
             {
                 result.Success = false;
                 result.Message = "El nuevo estado es el mismo que el actual.";
+                _logger.LogWarning(result.Message);
                 return result;
             }
 
@@ -103,6 +322,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
             result.Success = true;
             result.Message = "Estado actualizado correctamente.";
+            _logger.LogInformation("Estado actualizado para el cliente con ID: {IdCliente}", idCliente);
         }
         catch (Exception ex)
         {
@@ -110,16 +330,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
             result.Message = "Ocurrió un error actualizando el estado del cliente.";
             _logger.LogError(ex, result.Message);
         }
-        return result;
-    }
 
-    private async Task<Cliente> GetClienteByIdAsync(int idCliente)
-    {
-        var cliente = await _context.Clientes.FindAsync(idCliente);
-        if (cliente == null)
-        {
-            throw new KeyNotFoundException($"Cliente con ID {idCliente} no encontrado.");
-        }
-        return cliente;
+        return result;
     }
 }
