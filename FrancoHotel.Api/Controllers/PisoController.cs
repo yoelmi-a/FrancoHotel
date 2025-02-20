@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using FrancoHotel.Domain.Entities;
+using FrancoHotel.Persistence.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -8,33 +8,42 @@ namespace FrancoHotel.Api.Controllers
     [ApiController]
     public class PisoController : ControllerBase
     {
-        // GET: api/<PisoController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IPisoRepository _pisoRepository;
+
+        public PisoController(IPisoRepository pisoRepository,
+                              ILogger<PisoController> logger)
         {
-            return new string[] { "value1", "value2" };
+            _pisoRepository = pisoRepository;
         }
 
-        // GET api/<PisoController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("GetPisos")]
+        public async Task<IActionResult> Get()
         {
-            return "value";
+            var pisos = await _pisoRepository.GetAllAsync();
+            return Ok(pisos);
         }
 
-        // POST api/<PisoController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("GetPisoById")]
+        public async Task<IActionResult> Get(int id)
         {
+            var piso = await _pisoRepository.GetEntityByIdAsync(id);
+            return Ok(piso);
         }
 
-        // PUT api/<PisoController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("SavePiso")]
+        public async Task<IActionResult> Post([FromBody] Piso piso)
         {
+            await _pisoRepository.SaveEntityAsync(piso);
+            return Ok(piso);
         }
 
-        // DELETE api/<PisoController>/5
+        [HttpPost("UpdatePiso")]
+        public async Task<IActionResult> Put([FromBody] Piso piso)
+        {
+            await _pisoRepository.UpdateEntityAsync(piso);
+            return Ok(piso);
+        }
+
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
