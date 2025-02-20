@@ -1,14 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using FrancoHotel.Domain.Base;
-
-namespace FrancoHotel.Domain.Entities
+﻿namespace FrancoHotel.Models.Models
 {
-    public sealed class Tarifas : BaseEntity<int>
+    internal class TarifasModel
     {
-        [Column("IdTarifa")]
-        [Key]
-        public override int Id { get; set; }
+        public int IdTarifas { get; set; }
         public int IdHabitacion { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }
@@ -18,4 +12,3 @@ namespace FrancoHotel.Domain.Entities
         public bool Estado { get; set; }
     }
 }
-
