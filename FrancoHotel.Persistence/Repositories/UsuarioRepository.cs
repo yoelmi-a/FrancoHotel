@@ -106,14 +106,6 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (idUsuario <= 0)
-                {
-                    result.Success = false;
-                    result.Message = "El ID del usuario debe ser mayor que cero.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
                 if (string.IsNullOrWhiteSpace(nuevaClave))
                 {
                     result.Success = false;
@@ -122,10 +114,10 @@ namespace FrancoHotel.Persistence.Repositories
                     return result;
                 }
 
-                if (nuevaClave.Length < 8)
+                if (nuevaClave.Length < 8 || nuevaClave.Length > 50)
                 {
                     result.Success = false;
-                    result.Message = "La clave debe tener al menos 8 caracteres.";
+                    result.Message = "La clave debe tener entre 8 y 50 caracteres.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
@@ -139,12 +131,12 @@ namespace FrancoHotel.Persistence.Repositories
                     return result;
                 }
 
-                usuario.Clave = nuevaClave;
+                _context.Usuario.Update(usuario);
                 await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Message = "Clave actualizada correctamente.";
-                _logger.LogInformation(result.Message);
+                _logger.LogInformation("Clave actualizada para el usuario con ID: {IdUsuario}", idUsuario);
             }
             catch (Exception ex)
             {
@@ -161,15 +153,7 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (idUsuario <= 0)
-                {
-                    result.Success = false;
-                    result.Message = "El ID del usuario debe ser mayor que cero.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                var usuario = await _context.Usuario.FindAsync(idUsuario);
+                var usuario = await _context.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Id == idUsuario);
                 if (usuario == null)
                 {
                     result.Success = false;
@@ -179,11 +163,13 @@ namespace FrancoHotel.Persistence.Repositories
                 }
 
                 usuario.EstadoYFecha.Estado = nuevoEstado;
+
+                _context.Usuario.Update(usuario);
                 await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Message = "Estado actualizado correctamente.";
-                _logger.LogInformation(result.Message);
+                _logger.LogInformation("Estado del usuario con ID: {IdUsuario} actualizado.", idUsuario);
             }
             catch (Exception ex)
             {
@@ -232,44 +218,41 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity.Id <= 0)
+                if (entity == null)
+                {
+                    throw new ArgumentNullException(nameof(entity), "El usuario no puede ser nulo.");
+                }
+
+                if (string.IsNullOrWhiteSpace(entity.Correo) || entity.Correo.Length > 50)
                 {
                     result.Success = false;
-                    result.Message = "El ID del usuario debe ser mayor que cero.";
+                    result.Message = "El campo Correo no puede exceder los 50 caracteres.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
 
-                if (entity.NombreCompleto != null && entity.NombreCompleto.Length > 50)
+                if (string.IsNullOrWhiteSpace(entity.Clave) || entity.Clave.Length > 50)
                 {
                     result.Success = false;
-                    result.Message = "El nombre completo no puede exceder los 50 caracteres.";
+                    result.Message = "El campo Clave no puede exceder los 50 caracteres.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
 
-                if (entity.Correo != null && entity.Correo.Length > 50)
+                if (entity.EstadoYFecha.Estado == null)
                 {
                     result.Success = false;
-                    result.Message = "El correo no puede exceder los 50 caracteres.";
+                    result.Message = "El campo Estado no puede ser nulo.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
 
-                if (entity.Clave != null && entity.Clave.Length > 50)
-                {
-                    result.Success = false;
-                    result.Message = "La clave no puede exceder los 50 caracteres.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                await _context.Usuario.AddAsync(entity).ConfigureAwait(false);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
+                _context.Usuario.Add(entity);
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Message = "Usuario guardado correctamente.";
-                _logger.LogInformation(result.Message);
+                _logger.LogInformation("Usuario guardado con ID: {IdUsuario}", entity.Id);
             }
             catch (Exception ex)
             {
@@ -281,58 +264,47 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
+
         public override async Task<OperationResult> UpdateEntityAsync(Usuario entity)
         {
             OperationResult result = new OperationResult();
             try
             {
-                if (entity.Id <= 0)
+                if (entity == null)
+                {
+                    throw new ArgumentNullException(nameof(entity), "El usuario no puede ser nulo.");
+                }
+
+                if (string.IsNullOrWhiteSpace(entity.Correo) || entity.Correo.Length > 50)
                 {
                     result.Success = false;
-                    result.Message = "El ID del usuario debe ser mayor que cero.";
+                    result.Message = "El campo Correo no puede exceder los 50 caracteres.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
 
-                if (entity.NombreCompleto != null && entity.NombreCompleto.Length > 50)
+                if (string.IsNullOrWhiteSpace(entity.Clave) || entity.Clave.Length > 50)
                 {
                     result.Success = false;
-                    result.Message = "El nombre completo no puede exceder los 50 caracteres.";
+                    result.Message = "El campo Clave no puede exceder los 50 caracteres.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
 
-                if (entity.Correo != null && entity.Correo.Length > 50)
+                if (entity.EstadoYFecha.Estado == null)
                 {
                     result.Success = false;
-                    result.Message = "El correo no puede exceder los 50 caracteres.";
+                    result.Message = "El campo Estado no puede ser nulo.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
 
-                if (entity.Clave != null && entity.Clave.Length > 50)
-                {
-                    result.Success = false;
-                    result.Message = "La clave no puede exceder los 50 caracteres.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                var usuarioExistente = await GetEntityByIdAsync(entity.Id);
-
-                if (usuarioExistente == null)
-                {
-                    result.Success = false;
-                    result.Message = "El usuario no existe en la base de datos.";
-                    return result;
-                }
-
-                _context.Entry(usuarioExistente).CurrentValues.SetValues(entity);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
+                _context.Usuario.Update(entity);
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Message = "Usuario actualizado correctamente.";
-                _logger.LogInformation(result.Message);
+                _logger.LogInformation("Usuario actualizado con ID: {IdUsuario}", entity.Id);
             }
             catch (Exception ex)
             {

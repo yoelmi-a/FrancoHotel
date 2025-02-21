@@ -40,7 +40,7 @@ namespace FrancoHotel.Api.Controllers
             return Ok(usuario);
         }
 
-        [HttpPost("UpdatePiso")]
+        [HttpPost("UpdateCliente")]
         public async Task<IActionResult> Put([FromBody] Usuario usuario)
         {
             await _usuarioRepository.UpdateEntityAsync(usuario);
