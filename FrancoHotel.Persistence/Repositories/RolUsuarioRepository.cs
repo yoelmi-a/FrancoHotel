@@ -32,7 +32,7 @@ namespace FrancoHotel.Persistence.Repositories
                 throw new ArgumentException("La descripción no puede estar vacía o ser nula.", nameof(descripcion));
             }
 
-            return await _context.RolUsuarios
+            return await _context.RolUsuario
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(r => r.Descripcion == descripcion)
                                  .ConfigureAwait(false);
@@ -40,7 +40,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public async Task<List<RolUsuario>> GetRolesUsuarioByEstado(bool estado)
         {
-            return await _context.RolUsuarios
+            return await _context.RolUsuario
                                   .AsNoTracking()
                                   .Where(r => r.EstadoYFecha.Estado == estado)
                                   .ToListAsync()
@@ -49,12 +49,12 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<bool> Exists(Expression<Func<RolUsuario, bool>> filter)
         {
-            return await _context.RolUsuarios.AnyAsync(filter).ConfigureAwait(false);
+            return await _context.RolUsuario.AnyAsync(filter).ConfigureAwait(false);
         }
 
         public override async Task<List<RolUsuario>> GetAllAsync()
         {
-            return await _context.RolUsuarios
+            return await _context.RolUsuario
                                  .AsNoTracking()
                                  .ToListAsync()
                                  .ConfigureAwait(false);
@@ -62,7 +62,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<OperationResult> GetAllAsync(Expression<Func<RolUsuario, bool>> filter)
         {
-            var rolesUsuario = await _context.RolUsuarios
+            var rolesUsuario = await _context.RolUsuario
                                              .AsNoTracking()
                                              .Where(filter)
                                              .ToListAsync()
@@ -82,7 +82,7 @@ namespace FrancoHotel.Persistence.Repositories
                 throw new ArgumentException("El ID debe ser mayor que cero.", nameof(id));
             }
 
-            return await _context.RolUsuarios
+            return await _context.RolUsuario
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(r => r.Id == id)
                                  .ConfigureAwait(false);
@@ -117,7 +117,7 @@ namespace FrancoHotel.Persistence.Repositories
                     return result;
                 }
 
-                var rolUsuario = await _context.RolUsuarios.FindAsync(idRolUsuario);
+                var rolUsuario = await _context.RolUsuario.FindAsync(idRolUsuario);
                 if (rolUsuario == null)
                 {
                     result.Success = false;
@@ -156,7 +156,7 @@ namespace FrancoHotel.Persistence.Repositories
                     return result;
                 }
 
-                var rolUsuario = await _context.RolUsuarios.FindAsync(idRolUsuario);
+                var rolUsuario = await _context.RolUsuario.FindAsync(idRolUsuario);
                 if (rolUsuario == null)
                 {
                     result.Success = false;
@@ -208,7 +208,7 @@ namespace FrancoHotel.Persistence.Repositories
                     return result;
                 }
 
-                await _context.RolUsuarios.AddAsync(entity).ConfigureAwait(false);
+                await _context.RolUsuario.AddAsync(entity).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
 
                 result.Success = true;

@@ -34,7 +34,7 @@ namespace FrancoHotel.Persistence.Repositories
                 return null;
             }
 
-            return await _context.Usuarios
+            return await _context.Usuario
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(u => u.Clave == clave);
         }
@@ -47,14 +47,14 @@ namespace FrancoHotel.Persistence.Repositories
                 return null;
             }
 
-            return await _context.Usuarios
+            return await _context.Usuario
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(u => u.IdRolUsuario == idRolUsuario);
         }
 
         public async Task<List<Usuario>> GetUsuariosByEstado(bool estado)
         {
-            return await _context.Usuarios
+            return await _context.Usuario
                                   .AsNoTracking()
                                   .Where(u => u.EstadoYFecha.Estado == estado)
                                   .ToListAsync();
@@ -62,12 +62,12 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<bool> Exists(Expression<Func<Usuario, bool>> filter)
         {
-            return await _context.Usuarios.AnyAsync(filter).ConfigureAwait(false);
+            return await _context.Usuario.AnyAsync(filter).ConfigureAwait(false);
         }
 
         public override async Task<List<Usuario>> GetAllAsync()
         {
-            return await _context.Usuarios
+            return await _context.Usuario
                                  .AsNoTracking()
                                  .ToListAsync()
                                  .ConfigureAwait(false);
@@ -75,7 +75,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<OperationResult> GetAllAsync(Expression<Func<Usuario, bool>> filter)
         {
-            var usuarios = await _context.Usuarios
+            var usuarios = await _context.Usuario
                                          .AsNoTracking()
                                          .Where(filter)
                                          .ToListAsync()
@@ -96,7 +96,7 @@ namespace FrancoHotel.Persistence.Repositories
                 return null;
             }
 
-            return await _context.Usuarios
+            return await _context.Usuario
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(u => u.Id == id);
         }
@@ -130,7 +130,7 @@ namespace FrancoHotel.Persistence.Repositories
                     return result;
                 }
 
-                var usuario = await _context.Usuarios.FindAsync(idUsuario);
+                var usuario = await _context.Usuario.FindAsync(idUsuario);
                 if (usuario == null)
                 {
                     result.Success = false;
@@ -169,7 +169,7 @@ namespace FrancoHotel.Persistence.Repositories
                     return result;
                 }
 
-                var usuario = await _context.Usuarios.FindAsync(idUsuario);
+                var usuario = await _context.Usuario.FindAsync(idUsuario);
                 if (usuario == null)
                 {
                     result.Success = false;
@@ -200,7 +200,7 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                var query = await (from usuario in _context.Usuarios
+                var query = await (from usuario in _context.Usuario
                                    where usuario.EstadoYFecha.Estado.GetValueOrDefault() == estado &&
                                          usuario.EstadoYFecha.FechaCreacion.GetValueOrDefault() >= fechaCreacion
                                    select new UsuarioModel()
@@ -264,7 +264,7 @@ namespace FrancoHotel.Persistence.Repositories
                     return result;
                 }
 
-                await _context.Usuarios.AddAsync(entity).ConfigureAwait(false);
+                await _context.Usuario.AddAsync(entity).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
 
                 result.Success = true;

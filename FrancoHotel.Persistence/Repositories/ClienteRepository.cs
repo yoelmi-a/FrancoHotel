@@ -30,7 +30,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
             throw new ArgumentException("El documento no puede estar vacío o ser nulo.", nameof(documento));
         }
 
-        return await _context.Clientes
+        return await _context.Cliente
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Documento == documento)
             .ConfigureAwait(false);
@@ -38,7 +38,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public async Task<List<Cliente>> GetClientesByEstado(bool estado)
     {
-        return await _context.Clientes
+        return await _context.Cliente
             .AsNoTracking()
             .Where(c => c.EstadoYFecha != null && c.EstadoYFecha.Estado == estado)
             .ToListAsync()
@@ -47,12 +47,12 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public override async Task<bool> Exists(Expression<Func<Cliente, bool>> filter)
     {
-        return await _context.Clientes.AnyAsync(filter).ConfigureAwait(false);
+        return await _context.Cliente.AnyAsync(filter).ConfigureAwait(false);
     }
 
     public override async Task<List<Cliente>> GetAllAsync()
     {
-        return await _context.Clientes
+        return await _context.Cliente
             .AsNoTracking()
             .ToListAsync()
             .ConfigureAwait(false);
@@ -60,7 +60,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public override async Task<OperationResult> GetAllAsync(Expression<Func<Cliente, bool>> filter)
     {
-        var clientes = await _context.Clientes
+        var clientes = await _context.Cliente
             .AsNoTracking()
             .Where(filter)
             .ToListAsync()
@@ -75,7 +75,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public override async Task<Cliente> GetEntityByIdAsync(int id)
     {
-        return await _context.Clientes
+        return await _context.Cliente
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id)
             .ConfigureAwait(false);
@@ -131,7 +131,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
                 return result;
             }
 
-            await _context.Clientes.AddAsync(entity).ConfigureAwait(false);
+            await _context.Cliente.AddAsync(entity).ConfigureAwait(false);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
             result.Success = true;
@@ -198,7 +198,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
                 return result;
             }
 
-            var existingEntity = await _context.Clientes.FindAsync(entity.Id);
+            var existingEntity = await _context.Cliente.FindAsync(entity.Id);
             if (existingEntity == null)
             {
                 result.Success = false;
