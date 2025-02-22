@@ -88,17 +88,14 @@ namespace FrancoHotel.Persistence.Repositories
                                  .ConfigureAwait(false);
         }
 
-        public async Task<OperationResult> UpdateDescripcion(int idRolUsuario, string nuevaDescripcion)
+        public async Task<OperationResult> UpdateDescripcion(RolUsuario entity, string nuevaDescripcion)
         {
             OperationResult result = new OperationResult();
             try
             {
-                if (idRolUsuario <= 0)
+                if (entity == null)
                 {
-                    result.Success = false;
-                    result.Message = "El ID del rol de usuario debe ser mayor que cero.";
-                    _logger.LogWarning(result.Message);
-                    return result;
+                    throw new ArgumentNullException(nameof(entity), "El rolUsuario no puede ser nulo.");
                 }
 
                 if (string.IsNullOrWhiteSpace(nuevaDescripcion))
@@ -117,16 +114,8 @@ namespace FrancoHotel.Persistence.Repositories
                     return result;
                 }
 
-                var rolUsuario = await _context.RolUsuario.FindAsync(idRolUsuario);
-                if (rolUsuario == null)
-                {
-                    result.Success = false;
-                    result.Message = "Rol de usuario no encontrado.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                rolUsuario.Descripcion = nuevaDescripcion;
+                entity.Descripcion = nuevaDescripcion;
+                _context.RolUsuario.Update(entity);
                 await _context.SaveChangesAsync();
 
                 result.Success = true;
@@ -143,34 +132,31 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public async Task<OperationResult> UpdateEstado(int idRolUsuario, bool nuevoEstado)
+        public async Task<OperationResult> UpdateEstado(RolUsuario entity, bool nuevoEstado)
         {
             OperationResult result = new OperationResult();
             try
             {
-                if (idRolUsuario <= 0)
+                if (entity == null)
+                {
+                    throw new ArgumentNullException(nameof(entity), "El rolUsuario no puede ser nulo.");
+                }
+
+                if (entity.EstadoYFecha.Estado == nuevoEstado)
                 {
                     result.Success = false;
-                    result.Message = "El ID del rol de usuario debe ser mayor que cero.";
+                    result.Message = "El nuevo estado es el mismo que el actual.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
 
-                var rolUsuario = await _context.RolUsuario.FindAsync(idRolUsuario);
-                if (rolUsuario == null)
-                {
-                    result.Success = false;
-                    result.Message = "Rol de usuario no encontrado.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                rolUsuario.EstadoYFecha.Estado = nuevoEstado;
+                entity.EstadoYFecha.Estado = nuevoEstado;
+                _context.RolUsuario.Update(entity);
                 await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Message = "Estado actualizado correctamente.";
-                _logger.LogInformation(result.Message);
+                _logger.LogInformation("Estado actualizado para el cliente con ID: {IdRolUsuario}", entity.Id);
             }
             catch (Exception ex)
             {

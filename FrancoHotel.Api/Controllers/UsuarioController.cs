@@ -33,6 +33,27 @@ namespace FrancoHotel.Api.Controllers
             return Ok(usuario);
         }
 
+        [HttpGet("GetUsuarioByClave")]
+        public async Task<IActionResult> Get(string clave)
+        {
+            var usuario = await _usuarioRepository.GetUsuarioByClave(clave);
+            return Ok(usuario);
+        }
+
+        [HttpGet("GetUsuarioByIdRolUsuario")]
+        public async Task<IActionResult> GetRolUsuario(int idRolUsuario)
+        {
+            var usuario = await _usuarioRepository.GetUsuarioByIdRolUsuario(idRolUsuario);
+            return Ok(usuario);
+        }
+
+        [HttpGet("GetUsuariosByEstado")]
+        public async Task<IActionResult> GetEstado(bool estado)
+        {
+            var usuario = await _usuarioRepository.GetUsuariosByEstado(estado);
+            return Ok(usuario);
+        }
+
         [HttpPost("SaveUsuario")]
         public async Task<IActionResult> Post([FromBody] Usuario usuario)
         {
@@ -45,6 +66,20 @@ namespace FrancoHotel.Api.Controllers
         {
             await _usuarioRepository.UpdateEntityAsync(usuario);
             return Ok(usuario);
+        }
+
+        [HttpPost("UpdateClave")]
+        public async Task<IActionResult> PutClave([FromBody] Usuario usuario)
+        {
+            await _usuarioRepository.UpdateEntityAsync(usuario);
+            return Ok(usuario);
+        }
+
+        [HttpPost("UpdateEstado")]
+        public async Task<IActionResult> PutEstado([FromBody] Usuario entity, bool nuevoEstado)
+        {
+            await _usuarioRepository.UpdateEstado(entity, nuevoEstado);
+            return Ok(entity);
         }
 
         [HttpDelete("{id}")]

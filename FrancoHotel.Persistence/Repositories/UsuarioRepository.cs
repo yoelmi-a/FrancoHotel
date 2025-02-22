@@ -101,7 +101,7 @@ namespace FrancoHotel.Persistence.Repositories
                                  .FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<OperationResult> UpdateClave(int idUsuario, string nuevaClave)
+        public async Task<OperationResult> UpdateClave(Usuario entity, string nuevaClave)
         {
             OperationResult result = new OperationResult();
             try
@@ -122,21 +122,12 @@ namespace FrancoHotel.Persistence.Repositories
                     return result;
                 }
 
-                var usuario = await _context.Usuario.FindAsync(idUsuario);
-                if (usuario == null)
-                {
-                    result.Success = false;
-                    result.Message = "Usuario no encontrado.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                _context.Usuario.Update(usuario);
+                _context.Usuario.Update(entity);
                 await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Message = "Clave actualizada correctamente.";
-                _logger.LogInformation("Clave actualizada para el usuario con ID: {IdUsuario}", idUsuario);
+                _logger.LogInformation("Clave actualizada para el usuario con ID: {IdUsuario}", entity);
             }
             catch (Exception ex)
             {
@@ -148,65 +139,36 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public async Task<OperationResult> UpdateEstado(int idUsuario, bool nuevoEstado)
+        public async Task<OperationResult> UpdateEstado(Usuario entity, bool nuevoEstado)
         {
             OperationResult result = new OperationResult();
             try
             {
-                var usuario = await _context.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Id == idUsuario);
-                if (usuario == null)
+                if (entity == null)
+                {
+                    throw new ArgumentNullException(nameof(entity), "El usuario no puede ser nulo.");
+                }
+
+                if (entity.EstadoYFecha.Estado == nuevoEstado)
                 {
                     result.Success = false;
-                    result.Message = "Usuario no encontrado.";
+                    result.Message = "El nuevo estado es el mismo que el actual.";
                     _logger.LogWarning(result.Message);
                     return result;
                 }
 
-                usuario.EstadoYFecha.Estado = nuevoEstado;
-
-                _context.Usuario.Update(usuario);
+                entity.EstadoYFecha.Estado = nuevoEstado;
+                _context.Usuario.Update(entity);
                 await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Message = "Estado actualizado correctamente.";
-                _logger.LogInformation("Estado del usuario con ID: {IdUsuario} actualizado.", idUsuario);
+                _logger.LogInformation("Estado actualizado para el cliente con ID: {IdCliente}", entity.Id);
             }
             catch (Exception ex)
             {
                 result.Success = false;
                 result.Message = "Ocurrió un error actualizando el estado del usuario.";
-                _logger.LogError(ex, result.Message);
-            }
-
-            return result;
-        }
-
-        public async Task<OperationResult> GetUsuariosByEstadoYFechaCreacion(bool estado, DateTime fechaCreacion)
-        {
-            OperationResult result = new OperationResult();
-            try
-            {
-                var query = await (from usuario in _context.Usuario
-                                   where usuario.EstadoYFecha.Estado.GetValueOrDefault() == estado &&
-                                         usuario.EstadoYFecha.FechaCreacion.GetValueOrDefault() >= fechaCreacion
-                                   select new UsuarioModel()
-                                   {
-                                       IdUsuario = usuario.Id,
-                                       NombreCompleto = usuario.NombreCompleto ?? string.Empty,
-                                       Clave = usuario.Clave ?? string.Empty,
-                                       IdRolUsuario = usuario.IdRolUsuario ?? 0,
-                                       Estado = usuario.EstadoYFecha.Estado.GetValueOrDefault(),
-                                       FechaCreacion = usuario.EstadoYFecha.FechaCreacion.GetValueOrDefault()
-                                   }).ToListAsync();
-
-                result.Data = query;
-                result.Success = true;
-            }
-            catch (Exception ex)
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorUsuarioRepository:GetUsuariosByEstadoYFechaCreacion"]
-                    ?? "Ocurrió un error al obtener los usuarios.";
                 _logger.LogError(ex, result.Message);
             }
 

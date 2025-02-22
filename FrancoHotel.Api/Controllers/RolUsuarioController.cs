@@ -33,6 +33,13 @@ namespace FrancoHotel.Api.Controllers
             return Ok(rolUsuario);
         }
 
+        [HttpGet("GetRolUsuarioByDescripcion")]
+        public async Task<IActionResult> Get(string descripcion)
+        {
+            var rolUsuario = await _rolUsuarioRepository.GetRolUsuarioByDescripcion(descripcion);
+            return Ok(rolUsuario);
+        }
+
         [HttpPost("SaveRolUsuario")]
         public async Task<IActionResult> Post([FromBody] RolUsuario rolUsuario)
         {
@@ -45,6 +52,20 @@ namespace FrancoHotel.Api.Controllers
         {
             await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
             return Ok(rolUsuario);
+        }
+
+        [HttpPost("UpdateDescripcion")]
+        public async Task<IActionResult> PutDescripcion([FromBody] RolUsuario rolUsuario, string nuevaDescripcion)
+        {
+            await _rolUsuarioRepository.UpdateDescripcion(rolUsuario, nuevaDescripcion);
+            return Ok(rolUsuario);
+        }
+
+        [HttpPost("UpdateEstado")]
+        public async Task<IActionResult> PutEstado([FromBody] RolUsuario RolUsuario, bool nuevoEstado)
+        {
+            await _rolUsuarioRepository.UpdateEstado(RolUsuario, nuevoEstado);
+            return Ok(RolUsuario);
         }
 
         [HttpDelete("{id}")]

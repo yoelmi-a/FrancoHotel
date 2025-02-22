@@ -32,6 +32,20 @@ namespace FrancoHotel.Api.Controllers
             return Ok(cliente);
         }
 
+        [HttpGet("GetClienteByDocumento")]
+        public async Task<IActionResult> Get(string documento)
+        {
+            var cliente = await _clienteRepository.GetClienteByDocumento(documento);
+            return Ok(cliente);
+        }
+
+        [HttpGet("GetClientesByEstado")]
+        public async Task<IActionResult> Get(bool estado)
+        {
+            var cliente = await _clienteRepository.GetClientesByEstado(estado);
+            return Ok(cliente);
+        }
+
         [HttpPost("SaveCliente")]
         public async Task<IActionResult> Post([FromBody] Cliente cliente)
         {
@@ -43,6 +57,20 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> Put([FromBody] Cliente cliente)
         {
             await _clienteRepository.UpdateEntityAsync(cliente);
+            return Ok(cliente);
+        }
+
+        [HttpPut("UpdateTipoDocumento")]
+        public async Task<IActionResult> PutDocumento([FromBody] Cliente cliente)
+        {
+            await _clienteRepository.UpdateTipoDocumento(cliente);
+            return Ok(cliente);
+        }
+
+        [HttpPut("UpdateEstado")]
+        public async Task<IActionResult> PutEstado([FromBody] Cliente cliente , bool nuevoEstado)
+        {
+            await _clienteRepository.UpdateEstado(cliente , nuevoEstado);
             return Ok(cliente);
         }
 

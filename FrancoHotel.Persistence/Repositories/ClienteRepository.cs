@@ -253,6 +253,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
             }
 
             entity.EstadoYFecha.Estado = nuevoEstado;
+            _context.Cliente.Update(entity);
             await _context.SaveChangesAsync();
 
             result.Success = true;
