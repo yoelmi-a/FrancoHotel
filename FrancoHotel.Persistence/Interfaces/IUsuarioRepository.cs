@@ -10,7 +10,7 @@ namespace FrancoHotel.Persistence.Interfaces
         Task<Usuario> GetUsuarioByIdRolUsuario(int idRolUsuario);
         Task<List<Usuario>> GetUsuariosByEstado(bool estado);
 
-        Task<OperationResult> UpdateClave(int idUsuario, string nuevaClave);
-        Task<OperationResult> UpdateEstado(int idUsuario, bool nuevoEstado);
+        Task<OperationResult> UpdateClave(Usuario idUsuario, string nuevaClave);
+        Task<OperationResult> UpdateEstado(Usuario idUsuario, bool nuevoEstado);
     }
 }
