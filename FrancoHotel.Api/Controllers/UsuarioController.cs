@@ -33,14 +33,14 @@ namespace FrancoHotel.Api.Controllers
             return Ok(usuario);
         }
 
-        [HttpPost("SaveCliente")]
+        [HttpPost("SaveUsuario")]
         public async Task<IActionResult> Post([FromBody] Usuario usuario)
         {
             await _usuarioRepository.SaveEntityAsync(usuario);
             return Ok(usuario);
         }
 
-        [HttpPost("UpdateCliente")]
+        [HttpPost("UpdateUsuario")]
         public async Task<IActionResult> Put([FromBody] Usuario usuario)
         {
             await _usuarioRepository.UpdateEntityAsync(usuario);

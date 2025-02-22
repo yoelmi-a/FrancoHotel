@@ -40,7 +40,7 @@ namespace FrancoHotel.Api.Controllers
             return Ok(rolUsuario);
         }
 
-        [HttpPost("UpdateCliente")]
+        [HttpPost("UpdateRolUsuario")]
         public async Task<IActionResult> Put([FromBody] RolUsuario rolUsuario)
         {
             await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
