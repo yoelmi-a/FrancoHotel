@@ -16,7 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FrancoHotel.Persistence.Repositories
 {
-    internal class ServiciosRepository : BaseRepository<Servicios, short>, IServiciosRepository
+    public class ServiciosRepository : BaseRepository<Servicios, short>, IServiciosRepository
     {
         private readonly HotelContext _context;
         private readonly ILogger<PisoRepository> _logger;
