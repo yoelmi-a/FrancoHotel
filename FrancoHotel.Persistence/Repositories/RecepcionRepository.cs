@@ -1,4 +1,6 @@
-﻿using FrancoHotel.Domain.Base;
+﻿using System.Linq;
+using System.Linq.Expressions;
+using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Base;
 using FrancoHotel.Persistence.Context;
@@ -24,15 +26,20 @@ namespace FrancoHotel.Persistence.Repositories
             this._configuration = configuration;
 
         }
-        public async Task<OperationResult> SaveEntityAsync(Recepcion recepcion)
+        public override async Task<OperationResult> SaveEntityAsync(Recepcion entity)
         {
             OperationResult result = new OperationResult();
             try
             {
-                await _context.Recepciones.AddAsync(recepcion);
+                if (entity.Id <= 0 || entity.IdCliente <= 0 || entity.IdHabitacion <= 0)
+                {
+                    throw new ArgumentException("Los valores de ID deben ser mayores a 0.");
+                }
+
+                await _context.Recepciones.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
-                result.Data = recepcion;
+                result.Data = entity;
             }
             catch (Exception ex)
             {
@@ -42,12 +49,12 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return result;
         }
-        public async Task<OperationResult> UpdateRecepcion(int id, Recepcion updatedRecepcion)
+        public override async Task<OperationResult> UpdateEntityAsync(Recepcion updatedRecepcion)
         {
             OperationResult result = new OperationResult();
             try
             {
-                var recepcion = await _context.Recepciones.FindAsync(id);
+                var recepcion = await _context.Recepciones.FindAsync(updatedRecepcion.Id);
                 if (recepcion == null)
                 {
                     result.Message = "Recepción no encontrada";
@@ -55,7 +62,6 @@ namespace FrancoHotel.Persistence.Repositories
                     return result;
                 }
 
-                // Actualizar los campos necesarios
                 recepcion.IdCliente = updatedRecepcion.IdCliente;
                 recepcion.IdHabitacion = updatedRecepcion.IdHabitacion;
                 recepcion.FechaEntrada = updatedRecepcion.FechaEntrada;
@@ -68,10 +74,10 @@ namespace FrancoHotel.Persistence.Repositories
                 recepcion.CostoPenalidad = updatedRecepcion.CostoPenalidad;
                 recepcion.Obsevacion = updatedRecepcion.Obsevacion;
                 recepcion.Estado = updatedRecepcion.Estado;
-                // Agregar otros campos si es necesario
 
                 await _context.SaveChangesAsync();
                 result.Data = recepcion;
+                result.Success = true;
             }
             catch (Exception ex)
             {
@@ -81,6 +87,35 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return result;
         }
+        public override async Task<OperationResult> GetAllAsync(Expression<Func<Recepcion, bool>> filter)
+        {
+            OperationResult result = new OperationResult();
+            result.Data = await _context.Recepciones.Where(filter)
+                                                           .AsNoTracking()
+                                                           .ToListAsync()
+                                                           .ConfigureAwait(false);
+            return result;
+        }
+        public override async Task<List<Recepcion>> GetAllAsync()
+        {
+            OperationResult result = new OperationResult();
+            result.Data = await _context.Recepciones.AsNoTracking()
+                                                           .ToListAsync()
+                                                           .ConfigureAwait(false);
+            return result.Data;
+        }
+        public override async Task<bool> Exists(Expression<Func<Recepcion, bool>> filter)
+        {
+            return await _context.Recepciones.AnyAsync(filter).ConfigureAwait(false);
+        }
+        public override async Task<Recepcion> GetEntityByIdAsync(int id)
+        {
+            if (id <= 0)
+            {
+                return null;
+            }
 
+            return await _context.Recepciones.FindAsync(id).ConfigureAwait(false);
+        }
     }
 }
