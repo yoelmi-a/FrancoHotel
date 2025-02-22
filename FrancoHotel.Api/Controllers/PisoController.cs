@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using System.Linq.Expressions;
+using FrancoHotel.Domain.Entities;
+using FrancoHotel.Persistence.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -8,35 +9,65 @@ namespace FrancoHotel.Api.Controllers
     [ApiController]
     public class PisoController : ControllerBase
     {
-        // GET: api/<PisoController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IPisoRepository _pisoRepository;
+
+        public PisoController(IPisoRepository pisoRepository,
+                              ILogger<PisoController> logger)
         {
-            return new string[] { "value1", "value2" };
+            _pisoRepository = pisoRepository;
         }
 
-        // GET api/<PisoController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("GetPisos")]
+        public async Task<IActionResult> GetAll()
         {
-            return "value";
+            var pisos = await _pisoRepository.GetAllAsync();
+            return Ok(pisos);
         }
 
-        // POST api/<PisoController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("GetPisosByFilter")]
+        public async Task<IActionResult> GetAllbyFilter(Expression<Func<Piso, bool>> filter)
         {
+            var pisos = await _pisoRepository.GetAllAsync(filter);
+            return Ok(pisos);
         }
 
-        // PUT api/<PisoController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpGet("GetPisoByEstado")]
+        public async Task<IActionResult> GetByEstado(bool? estado)
         {
+            var pisos = await _pisoRepository.GetPisoByEstado(estado);
+            return Ok(pisos);
         }
 
-        // DELETE api/<PisoController>/5
+        [HttpGet("GetPisoById")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var piso = await _pisoRepository.GetEntityByIdAsync(id);
+            return Ok(piso);
+        }
+
+        [HttpGet("ExistPiso")]
+        public async Task<IActionResult> GetExistPiso(Expression<Func<Piso, bool>> filter)
+        {
+            var piso = await _pisoRepository.Exists(filter);
+            return Ok(piso);
+        }
+
+        [HttpPost("SavePiso")]
+        public async Task<IActionResult> Post([FromBody] Piso piso)
+        {
+            await _pisoRepository.SaveEntityAsync(piso);
+            return Ok(piso);
+        }
+
+        [HttpPut("UpdatePiso")]
+        public async Task<IActionResult> Put([FromBody] Piso piso)
+        {
+            await _pisoRepository.UpdateEntityAsync(piso);
+            return Ok(piso);
+        }
+
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async void Delete(int id)
         {
         }
     }

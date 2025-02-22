@@ -28,13 +28,13 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<bool> Exists(Expression<Func<Habitacion, bool>> filter)
         {
-            return await _context.Habitaciones.AnyAsync(filter).ConfigureAwait(false);
+            return await _context.Habitacion.AnyAsync(filter).ConfigureAwait(false);
         }
 
         public override async Task<List<Habitacion>> GetAllAsync()
         {
             OperationResult result = new OperationResult();
-            result.Data = await _context.Habitaciones.AsNoTracking()
+            result.Data = await _context.Habitacion.AsNoTracking()
                                                            .ToListAsync()
                                                            .ConfigureAwait(false);
             return result.Data;
@@ -43,7 +43,7 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> GetAllAsync(Expression<Func<Habitacion, bool>> filter)
         {
             OperationResult result = new OperationResult();
-            result.Data = await _context.Habitaciones.Where(filter)
+            result.Data = await _context.Habitacion.Where(filter)
                                                            .AsNoTracking()
                                                            .ToListAsync()
                                                            .ConfigureAwait(false);
@@ -57,7 +57,7 @@ namespace FrancoHotel.Persistence.Repositories
                 return null;
             }
 
-            return await _context.Habitaciones.FindAsync(id).ConfigureAwait(false);
+            return await _context.Habitacion.FindAsync(id).ConfigureAwait(false);
         }
 
         public override async Task<OperationResult> SaveEntityAsync(Habitacion entity)
@@ -86,7 +86,7 @@ namespace FrancoHotel.Persistence.Repositories
 
                 
 
-                _context.Habitaciones.Add(entity);
+                _context.Habitacion.Add(entity);
                 await _context.SaveChangesAsync();
 
             }
@@ -121,7 +121,7 @@ namespace FrancoHotel.Persistence.Repositories
 
 
 
-                _context.Habitaciones.Add(entity);
+                _context.Habitacion.Add(entity);
                 await _context.SaveChangesAsync();
 
             }
