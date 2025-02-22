@@ -1,4 +1,5 @@
-﻿using FrancoHotel.Domain.Entities;
+﻿using System.Linq.Expressions;
+using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,16 +18,37 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpGet("GetPisos")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             var pisos = await _pisoRepository.GetAllAsync();
             return Ok(pisos);
         }
 
+        [HttpGet("GetPisosByFilter")]
+        public async Task<IActionResult> GetAllbyFilter(Expression<Func<Piso, bool>> filter)
+        {
+            var pisos = await _pisoRepository.GetAllAsync(filter);
+            return Ok(pisos);
+        }
+
+        [HttpGet("GetPisoByEstado")]
+        public async Task<IActionResult> GetByEstado(bool? estado)
+        {
+            var pisos = await _pisoRepository.GetPisoByEstado(estado);
+            return Ok(pisos);
+        }
+
         [HttpGet("GetPisoById")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             var piso = await _pisoRepository.GetEntityByIdAsync(id);
+            return Ok(piso);
+        }
+
+        [HttpGet("ExistPiso")]
+        public async Task<IActionResult> GetExistPiso(Expression<Func<Piso, bool>> filter)
+        {
+            var piso = await _pisoRepository.Exists(filter);
             return Ok(piso);
         }
 
@@ -37,7 +59,7 @@ namespace FrancoHotel.Api.Controllers
             return Ok(piso);
         }
 
-        [HttpPost("UpdatePiso")]
+        [HttpPut("UpdatePiso")]
         public async Task<IActionResult> Put([FromBody] Piso piso)
         {
             await _pisoRepository.UpdateEntityAsync(piso);
@@ -45,7 +67,7 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async void Delete(int id)
         {
         }
     }
