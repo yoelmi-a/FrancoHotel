@@ -16,6 +16,8 @@ namespace FrancoHotel.Persistence.Repositories
         private readonly HotelContext _context;
         private readonly ILogger<UsuarioRepository> _logger;
         private readonly IConfiguration _configuration;
+        private static bool nuevoEstado;
+        private static string? nuevaClave;
 
         public UsuarioRepository(HotelContext context,
                                  ILogger<UsuarioRepository> logger,
@@ -26,24 +28,26 @@ namespace FrancoHotel.Persistence.Repositories
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public async Task<Usuario> GetUsuarioByClave(string clave)
+        public async Task<List<Usuario>> GetUsuarioByClave(string clave)
         {
-            if (string.IsNullOrWhiteSpace(clave))
+            if (string.IsNullOrWhiteSpace(clave) || clave.Contains(" "))
             {
-                _logger.LogWarning("La clave proporcionada es nula o vacía.");
-                return null;
+                _logger.LogWarning("El documento proporcionado es inválido.");
+                return new List<Usuario>();
             }
 
             return await _context.Usuario
                                  .AsNoTracking()
-                                 .FirstOrDefaultAsync(u => u.Clave == clave);
+                                 .Where(c => c.Clave != null && c.Clave == clave)
+                                 .ToListAsync()
+                                 .ConfigureAwait(false);
         }
 
         public async Task<Usuario> GetUsuarioByIdRolUsuario(int idRolUsuario)
         {
-            if (idRolUsuario <= 0)
+            if (idRolUsuario == null || idRolUsuario <= 0)
             {
-                _logger.LogWarning("El ID del rol de usuario debe ser mayor que cero.");
+                _logger.LogWarning("El ID proporcionado no es válido: {Id}", idRolUsuario);
                 return null;
             }
 
@@ -90,9 +94,9 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<Usuario> GetEntityByIdAsync(int id)
         {
-            if (id <= 0)
+            if (id == null || id <= 0)
             {
-                _logger.LogWarning("El ID del usuario debe ser mayor que cero.");
+                _logger.LogWarning("El ID proporcionado no es válido: {Id}", id);
                 return null;
             }
 
@@ -106,34 +110,21 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (string.IsNullOrWhiteSpace(nuevaClave))
+                ValidationOfUsuario(entity, result);
+                if (!result.Success)
                 {
-                    result.Success = false;
-                    result.Message = "La nueva clave no puede estar vacía o ser nula.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                if (nuevaClave.Length < 8 || nuevaClave.Length > 50)
-                {
-                    result.Success = false;
-                    result.Message = "La clave debe tener entre 8 y 50 caracteres.";
-                    _logger.LogWarning(result.Message);
+                    result.Message = this._configuration["ErrorUsuarioRepository:InvalidData"];
                     return result;
                 }
 
                 _context.Usuario.Update(entity);
                 await _context.SaveChangesAsync();
-
-                result.Success = true;
-                result.Message = "Clave actualizada correctamente.";
-                _logger.LogInformation("Clave actualizada para el usuario con ID: {IdUsuario}", entity);
             }
             catch (Exception ex)
             {
+                result.Message = this._configuration["ErrorUsuarioRepository:UpdateClave"];
                 result.Success = false;
-                result.Message = "Ocurrió un error actualizando la clave del usuario.";
-                _logger.LogError(ex, result.Message);
+                this._logger.LogError(result.Message, ex.ToString());
             }
 
             return result;
@@ -144,32 +135,22 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity == null)
+                ValidationOfUsuario(entity, result);
+                if (!result.Success)
                 {
-                    throw new ArgumentNullException(nameof(entity), "El usuario no puede ser nulo.");
-                }
-
-                if (entity.EstadoYFecha.Estado == nuevoEstado)
-                {
-                    result.Success = false;
-                    result.Message = "El nuevo estado es el mismo que el actual.";
-                    _logger.LogWarning(result.Message);
+                    result.Message = this._configuration["ErrorUsuarioRepository:InvalidData"];
                     return result;
                 }
 
                 entity.EstadoYFecha.Estado = nuevoEstado;
                 _context.Usuario.Update(entity);
                 await _context.SaveChangesAsync();
-
-                result.Success = true;
-                result.Message = "Estado actualizado correctamente.";
-                _logger.LogInformation("Estado actualizado para el cliente con ID: {IdCliente}", entity.Id);
             }
             catch (Exception ex)
             {
+                result.Message = this._configuration["ErrorUsuarioRepository:UpdateEstado"];
                 result.Success = false;
-                result.Message = "Ocurrió un error actualizando el estado del usuario.";
-                _logger.LogError(ex, result.Message);
+                this._logger.LogError(result.Message, ex.ToString());
             }
 
             return result;
@@ -180,47 +161,21 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity == null)
+                ValidationOfUsuario(entity, result);
+                if (!result.Success)
                 {
-                    throw new ArgumentNullException(nameof(entity), "El usuario no puede ser nulo.");
-                }
-
-                if (string.IsNullOrWhiteSpace(entity.Correo) || entity.Correo.Length > 50)
-                {
-                    result.Success = false;
-                    result.Message = "El campo Correo no puede exceder los 50 caracteres.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                if (string.IsNullOrWhiteSpace(entity.Clave) || entity.Clave.Length > 50)
-                {
-                    result.Success = false;
-                    result.Message = "El campo Clave no puede exceder los 50 caracteres.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                if (entity.EstadoYFecha.Estado == null)
-                {
-                    result.Success = false;
-                    result.Message = "El campo Estado no puede ser nulo.";
-                    _logger.LogWarning(result.Message);
+                    result.Message = this._configuration["ErrorUsuarioRepository:InvalidData"];
                     return result;
                 }
 
                 _context.Usuario.Add(entity);
                 await _context.SaveChangesAsync();
-
-                result.Success = true;
-                result.Message = "Usuario guardado correctamente.";
-                _logger.LogInformation("Usuario guardado con ID: {IdUsuario}", entity.Id);
             }
             catch (Exception ex)
             {
+                result.Message = this._configuration["ErrorUsuarioRepository:SaveEntityAsync"];
                 result.Success = false;
-                result.Message = "Ocurrió un error al guardar el usuario.";
-                _logger.LogError(ex, result.Message);
+                this._logger.LogError(result.Message, ex.ToString());
             }
 
             return result;
@@ -232,47 +187,61 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity == null)
+                ValidationOfUsuario(entity, result);
+                if (!result.Success)
                 {
-                    throw new ArgumentNullException(nameof(entity), "El usuario no puede ser nulo.");
-                }
-
-                if (string.IsNullOrWhiteSpace(entity.Correo) || entity.Correo.Length > 50)
-                {
-                    result.Success = false;
-                    result.Message = "El campo Correo no puede exceder los 50 caracteres.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                if (string.IsNullOrWhiteSpace(entity.Clave) || entity.Clave.Length > 50)
-                {
-                    result.Success = false;
-                    result.Message = "El campo Clave no puede exceder los 50 caracteres.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                if (entity.EstadoYFecha.Estado == null)
-                {
-                    result.Success = false;
-                    result.Message = "El campo Estado no puede ser nulo.";
-                    _logger.LogWarning(result.Message);
+                    result.Message = this._configuration["ErrorUsuarioRepository:InvalidData"];
                     return result;
                 }
 
                 _context.Usuario.Update(entity);
                 await _context.SaveChangesAsync();
-
-                result.Success = true;
-                result.Message = "Usuario actualizado correctamente.";
-                _logger.LogInformation("Usuario actualizado con ID: {IdUsuario}", entity.Id);
             }
             catch (Exception ex)
             {
+                result.Message = this._configuration["ErrorUsuarioRepository:UpdateEntityAsync"];
                 result.Success = false;
-                result.Message = "Ocurrió un error al actualizar el usuario.";
-                _logger.LogError(ex, result.Message);
+                this._logger.LogError(result.Message, ex.ToString());
+            }
+
+            return result;
+        }
+        private static OperationResult ValidationOfUsuario(Usuario entity, OperationResult result)
+        {
+            if (entity == null)
+            {
+                result.Success = false;
+                return result;
+            }
+            if (string.IsNullOrWhiteSpace(entity.Correo) || entity.Correo.Length > 50)
+            {
+                result.Success = false;
+                return result;
+            }
+            if (string.IsNullOrWhiteSpace(entity.Clave) || entity.Clave.Length > 50)
+            {
+                result.Success = false;
+                return result;
+            }
+            if (entity.EstadoYFecha.Estado == null)
+            {
+                result.Success = false;
+                return result;
+            }
+            if (entity.EstadoYFecha.Estado == nuevoEstado)
+            {
+                result.Success = false;
+                return result;
+            }
+            if (string.IsNullOrWhiteSpace(nuevaClave))
+            {
+                result.Success = false;
+                return result;
+            }
+            if (nuevaClave.Length < 8 || nuevaClave.Length > 50)
+            {
+                result.Success = false;
+                return result;
             }
 
             return result;
