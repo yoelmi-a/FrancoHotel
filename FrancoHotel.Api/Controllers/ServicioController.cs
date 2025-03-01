@@ -25,24 +25,10 @@ namespace FrancoHotel.Api.Controllers
             return Ok(servicios);
         }
 
-        [HttpGet("GetServiciosByFilter")]
-        public async Task<IActionResult> GetAllbyFilter(Expression<Func<Servicios, bool>> filter)
-        {
-            var servicios = await _serviciosRepository.GetAllAsync(filter);
-            return Ok(servicios);
-        }
-
         [HttpGet("GetServicioById")]
         public async Task<IActionResult> GetById(short id)
         {
             var servicio = await _serviciosRepository.GetEntityByIdAsync(id);
-            return Ok(servicio);
-        }
-
-        [HttpGet("ExistServicio")]
-        public async Task<IActionResult> GetExistPiso(Expression<Func<Servicios, bool>> filter)
-        {
-            var servicio = await _serviciosRepository.Exists(filter);
             return Ok(servicio);
         }
 
@@ -58,11 +44,6 @@ namespace FrancoHotel.Api.Controllers
         {
             await _serviciosRepository.UpdateEntityAsync(servicio);
             return Ok(servicio);
-        }
-
-        [HttpDelete("{id}")]
-        public async void Delete(int id)
-        {
         }
     }
 }

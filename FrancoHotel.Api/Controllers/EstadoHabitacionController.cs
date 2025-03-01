@@ -25,24 +25,10 @@ namespace FrancoHotel.Api.Controllers
             return Ok(estadoHabitacion);
         }
 
-        [HttpGet("GetEstadoHabitacionByFilter")]
-        public async Task<IActionResult> GetAllbyFilter(Expression<Func<EstadoHabitacion, bool>> filter)
-        {
-            var estadoHabitacion = await _estadoHabitacionRepository.GetAllAsync(filter);
-            return Ok(estadoHabitacion);
-        }
-
         [HttpGet("GetEstadoHabitacionById")]
         public async Task<IActionResult> GetById(short id)
         {
             var estadoHabitacion = await _estadoHabitacionRepository.GetEntityByIdAsync(id);
-            return Ok(estadoHabitacion);
-        }
-
-        [HttpGet("ExistEstadoHabitacion")]
-        public async Task<IActionResult> GetExistPiso(Expression<Func<EstadoHabitacion, bool>> filter)
-        {
-            var estadoHabitacion = await _estadoHabitacionRepository.Exists(filter);
             return Ok(estadoHabitacion);
         }
 
@@ -58,11 +44,6 @@ namespace FrancoHotel.Api.Controllers
         {
             await _estadoHabitacionRepository.UpdateEntityAsync(estadoHabitacion);
             return Ok(estadoHabitacion);
-        }
-
-        [HttpDelete("{id}")]
-        public async void Delete(int id)
-        {
         }
     }
 }

@@ -3,6 +3,7 @@ using FrancoHotel.Persistence.Interfaces;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -26,9 +27,12 @@ namespace FrancoHotel.Api.Controllers
             return Ok(habitacion);
         }
 
-        [HttpGet("GetHabitacionByFilter")]
-        public async Task<IActionResult> GetAllbyFilter(Expression<Func<Habitacion, bool>> filter)
+        [HttpGet("GetHabitacionByEstadoAndPrecioMax")]
+        public async Task<IActionResult> GetAllbyFilter([FromQuery]bool estado, [FromQuery]decimal precioMax)
         {
+            Expression<Func<Habitacion, bool>> filter = h =>
+                h.EstadoYFecha.Estado == estado &&
+                h.Precio <= precioMax;
             var estadoHabitacion = await _habitacionRepository.GetAllAsync(filter);
             return Ok(estadoHabitacion);
         }
@@ -40,9 +44,12 @@ namespace FrancoHotel.Api.Controllers
             return Ok(estadoHabitacion);
         }
 
-        [HttpGet("ExistHabitacion")]
-        public async Task<IActionResult> GetExistPiso(Expression<Func<Habitacion, bool>> filter)
+        [HttpGet("ExistHabitacionByEstadoAndPrecioMax")]
+        public async Task<IActionResult> GetExistPiso([FromQuery]bool estado, [FromQuery]decimal precioMax)
         {
+            Expression<Func<Habitacion, bool>> filter = h =>
+                h.EstadoYFecha.Estado == estado &&
+                h.Precio <= precioMax;
             var estadoHabitacion = await _habitacionRepository.Exists(filter);
             return Ok(estadoHabitacion);
         }
@@ -61,9 +68,9 @@ namespace FrancoHotel.Api.Controllers
             return Ok(habitacion);
         }
 
-        [HttpDelete("{id}")]
+  /*      [HttpDelete("{id}")]
         public async void Delete(int id)
         {
-        }
+        }*/
     }
 }
