@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FrancoHotel.Infraesctructure\FrancoHotel.Infraesctructure.csproj" />
-    <ProjectReference Include="..\FrancoHotel.Persistence\FrancoHotel.Persistence.csproj" />
+    <ProjectReference Include="..\FrancoHotel.IOC\FrancoHotel.IOC.csproj" />
   </ItemGroup>
 
 </Project>

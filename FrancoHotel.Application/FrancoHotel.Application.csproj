@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FrancoHotel.Persistence\FrancoHotel.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

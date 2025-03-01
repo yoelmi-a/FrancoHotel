@@ -2,20 +2,14 @@ using FrancoHotel.Persistence.Context;
 using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using FrancoHotel.IOC.Dependencies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<HotelContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DBHotel")));
 
-builder.Services.AddScoped<IPisoRepository, PisoRepository>();
-builder.Services.AddScoped<IServiciosRepository, ServiciosRepository>();
-builder.Services.AddScoped<IEstadoHabitacionRepository, EstadoHabitacionRepository>();
-builder.Services.AddScoped<IHabitacionRepository, HabitacionRepository>();
-
-builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IRolUsuarioRepository, RolUsuarioRepository>();
+builder.Services.AddPisoDependency();
 
 builder.Services.AddControllers();
 
