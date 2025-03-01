@@ -15,7 +15,7 @@ namespace FrancoHotel.Persistence.Context
         public DbSet<EstadoHabitacion> EstadoHabitacion { get; set; }
         public DbSet<Habitacion> Habitacion { get; set; }
         public DbSet<Piso> Piso { get; set; }
-        public DbSet<Recepcion> Recepciones { get; set; }
+        public DbSet<Recepcion> Recepcion { get; set; }
         public DbSet<RolUsuario> RolUsuarios { get; set; }
         public DbSet<Servicios> Servicios { get; set; }
         public DbSet<Tarifas> Tarifas { get; set; }

@@ -121,7 +121,7 @@ namespace FrancoHotel.Persistence.Repositories
 
 
 
-                _context.Habitacion.Add(entity);
+                _context.Habitacion.Update(entity);
                 await _context.SaveChangesAsync();
 
             }

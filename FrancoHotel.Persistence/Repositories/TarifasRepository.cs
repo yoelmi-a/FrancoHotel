@@ -30,7 +30,7 @@ namespace FrancoHotel.Persistence.Repositories
             try
             {
                 var tarifas = await _context.Tarifas
-                    .Join(_context.Habitaciones,
+                    .Join(_context.Habitacion,
                         t => t.IdHabitacion,
                         h => h.Id,
                         (t, h) => new { t, h })
@@ -110,7 +110,7 @@ namespace FrancoHotel.Persistence.Repositories
 
                 // Obtener la tarifa correspondiente a la categoría
                 var tarifa = await _context.Tarifas
-                    .Where(t => t.IdHabitacion == categoria.Id && t.Estado == true)
+                    .Where(t => t.IdHabitacion == categoria.Id && t.Estado == "")
                     .FirstOrDefaultAsync();
 
                 if (tarifa == null)
@@ -147,12 +147,6 @@ namespace FrancoHotel.Persistence.Repositories
 
             return result;
         }
-
-
-
-
-
-
         public override async Task<bool> Exists(Expression<Func<Tarifas, bool>> filter)
         {
             return await _context.Tarifas.AnyAsync(filter).ConfigureAwait(false);
@@ -161,7 +155,7 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<List<Tarifas>> GetAllAsync()
         {
             OperationResult result = new OperationResult();
-            result.Data = await _context.Habitaciones.AsNoTracking()
+            result.Data = await _context.Tarifas.AsNoTracking()
                                                            .ToListAsync()
                                                            .ConfigureAwait(false);
             return result.Data;
@@ -191,23 +185,22 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity.PrecioPorNoche <= 0)
+                /*
+                if (entity.IdHabitacion >= 0)
                 {
-                    throw new ArgumentNullException("El precio de la habitacion debe ser mayor a 0");
                 }
-                else if (entity.IdHabitacion <= 0)
+                else if (entity.IdHabitacion >= 0)
                 {
-                    throw new ArgumentNullException("Los ids de piso y categoria deben ser mayores a 0");
                 }
+                */
                 _context.Tarifas.Add(entity);
                 await _context.SaveChangesAsync();
-
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 result.Message = this._configuration["ErrorTarifasRepository:SaveEntityAsync"];
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                this._logger.LogError(result.Message);
             }
             return result;
         }
@@ -217,26 +210,28 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity.PrecioPorNoche <= 0)
+                if (entity.Id >= 0)
                 {
-                    throw new ArgumentNullException("El precio de la habitacion debe ser mayor a 0");
+
                 }
-                else if (entity.IdHabitacion <= 0 )
+                if (entity.IdHabitacion >= 0)
                 {
-                    throw new ArgumentNullException("Los ids de piso y categoria deben ser mayores a 0");
+
+                }
+                if (entity.IdHabitacion >= 0)
+                {
+
                 }
 
-                _context.Tarifas.Add(entity);
+                _context.Tarifas.Update(entity);
                 await _context.SaveChangesAsync();
 
+                return result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                result.Message = this._configuration["ErrorTarifasRepository:UpdateEntityAsync"];
-                result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                throw;
             }
-            return result;
         }
     }
 }
