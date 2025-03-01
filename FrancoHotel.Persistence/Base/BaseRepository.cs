@@ -57,7 +57,7 @@ namespace FrancoHotel.Persistence.Base
                 Entity.Add(entity);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 result.Success = false;
@@ -74,7 +74,7 @@ namespace FrancoHotel.Persistence.Base
                 Entity.Update(entity);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 result.Success = false;

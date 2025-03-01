@@ -16,7 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FrancoHotel.Persistence.Repositories
 {
-    public class ServiciosRepository : BaseRepository<Servicios, short>, IServiciosRepository
+    public class ServiciosRepository : BaseRepository<Servicios, int>, IServiciosRepository
     {
         private readonly HotelContext _context;
         private readonly ILogger<PisoRepository> _logger;
@@ -48,7 +48,7 @@ namespace FrancoHotel.Persistence.Repositories
             return await _context.Servicios.AsNoTracking().ToListAsync();
         }
 
-        public override async Task<Servicios> GetEntityByIdAsync(short id)
+        public override async Task<Servicios> GetEntityByIdAsync(int id)
         {
             if (id <= 0)
             {

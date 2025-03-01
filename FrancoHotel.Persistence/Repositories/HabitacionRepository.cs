@@ -104,23 +104,12 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity.Precio <= 0)
+                ValidationOfHabitacion(entity, result);
+                if (!result.Success)
                 {
-                    throw new ArgumentNullException("El precio de la habitacion debe ser mayor a 0");
+                    result.Message = this._configuration["ErrorHabitacionRepository:InvalidData"];
+                    return result;
                 }
-                else if (entity.IdPiso <= 0 || entity.IdCategoria <= 0)
-                {
-                    throw new ArgumentNullException("Los ids de piso y categoria deben ser mayores a 0");
-                }
-                else if (string.IsNullOrWhiteSpace(entity.Numero)
-                   || string.IsNullOrWhiteSpace(entity.Detalle)
-                   || !entity.EstadoYFecha.Estado.HasValue)
-                {
-                    throw new ArgumentNullException("La habitacion debe tener estado, número y detalles");
-                }
-
-
-
                 _context.Habitacion.Update(entity);
                 await _context.SaveChangesAsync();
 
@@ -131,6 +120,29 @@ namespace FrancoHotel.Persistence.Repositories
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
+            return result;
+        }
+
+        private static OperationResult ValidationOfHabitacion(Habitacion entity, OperationResult result)
+        {
+            if (entity.Precio <= 0)
+            {
+                result.Success = false;
+                return result;
+            }
+            else if (entity.IdPiso <= 0 || entity.IdCategoria <= 0)
+            {
+                result.Success = false;
+                return result;
+            }
+            else if (string.IsNullOrWhiteSpace(entity.Numero)
+               || string.IsNullOrWhiteSpace(entity.Detalle)
+               || !entity.EstadoYFecha.Estado.HasValue)
+            {
+                result.Success = false;
+                return result;
+            }
+
             return result;
         }
     }

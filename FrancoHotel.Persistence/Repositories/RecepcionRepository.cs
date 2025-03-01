@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Linq.Expressions;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
@@ -51,6 +51,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             try
             {
+
 
                 _context.Recepcion.Update(entity);
                 await _context.SaveChangesAsync();
