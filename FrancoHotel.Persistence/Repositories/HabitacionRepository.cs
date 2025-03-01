@@ -28,13 +28,13 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<bool> Exists(Expression<Func<Habitacion, bool>> filter)
         {
-            return await _context.Habitaciones.AnyAsync(filter).ConfigureAwait(false);
+            return await _context.Habitacion.AnyAsync(filter).ConfigureAwait(false);
         }
 
         public override async Task<List<Habitacion>> GetAllAsync()
         {
             OperationResult result = new OperationResult();
-            result.Data = await _context.Habitaciones.AsNoTracking()
+            result.Data = await _context.Habitacion.AsNoTracking()
                                                            .ToListAsync()
                                                            .ConfigureAwait(false);
             return result.Data;
@@ -43,7 +43,7 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> GetAllAsync(Expression<Func<Habitacion, bool>> filter)
         {
             OperationResult result = new OperationResult();
-            result.Data = await _context.Habitaciones.Where(filter)
+            result.Data = await _context.Habitacion.Where(filter)
                                                            .AsNoTracking()
                                                            .ToListAsync()
                                                            .ConfigureAwait(false);
@@ -57,7 +57,7 @@ namespace FrancoHotel.Persistence.Repositories
                 return null;
             }
 
-            return await _context.Habitaciones.FindAsync(id).ConfigureAwait(false);
+            return await _context.Habitacion.FindAsync(id).ConfigureAwait(false);
         }
 
         public override async Task<OperationResult> SaveEntityAsync(Habitacion entity)
@@ -86,7 +86,7 @@ namespace FrancoHotel.Persistence.Repositories
 
                 
 
-                _context.Habitaciones.Add(entity);
+                _context.Habitacion.Add(entity);
                 await _context.SaveChangesAsync();
 
             }
@@ -104,24 +104,13 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity.Precio <= 0)
+                ValidationOfHabitacion(entity, result);
+                if (!result.Success)
                 {
-                    throw new ArgumentNullException("El precio de la habitacion debe ser mayor a 0");
+                    result.Message = this._configuration["ErrorHabitacionRepository:InvalidData"];
+                    return result;
                 }
-                else if (entity.IdPiso <= 0 || entity.IdCategoria <= 0)
-                {
-                    throw new ArgumentNullException("Los ids de piso y categoria deben ser mayores a 0");
-                }
-                else if (string.IsNullOrWhiteSpace(entity.Numero)
-                   || string.IsNullOrWhiteSpace(entity.Detalle)
-                   || !entity.EstadoYFecha.Estado.HasValue)
-                {
-                    throw new ArgumentNullException("La habitacion debe tener estado, número y detalles");
-                }
-
-
-
-                _context.Habitaciones.Add(entity);
+                _context.Habitacion.Update(entity);
                 await _context.SaveChangesAsync();
 
             }
@@ -131,6 +120,29 @@ namespace FrancoHotel.Persistence.Repositories
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
+            return result;
+        }
+
+        private static OperationResult ValidationOfHabitacion(Habitacion entity, OperationResult result)
+        {
+            if (entity.Precio <= 0)
+            {
+                result.Success = false;
+                return result;
+            }
+            else if (entity.IdPiso <= 0 || entity.IdCategoria <= 0)
+            {
+                result.Success = false;
+                return result;
+            }
+            else if (string.IsNullOrWhiteSpace(entity.Numero)
+               || string.IsNullOrWhiteSpace(entity.Detalle)
+               || !entity.EstadoYFecha.Estado.HasValue)
+            {
+                result.Success = false;
+                return result;
+            }
+
             return result;
         }
     }

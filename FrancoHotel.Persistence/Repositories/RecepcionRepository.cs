@@ -29,7 +29,7 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                await _context.Recepciones.AddAsync(recepcion);
+                await _context.Recepcion.AddAsync(recepcion);
                 await _context.SaveChangesAsync();
 
                 result.Data = recepcion;
@@ -47,7 +47,7 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                var recepcion = await _context.Recepciones.FindAsync(id);
+                var recepcion = await _context.Recepcion.FindAsync(id);
                 if (recepcion == null)
                 {
                     result.Message = "Recepción no encontrada";
