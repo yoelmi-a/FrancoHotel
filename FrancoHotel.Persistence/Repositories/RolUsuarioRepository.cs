@@ -15,6 +15,8 @@ namespace FrancoHotel.Persistence.Repositories
         private readonly HotelContext _context;
         private readonly ILogger<RolUsuarioRepository> _logger;
         private readonly IConfiguration _configuration;
+        private static bool nuevoEstado;
+        private static string? nuevaDescripcion;
 
         public RolUsuarioRepository(HotelContext context,
                                     ILogger<RolUsuarioRepository> logger,
@@ -25,16 +27,18 @@ namespace FrancoHotel.Persistence.Repositories
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public async Task<RolUsuario?> GetRolUsuarioByDescripcion(string descripcion)
+        public async Task<List<RolUsuario>> GetRolUsuarioByDescripcion(string descripcion)
         {
-            if (string.IsNullOrWhiteSpace(descripcion))
+            if (string.IsNullOrWhiteSpace(descripcion) || descripcion.Contains(" "))
             {
-                throw new ArgumentException("La descripción no puede estar vacía o ser nula.", nameof(descripcion));
+                _logger.LogWarning("El documento proporcionado es inválido.");
+                return new List<RolUsuario>();
             }
 
             return await _context.RolUsuario
                                  .AsNoTracking()
-                                 .FirstOrDefaultAsync(r => r.Descripcion == descripcion)
+                                 .Where(r => r.Descripcion != null && r.Descripcion == descripcion)
+                                 .ToListAsync()
                                  .ConfigureAwait(false);
         }
 
@@ -77,9 +81,10 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<RolUsuario?> GetEntityByIdAsync(int id)
         {
-            if (id <= 0)
+            if (id == null || id <= 0)
             {
-                throw new ArgumentException("El ID debe ser mayor que cero.", nameof(id));
+                _logger.LogWarning("El ID proporcionado no es válido: {Id}", id);
+                return null;
             }
 
             return await _context.RolUsuario
@@ -93,40 +98,22 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity == null)
+                ValidationOfRolUsuario(entity, result);
+                if (!result.Success)
                 {
-                    throw new ArgumentNullException(nameof(entity), "El rolUsuario no puede ser nulo.");
-                }
-
-                if (string.IsNullOrWhiteSpace(nuevaDescripcion))
-                {
-                    result.Success = false;
-                    result.Message = "La nueva descripción no puede estar vacía o ser nula.";
-                    _logger.LogWarning(result.Message);
-                    return result;
-                }
-
-                if (nuevaDescripcion.Length > 50)
-                {
-                    result.Success = false;
-                    result.Message = "La descripción no puede exceder los 50 caracteres.";
-                    _logger.LogWarning(result.Message);
+                    result.Message = this._configuration["ErrorRolUsuarioRepository:InvalidData"];
                     return result;
                 }
 
                 entity.Descripcion = nuevaDescripcion;
                 _context.RolUsuario.Update(entity);
                 await _context.SaveChangesAsync();
-
-                result.Success = true;
-                result.Message = "Descripción actualizada correctamente.";
-                _logger.LogInformation(result.Message);
             }
             catch (Exception ex)
             {
+                result.Message = this._configuration["ErrorRolUsuarioRepository:UpdateClave"];
                 result.Success = false;
-                result.Message = "Ocurrió un error actualizando la descripción del rol de usuario.";
-                _logger.LogError(ex, result.Message);
+                this._logger.LogError(result.Message, ex.ToString());
             }
 
             return result;
@@ -137,32 +124,22 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity == null)
+                ValidationOfRolUsuario(entity, result);
+                if (!result.Success)
                 {
-                    throw new ArgumentNullException(nameof(entity), "El rolUsuario no puede ser nulo.");
-                }
-
-                if (entity.EstadoYFecha.Estado == nuevoEstado)
-                {
-                    result.Success = false;
-                    result.Message = "El nuevo estado es el mismo que el actual.";
-                    _logger.LogWarning(result.Message);
+                    result.Message = this._configuration["ErrorRolUsuarioRepository:InvalidData"];
                     return result;
                 }
 
                 entity.EstadoYFecha.Estado = nuevoEstado;
                 _context.RolUsuario.Update(entity);
                 await _context.SaveChangesAsync();
-
-                result.Success = true;
-                result.Message = "Estado actualizado correctamente.";
-                _logger.LogInformation("Estado actualizado para el cliente con ID: {IdRolUsuario}", entity.Id);
             }
             catch (Exception ex)
             {
+                result.Message = this._configuration["ErrorRolUsuarioRepository:UpdateEstado"];
                 result.Success = false;
-                result.Message = "Ocurrió un error actualizando el estado del rol de usuario.";
-                _logger.LogError(ex, result.Message);
+                this._logger.LogError(result.Message, ex.ToString());
             }
 
             return result;
@@ -173,31 +150,21 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity == null)
+                ValidationOfRolUsuario(entity, result);
+                if (!result.Success)
                 {
-                    throw new ArgumentNullException(nameof(entity), "El rol de usuario no puede ser nulo.");
-                }
-
-                if (string.IsNullOrWhiteSpace(entity.Descripcion) || entity.Descripcion.Length > 50)
-                {
-                    result.Success = false;
-                    result.Message = "El campo Descripción no puede exceder los 50 caracteres.";
-                    _logger.LogWarning(result.Message);
+                    result.Message = this._configuration["ErrorRolUsuarioRepository:InvalidData"];
                     return result;
                 }
 
                 _context.RolUsuario.Add(entity);
                 await _context.SaveChangesAsync();
-
-                result.Success = true;
-                result.Message = "Rol de usuario guardado correctamente.";
-                _logger.LogInformation("Rol de usuario guardado con ID: {IdRolUsuario}", entity.Id);
             }
             catch (Exception ex)
             {
+                result.Message = this._configuration["ErrorUsuarioRepository:SaveEntityAsync"];
                 result.Success = false;
-                result.Message = "Ocurrió un error al guardar el rol de usuario.";
-                _logger.LogError(ex, result.Message);
+                this._logger.LogError(result.Message, ex.ToString());
             }
 
             return result;
@@ -208,16 +175,10 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity == null)
+                ValidationOfRolUsuario(entity, result);
+                if (!result.Success)
                 {
-                    throw new ArgumentNullException(nameof(entity), "El rol de usuario no puede ser nulo.");
-                }
-
-                if (string.IsNullOrWhiteSpace(entity.Descripcion) || entity.Descripcion.Length > 50)
-                {
-                    result.Success = false;
-                    result.Message = "La descripción no puede exceder los 50 caracteres.";
-                    _logger.LogWarning(result.Message);
+                    result.Message = this._configuration["ErrorRolUsuarioRepository:InvalidData"];
                     return result;
                 }
 
@@ -235,20 +196,43 @@ namespace FrancoHotel.Persistence.Repositories
 
                 _context.RolUsuario.Update(existingEntity);
                 await _context.SaveChangesAsync();
-
-                result.Success = true;
-                result.Message = "Rol de usuario actualizado correctamente.";
-                _logger.LogInformation("Rol de usuario actualizado con ID: {IdRolUsuario}", entity.Id);
             }
             catch (Exception ex)
             {
+                result.Message = this._configuration["ErrorRolUsuarioRepository:UpdateEntityAsync"];
                 result.Success = false;
-                result.Message = "Ocurrió un error al actualizar el rol de usuario.";
-                _logger.LogError(ex, result.Message);
+                this._logger.LogError(result.Message, ex.ToString());
             }
 
             return result;
         }
+        private static OperationResult ValidationOfRolUsuario(RolUsuario entity, OperationResult result)
+        {
+            if (entity == null)
+            {
+                result.Success = false;
+                return result;
+            }
+            if (string.IsNullOrWhiteSpace(entity.Descripcion) || entity.Descripcion.Length > 50)
+            {
+                result.Success = false;
+                return result;
+            }
+            if (entity.EstadoYFecha.Estado == nuevoEstado)
+            {
+                result.Success = false;
+                return result;
+            }
+            if (string.IsNullOrWhiteSpace(nuevaDescripcion))
+            {
+                result.Success = false;
+                return result;
+            }
+            if (nuevaDescripcion.Length > 50)
+            {
+                result.Success = false;
+                return result;
+            }
 
         public override async Task<OperationResult> RemoveEntityAsync(int id)
         {
@@ -266,6 +250,5 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return result;
         }
-
     }
 }

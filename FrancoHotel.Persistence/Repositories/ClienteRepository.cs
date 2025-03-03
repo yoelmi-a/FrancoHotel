@@ -13,6 +13,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
     private readonly HotelContext _context;
     private readonly ILogger<ClienteRepository> _logger;
     private readonly IConfiguration _configuration;
+    private static bool? nuevoEstado;
 
     public ClienteRepository(HotelContext context,
                              ILogger<ClienteRepository> logger,
@@ -22,19 +23,22 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
-
+    
     public async Task<Cliente?> GetClienteByDocumento(string documento)
     {
-        if (string.IsNullOrWhiteSpace(documento))
+        if (string.IsNullOrWhiteSpace(documento) || documento.Contains(" "))
         {
-            throw new ArgumentException("El documento no puede estar vacío o ser nulo.", nameof(documento));
+            _logger.LogWarning("El documento proporcionado es inválido.");
+            return new List<Cliente>();
         }
 
         return await _context.Cliente
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Documento == documento)
+            .Where(c => c.Documento != null && c.Documento == documento)
+            .ToListAsync()
             .ConfigureAwait(false);
     }
+
 
     public async Task<List<Cliente>> GetClientesByEstado(bool estado)
     {
@@ -75,66 +79,39 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public override async Task<Cliente?> GetEntityByIdAsync(int id)
     {
+        if (id == null || id <= 0)
+        {
+            _logger.LogWarning("El ID proporcionado no es válido: {Id}", id);
+            return null;
+        }
+
         return await _context.Cliente
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id)
             .ConfigureAwait(false);
     }
 
+
     public override async Task<OperationResult> SaveEntityAsync(Cliente entity)
     {
         OperationResult result = new OperationResult();
         try
         {
-            if (entity == null)
+            ValidationOfCliente(entity, result);
+            if (!result.Success)
             {
-                throw new ArgumentNullException(nameof(entity), "El cliente no puede ser nulo.");
-            }
-
-            if (string.IsNullOrWhiteSpace(entity.TipoDocumento) || entity.TipoDocumento.Length > 15)
-            {
-                result.Success = false;
-                result.Message = "El campo TipoDocumento no puede exceder los 15 caracteres.";
-                _logger.LogWarning(result.Message);
-                return result;
-            }
-
-            if (string.IsNullOrWhiteSpace(entity.Documento) || entity.Documento.Length > 15)
-            {
-                result.Success = false;
-                result.Message = "El campo Documento no puede exceder los 15 caracteres.";
-                _logger.LogWarning(result.Message);
-                return result;
-            }
-
-            if (string.IsNullOrWhiteSpace(entity.NombreCompleto) || entity.NombreCompleto.Length > 50)
-            {
-                result.Success = false;
-                result.Message = "El campo NombreCompleto no puede exceder los 50 caracteres.";
-                _logger.LogWarning(result.Message);
-                return result;
-            }
-
-            if (string.IsNullOrWhiteSpace(entity.Correo) || entity.Correo.Length > 50)
-            {
-                result.Success = false;
-                result.Message = "El campo Correo no puede exceder los 50 caracteres.";
-                _logger.LogWarning(result.Message);
+                result.Message = this._configuration["ErrorUsuarioRepository:InvalidData"];
                 return result;
             }
 
             _context.Cliente.Add(entity);
             await _context.SaveChangesAsync();
-
-            result.Success = true;
-            result.Message = "Cliente guardado correctamente.";
-            _logger.LogInformation("Cliente guardado con ID: {IdCliente}", entity.Id);
         }
         catch (Exception ex)
         {
+            result.Message = this._configuration["ErrorClienteRepository:SaveEntityAsync"];
             result.Success = false;
-            result.Message = "Ocurrió un error al guardar el cliente.";
-            _logger.LogError(ex, result.Message);
+            this._logger.LogError(result.Message, ex.ToString());
         }
 
         return result;
@@ -145,55 +122,21 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         OperationResult result = new OperationResult();
         try
         {
-            if (entity == null)
+            ValidationOfCliente(entity, result);
+            if (!result.Success)
             {
-                throw new ArgumentNullException(nameof(entity), "El cliente no puede ser nulo.");
-            }
-
-            if (string.IsNullOrWhiteSpace(entity.TipoDocumento) || entity.TipoDocumento.Length > 15)
-            {
-                result.Success = false;
-                result.Message = "El campo TipoDocumento no puede exceder los 15 caracteres.";
-                _logger.LogWarning(result.Message);
-                return result;
-            }
-
-            if (string.IsNullOrWhiteSpace(entity.Documento) || entity.Documento.Length > 15)
-            {
-                result.Success = false;
-                result.Message = "El campo Documento no puede exceder los 15 caracteres.";
-                _logger.LogWarning(result.Message);
-                return result;
-            }
-
-            if (string.IsNullOrWhiteSpace(entity.NombreCompleto) || entity.NombreCompleto.Length > 50)
-            {
-                result.Success = false;
-                result.Message = "El campo NombreCompleto no puede exceder los 50 caracteres.";
-                _logger.LogWarning(result.Message);
-                return result;
-            }
-
-            if (string.IsNullOrWhiteSpace(entity.Correo) || entity.Correo.Length > 50)
-            {
-                result.Success = false;
-                result.Message = "El campo Correo no puede exceder los 50 caracteres.";
-                _logger.LogWarning(result.Message);
+                result.Message = this._configuration["ErrorUsuarioRepository:InvalidData"];
                 return result;
             }
 
             _context.Cliente.Update(entity);
             await _context.SaveChangesAsync();
-
-            result.Success = true;
-            result.Message = "Cliente guardado correctamente.";
-            _logger.LogInformation("Cliente guardado con ID: {IdCliente}", entity.Id);
         }
         catch (Exception ex)
         {
+            result.Message = this._configuration["ErrorClienteRepository:UpdateEntityAsync"];
             result.Success = false;
-            result.Message = "Ocurrió un error al guardar el cliente.";
-            _logger.LogError(ex, result.Message);
+            this._logger.LogError(result.Message, ex.ToString());
         }
 
         return result;
@@ -204,31 +147,21 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         OperationResult result = new OperationResult();
         try
         {
-            if (entity == null)
+            ValidationOfCliente(entity, result);
+            if (!result.Success)
             {
-                throw new ArgumentNullException(nameof(entity), "El cliente no puede ser nulo.");
-            }
-
-            if (string.IsNullOrWhiteSpace(entity.TipoDocumento) || entity.TipoDocumento.Length > 15)
-            {
-                result.Success = false;
-                result.Message = "El campo TipoDocumento no puede estar vacío ni exceder los 15 caracteres.";
-                _logger.LogWarning(result.Message);
+                result.Message = this._configuration["ErrorUsuarioRepository:InvalidData"];
                 return result;
             }
 
             _context.Cliente.Update(entity);
             await _context.SaveChangesAsync();
-
-            result.Success = true;
-            result.Message = "TipoDocumento actualizado correctamente.";
-            _logger.LogInformation("TipoDocumento actualizado para el cliente con ID: {IdCliente}", entity.Id);
         }
         catch (Exception ex)
         {
+            result.Message = this._configuration["ErrorClienteRepository:UpdateTipoDocumento"];
             result.Success = false;
-            result.Message = "Ocurrió un error al actualizar el TipoDocumento.";
-            _logger.LogError(ex, result.Message);
+            this._logger.LogError(result.Message, ex.ToString());
         }
 
         return result;
@@ -239,32 +172,21 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         OperationResult result = new OperationResult();
         try
         {
-            if (entity == null)
+            ValidationOfCliente(entity, result);
+            if (!result.Success)
             {
-                throw new ArgumentNullException(nameof(entity), "El cliente no puede ser nulo.");
-            }
-
-            if (entity.EstadoYFecha.Estado == nuevoEstado)
-            {
-                result.Success = false;
-                result.Message = "El nuevo estado es el mismo que el actual.";
-                _logger.LogWarning(result.Message);
+                result.Message = this._configuration["ErrorUsuarioRepository:InvalidData"];
                 return result;
             }
-
             entity.EstadoYFecha.Estado = nuevoEstado;
             _context.Cliente.Update(entity);
             await _context.SaveChangesAsync();
-
-            result.Success = true;
-            result.Message = "Estado actualizado correctamente.";
-            _logger.LogInformation("Estado actualizado para el cliente con ID: {IdCliente}", entity.Id);
         }
         catch (Exception ex)
         {
+            result.Message = this._configuration["ErrorClienteRepository:UpdateEstado"];
             result.Success = false;
-            result.Message = "Ocurrió un error actualizando el estado del cliente.";
-            _logger.LogError(ex, result.Message);
+            this._logger.LogError(result.Message, ex.ToString());
         }
 
         return result;

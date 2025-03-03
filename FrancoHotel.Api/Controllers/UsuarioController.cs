@@ -69,9 +69,9 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpPost("UpdateClave")]
-        public async Task<IActionResult> PutClave([FromBody] Usuario usuario)
+        public async Task<IActionResult> PutClave([FromBody] Usuario usuario, string nuevaClave)
         {
-            await _usuarioRepository.UpdateEntityAsync(usuario);
+            await _usuarioRepository.UpdateClave(usuario, nuevaClave);
             return Ok(usuario);
         }
 
