@@ -23,7 +23,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
-    public async Task<Cliente> GetClienteByDocumento(string documento)
+    public async Task<Cliente?> GetClienteByDocumento(string documento)
     {
         if (string.IsNullOrWhiteSpace(documento))
         {
@@ -73,7 +73,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         };
     }
 
-    public override async Task<Cliente> GetEntityByIdAsync(int id)
+    public override async Task<Cliente?> GetEntityByIdAsync(int id)
     {
         return await _context.Cliente
             .AsNoTracking()
@@ -280,7 +280,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         catch (Exception ex)
         {
 
-            result.Message = this._configuration["ErrorClienteRepository:RemoveEntity"];
+            result.Message = this._configuration["ErrorClienteRepository:RemoveEntity"]!;
             result.Success = false;
             this._logger.LogError(result.Message, ex.ToString());
         }

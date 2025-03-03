@@ -49,13 +49,8 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override async Task<EstadoHabitacion> GetEntityByIdAsync(int id)
+        public override async Task<EstadoHabitacion?> GetEntityByIdAsync(int id)
         {
-            if (id <= 0)
-            {
-                return null;
-            }
-
             return await _context.EstadoHabitacion.FindAsync(id);
         }
 
@@ -75,7 +70,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorEstadoHabitacionRepository:SaveEntityAsync"];
+                result.Message = this._configuration["ErrorEstadoHabitacionRepository:SaveEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -98,7 +93,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorEstadoHabitacionRepository:UpdateEntityAsync"];
+                result.Message = this._configuration["ErrorEstadoHabitacionRepository:UpdateEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -115,7 +110,7 @@ namespace FrancoHotel.Persistence.Repositories
             catch (Exception ex)
             {
 
-                result.Message = this._configuration["ErrorEstadoHabitacionRepository:RemoveEntity"];
+                result.Message = this._configuration["ErrorEstadoHabitacionRepository:RemoveEntity"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }

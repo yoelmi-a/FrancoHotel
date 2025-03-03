@@ -26,7 +26,7 @@ namespace FrancoHotel.Persistence.Repositories
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public async Task<Usuario> GetUsuarioByClave(string clave)
+        public async Task<Usuario?> GetUsuarioByClave(string clave)
         {
             if (string.IsNullOrWhiteSpace(clave))
             {
@@ -39,7 +39,7 @@ namespace FrancoHotel.Persistence.Repositories
                                  .FirstOrDefaultAsync(u => u.Clave == clave);
         }
 
-        public async Task<Usuario> GetUsuarioByIdRolUsuario(int idRolUsuario)
+        public async Task<Usuario?> GetUsuarioByIdRolUsuario(int idRolUsuario)
         {
             if (idRolUsuario <= 0)
             {
@@ -88,7 +88,7 @@ namespace FrancoHotel.Persistence.Repositories
             };
         }
 
-        public override async Task<Usuario> GetEntityByIdAsync(int id)
+        public override async Task<Usuario?> GetEntityByIdAsync(int id)
         {
             if (id <= 0)
             {
@@ -288,7 +288,7 @@ namespace FrancoHotel.Persistence.Repositories
             catch (Exception ex)
             {
 
-                result.Message = this._configuration["ErrorUsuarioRepository:RemoveEntity"];
+                result.Message = this._configuration["ErrorUsuarioRepository:RemoveEntity"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }

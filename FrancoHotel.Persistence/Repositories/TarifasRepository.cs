@@ -52,7 +52,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorTarifasRepository:AddTarifaByCategoria"];
+                result.Message = this._configuration["ErrorTarifasRepository:AddTarifaByCategoria"]!;
                 result.Success = false;
                 Console.WriteLine(result.Message + $": {ex.Message}");
             }
@@ -81,7 +81,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = _configuration["ErrorTarifasRepository:UpdateTarifasByFechas"];
+                result.Message = _configuration["ErrorTarifasRepository:UpdateTarifasByFechas"]!;
                 result.Success = false;
                 Console.WriteLine(result.Message + $": {ex.Message}");
             }
@@ -171,7 +171,7 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override async Task<Tarifas> GetEntityByIdAsync(int id)
+        public override async Task<Tarifas?> GetEntityByIdAsync(int id)
         {
             if (id <= 0)
             {
@@ -198,7 +198,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception)
             {
-                result.Message = this._configuration["ErrorTarifasRepository:SaveEntityAsync"];
+                result.Message = this._configuration["ErrorTarifasRepository:SaveEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message);
             }
@@ -244,7 +244,7 @@ namespace FrancoHotel.Persistence.Repositories
             catch (Exception ex)
             {
 
-                result.Message = this._configuration["ErrorTarifasRepository:RemoveEntity"];
+                result.Message = this._configuration["ErrorTarifasRepository:RemoveEntity"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }

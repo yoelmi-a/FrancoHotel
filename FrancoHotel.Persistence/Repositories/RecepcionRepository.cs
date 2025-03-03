@@ -59,7 +59,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorRecepcionRepository:UpdateEntityAsync"];
+                result.Message = this._configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -88,7 +88,7 @@ namespace FrancoHotel.Persistence.Repositories
         {
             return await _context.Recepcion.AnyAsync(filter).ConfigureAwait(false);
         }
-        public override async Task<Recepcion> GetEntityByIdAsync(int id)
+        public override async Task<Recepcion?> GetEntityByIdAsync(int id)
         {
             if (id <= 0)
             {

@@ -12,7 +12,7 @@ namespace FrancoHotel.Domain.Repository
     {
         Task<OperationResult> SaveEntityAsync(TEntity entity);
         Task<OperationResult> UpdateEntityAsync(TEntity entity);
-        Task<TEntity> GetEntityByIdAsync(Ttype id);
+        Task<TEntity?> GetEntityByIdAsync(Ttype id);
         Task<List<TEntity>> GetAllAsync();
         Task<OperationResult> GetAllAsync(Expression<Func<TEntity, bool>> filter);
         Task<bool> Exists(Expression<Func<TEntity, bool>> filter);

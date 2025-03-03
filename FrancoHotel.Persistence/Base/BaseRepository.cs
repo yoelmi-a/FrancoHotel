@@ -44,7 +44,7 @@ namespace FrancoHotel.Persistence.Base
             return await Entity.ToListAsync();
         }
 
-        public virtual async Task<TEntity> GetEntityByIdAsync(Ttype id)
+        public virtual async Task<TEntity?> GetEntityByIdAsync(Ttype id)
         {
             return await Entity.FindAsync(id);
         }
@@ -85,7 +85,29 @@ namespace FrancoHotel.Persistence.Base
 
         public virtual async Task<OperationResult> RemoveEntityAsync(Ttype id)
         {
-            throw new NotImplementedException();
+            OperationResult result = new OperationResult();
+            try
+            {
+                var entity = await Entity.FindAsync(id);
+
+                if (entity == null)
+                {
+                    result.Success = false;
+                    result.Message = "La entidad no fue encontrada.";
+                    return result;
+                }
+
+                _context.Entry(entity).Property("Borrado").CurrentValue = true;
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                result.Success = false;
+                result.Message = "Ocurrio un error guardando los datos.";
+            }
+            return result;
         }
     }
 }
