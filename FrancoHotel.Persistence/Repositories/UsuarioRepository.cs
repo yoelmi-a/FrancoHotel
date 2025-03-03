@@ -28,6 +28,7 @@ namespace FrancoHotel.Persistence.Repositories
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
+
         public async Task<List<Usuario>> GetUsuarioByClave(string clave)
         {
             if (string.IsNullOrWhiteSpace(clave) || clave.Contains(" "))
@@ -43,7 +44,7 @@ namespace FrancoHotel.Persistence.Repositories
                                  .ConfigureAwait(false);
         }
 
-        public async Task<Usuario> GetUsuarioByIdRolUsuario(int idRolUsuario)
+        public async Task<Usuario?> GetUsuarioByIdRolUsuario(int idRolUsuario)
         {
             if (idRolUsuario == null || idRolUsuario <= 0)
             {
@@ -92,7 +93,7 @@ namespace FrancoHotel.Persistence.Repositories
             };
         }
 
-        public override async Task<Usuario> GetEntityByIdAsync(int id)
+        public override async Task<Usuario?> GetEntityByIdAsync(int id)
         {
             if (id == null || id <= 0)
             {
@@ -244,6 +245,23 @@ namespace FrancoHotel.Persistence.Repositories
                 return result;
             }
 
+            return result;
+        }
+
+        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        {
+            OperationResult result = new OperationResult();
+            try
+            {
+                await _context.Usuario.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+            }
+            catch (Exception ex)
+            {
+
+                result.Message = this._configuration["ErrorUsuarioRepository:RemoveEntity"]!;
+                result.Success = false;
+                this._logger.LogError(result.Message, ex.ToString());
+            }
             return result;
         }
     }

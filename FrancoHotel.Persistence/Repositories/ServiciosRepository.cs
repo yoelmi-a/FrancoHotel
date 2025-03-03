@@ -16,7 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FrancoHotel.Persistence.Repositories
 {
-    internal class ServiciosRepository : BaseRepository<Servicios, short>, IServiciosRepository
+    public class ServiciosRepository : BaseRepository<Servicios, int>, IServiciosRepository
     {
         private readonly HotelContext _context;
         private readonly ILogger<PisoRepository> _logger;
@@ -48,7 +48,7 @@ namespace FrancoHotel.Persistence.Repositories
             return await _context.Servicios.AsNoTracking().ToListAsync();
         }
 
-        public override async Task<Servicios> GetEntityByIdAsync(short id)
+        public override async Task<Servicios?> GetEntityByIdAsync(int id)
         {
             if (id <= 0)
             {
@@ -74,7 +74,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorServiciosRepository:SaveEntityAsync"];
+                result.Message = this._configuration["ErrorServiciosRepository:SaveEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -97,7 +97,24 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorServiciosRepository:UpdateEntityAsync"];
+                result.Message = this._configuration["ErrorServiciosRepository:UpdateEntityAsync"]!;
+                result.Success = false;
+                this._logger.LogError(result.Message, ex.ToString());
+            }
+            return result;
+        }
+
+        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        {
+            OperationResult result = new OperationResult();
+            try
+            {
+                await _context.Servicios.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+            }
+            catch (Exception ex)
+            {
+
+                result.Message = this._configuration["ErrorServiciosRepository:RemoveEntity"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }

@@ -28,13 +28,13 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<bool> Exists(Expression<Func<Habitacion, bool>> filter)
         {
-            return await _context.Habitaciones.AnyAsync(filter).ConfigureAwait(false);
+            return await _context.Habitacion.AnyAsync(filter).ConfigureAwait(false);
         }
 
         public override async Task<List<Habitacion>> GetAllAsync()
         {
             OperationResult result = new OperationResult();
-            result.Data = await _context.Habitaciones.AsNoTracking()
+            result.Data = await _context.Habitacion.AsNoTracking()
                                                            .ToListAsync()
                                                            .ConfigureAwait(false);
             return result.Data;
@@ -43,56 +43,41 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> GetAllAsync(Expression<Func<Habitacion, bool>> filter)
         {
             OperationResult result = new OperationResult();
-            result.Data = await _context.Habitaciones.Where(filter)
+            result.Data = await _context.Habitacion.Where(filter)
                                                            .AsNoTracking()
                                                            .ToListAsync()
                                                            .ConfigureAwait(false);
             return result;
         }
 
-        public override async Task<Habitacion> GetEntityByIdAsync(int id)
+        public override async Task<Habitacion?> GetEntityByIdAsync(int id)
         {
-            if (id <= 0)
+            if (RepoValidation.ValidarID(id))
             {
                 return null;
             }
-
-            return await _context.Habitaciones.FindAsync(id).ConfigureAwait(false);
+            return await _context.Habitacion.FindAsync(id).ConfigureAwait(false);
         }
 
         public override async Task<OperationResult> SaveEntityAsync(Habitacion entity)
         {
             OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarHabitacion(entity))
+            {
+                result.Message = this._configuration["ErrorHabitacionRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                if(entity.Detalle.Length > 50)
-                {
-                    throw new ArgumentNullException("Los detalles no pueden pasar de 50 caracteres");
-                }
-                else if(entity.Precio <= 0)
-                {
-                    throw new ArgumentNullException("El precio de la habitacion debe ser mayor a 0");
-                }
-                else if(entity.IdPiso <= 0 || entity.IdCategoria <= 0)
-                {
-                    throw new ArgumentNullException("Los ids de piso y categoria deben ser mayores a 0");
-                }
-                else if (string.IsNullOrWhiteSpace(entity.Numero) 
-                   || string.IsNullOrWhiteSpace(entity.Detalle) 
-                   || !entity.EstadoYFecha.Estado.HasValue)
-                {
-                    throw new ArgumentNullException("La habitacion debe tener estado, número y detalles");
-                }
 
-                
-
-                _context.Habitaciones.Add(entity);
+                _context.Habitacion.Add(entity);
                 await _context.SaveChangesAsync();
 
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorHabitacionRepository:SaveEntityAsync"];
+                result.Message = this._configuration["ErrorHabitacionRepository:SaveEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -102,32 +87,44 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> UpdateEntityAsync(Habitacion entity)
         {
             OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarHabitacion(entity))
+            {
+                result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                if (entity.Precio <= 0)
-                {
-                    throw new ArgumentNullException("El precio de la habitacion debe ser mayor a 0");
-                }
-                else if (entity.IdPiso <= 0 || entity.IdCategoria <= 0)
-                {
-                    throw new ArgumentNullException("Los ids de piso y categoria deben ser mayores a 0");
-                }
-                else if (string.IsNullOrWhiteSpace(entity.Numero)
-                   || string.IsNullOrWhiteSpace(entity.Detalle)
-                   || !entity.EstadoYFecha.Estado.HasValue)
-                {
-                    throw new ArgumentNullException("La habitacion debe tener estado, número y detalles");
-                }
-
-
-
-                _context.Habitaciones.Add(entity);
+                _context.Habitacion.Update(entity);
                 await _context.SaveChangesAsync();
 
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorHabitacionRepository:UpdateEntityAsync"];
+                result.Message = this._configuration["ErrorHabitacionRepository:UpdateEntityAsync"]!;
+                result.Success = false;
+                this._logger.LogError(result.Message, ex.ToString());
+            }
+            return result;
+        }
+
+        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        {
+            OperationResult result = new OperationResult();
+            if (RepoValidation.ValidarID(id))
+            {
+                result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            try
+            {
+                await _context.Habitacion.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+            }
+            catch (Exception ex)
+            {
+
+                result.Message = this._configuration["ErrorHabitacionRepository:RemoveEntity"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }

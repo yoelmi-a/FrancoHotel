@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using Microsoft.EntityFrameworkCore;
 namespace FrancoHotel.Domain.Base
 {
     [Owned]

@@ -23,8 +23,8 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
-
-    public async Task<List<Cliente>> GetClienteByDocumento(string documento)
+    
+    public async Task<Cliente?> GetClienteByDocumento(string documento)
     {
         if (string.IsNullOrWhiteSpace(documento) || documento.Contains(" "))
         {
@@ -77,7 +77,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         };
     }
 
-    public override async Task<Cliente> GetEntityByIdAsync(int id)
+    public override async Task<Cliente?> GetEntityByIdAsync(int id)
     {
         if (id == null || id <= 0)
         {
@@ -191,40 +191,21 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
         return result;
     }
-    private static OperationResult ValidationOfCliente(Cliente entity, OperationResult result)
-    {
-        if (entity == null)
-        {
-            result.Success = false;
-            return result;
-        }
-        if (entity.EstadoYFecha.Estado == nuevoEstado)
-        {
-            result.Success = false;
-            return result;
-        }
-        if (string.IsNullOrWhiteSpace(entity.TipoDocumento) || entity.TipoDocumento.Length > 15)
-        {
-            result.Success = false;
-            return result;
-        }
-        if (string.IsNullOrWhiteSpace(entity.Documento) || entity.Documento.Length > 15)
-        {
-            result.Success = false;
-            return result;
-        }
-        if (string.IsNullOrWhiteSpace(entity.NombreCompleto) || entity.NombreCompleto.Length > 50)
-        {
-            result.Success = false;
-            return result;
-        }
-        if (string.IsNullOrWhiteSpace(entity.Correo) || entity.Correo.Length > 50)
-        {
-            result.Success = false;
-            return result;
-        }
 
+    public override async Task<OperationResult> RemoveEntityAsync(int id)
+    {
+        OperationResult result = new OperationResult();
+        try
+        {
+            await _context.Cliente.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+        }
+        catch (Exception ex)
+        {
+
+            result.Message = this._configuration["ErrorClienteRepository:RemoveEntity"]!;
+            result.Success = false;
+            this._logger.LogError(result.Message, ex.ToString());
+        }
         return result;
     }
-
 }

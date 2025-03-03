@@ -2,17 +2,22 @@ using FrancoHotel.Persistence.Context;
 using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using FrancoHotel.IOC.Dependencies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<HotelContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DBHotel")));
 
-builder.Services.AddScoped<IPisoRepository, PisoRepository>();
-builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IRolUsuarioRepository, RolUsuarioRepository>();
-
+builder.Services.AddPisoDependency();
+builder.Services.AddRecepcionDependency();
+builder.Services.AddRolUsuarioDependecy();
+builder.Services.AddClienteDependency();
+builder.Services.AddEstadoHabitacionDependecy();
+builder.Services.AddHabitacionDependecy();
+builder.Services.AddServiciosDependecy();
+builder.Services.AddTarifasDependecy();
+builder.Services.AddUsuarioDependecy();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
