@@ -52,10 +52,6 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<Habitacion> GetEntityByIdAsync(int id)
         {
-            if (id <= 0)
-            {
-                return null;
-            }
 
             return await _context.Habitacion.FindAsync(id).ConfigureAwait(false);
         }
@@ -65,26 +61,12 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if(entity.Detalle.Length > 50)
+                if(!RepoValidation.ValidarHabitacion(entity))
                 {
-                    throw new ArgumentNullException("Los detalles no pueden pasar de 50 caracteres");
+                    result.Message = this._configuration["ErrorHabitacionRepository:InvalidData"]!;
+                    result.Success = false;
+                    return result;
                 }
-                else if(entity.Precio <= 0)
-                {
-                    throw new ArgumentNullException("El precio de la habitacion debe ser mayor a 0");
-                }
-                else if(entity.IdPiso <= 0 || entity.IdCategoria <= 0)
-                {
-                    throw new ArgumentNullException("Los ids de piso y categoria deben ser mayores a 0");
-                }
-                else if (string.IsNullOrWhiteSpace(entity.Numero) 
-                   || string.IsNullOrWhiteSpace(entity.Detalle) 
-                   || !entity.EstadoYFecha.Estado.HasValue)
-                {
-                    throw new ArgumentNullException("La habitacion debe tener estado, número y detalles");
-                }
-
-                
 
                 _context.Habitacion.Add(entity);
                 await _context.SaveChangesAsync();
@@ -104,10 +86,10 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                ValidationOfHabitacion(entity, result);
-                if (!result.Success)
+                if(!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarHabitacion(entity))
                 {
-                    result.Message = this._configuration["ErrorHabitacionRepository:InvalidData"];
+                    result.Message = this._configuration["ErrorHabitacionRepository:InvalidData"]!;
+                    result.Success = false;
                     return result;
                 }
                 _context.Habitacion.Update(entity);
@@ -120,29 +102,6 @@ namespace FrancoHotel.Persistence.Repositories
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
-            return result;
-        }
-
-        private static OperationResult ValidationOfHabitacion(Habitacion entity, OperationResult result)
-        {
-            if (entity.Precio <= 0)
-            {
-                result.Success = false;
-                return result;
-            }
-            else if (entity.IdPiso <= 0 || entity.IdCategoria <= 0)
-            {
-                result.Success = false;
-                return result;
-            }
-            else if (string.IsNullOrWhiteSpace(entity.Numero)
-               || string.IsNullOrWhiteSpace(entity.Detalle)
-               || !entity.EstadoYFecha.Estado.HasValue)
-            {
-                result.Success = false;
-                return result;
-            }
-
             return result;
         }
 

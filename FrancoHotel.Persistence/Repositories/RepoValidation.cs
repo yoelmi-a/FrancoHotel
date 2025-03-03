@@ -1,47 +1,77 @@
 ﻿using FrancoHotel.Domain.Base;
+using FrancoHotel.Domain.Entities;
 
 namespace FrancoHotel.Persistence.Repositories
 {
     public static class RepoValidation
     {
-        public static OperationResult ValidarString(OperationResult result, string texto)
+        public static bool ValidarString(string texto)
         {
             if (string.IsNullOrWhiteSpace(texto))
             {
-                result.Success = false;
+                return false;
+                
             }
 
-            return result;
+            return true;
         }
 
-        public static OperationResult ValidarEntidad(OperationResult result, Object entidad)
+        public static bool ValidarEntidad(Object entidad)
         {
             if (entidad == null)
             {
-                result.Success = false;
+                return false;
             }
 
-            return result;
+            return true;
         }
 
-        public static OperationResult ValidarLongitudString(OperationResult result, string texto, int longitud)
+        public static bool ValidarLongitudString(string texto, int longitud)
         {
             if(texto.Length > longitud)
             {
-                result.Success = false;
+                return false;
             }
 
-            return result;
+            return true;
         }
 
-        public static OperationResult ValidarID(OperationResult result, int id)
+        public static bool ValidarID(int? id)
         {
             if(id <= 0)
             {
-                result.Success = false;
+                return false;
             }
 
-            return result;
+            return true;
+        }
+
+        public static bool ValidarPrecio(decimal? precio)
+        {
+            if (precio <= 0 || precio <= 9999999999.99M)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool ValidarHabitacion(Habitacion entity)
+        {
+            if (!RepoValidation.ValidarEntidad(entity) ||
+                    !RepoValidation.ValidarString(entity.Detalle!) ||
+                    !RepoValidation.ValidarLongitudString(entity.Detalle!, 100) ||
+                    !RepoValidation.ValidarString(entity.Numero!) ||
+                    !RepoValidation.ValidarLongitudString(entity.Numero!, 50) ||
+                    !RepoValidation.ValidarPrecio(entity.Precio) ||
+                    !RepoValidation.ValidarID(entity.IdPiso) ||
+                    !RepoValidation.ValidarID(entity.IdCategoria) ||
+                    !RepoValidation.ValidarEntidad(entity.EstadoYFecha.Estado!))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
