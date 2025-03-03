@@ -51,6 +51,10 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<EstadoHabitacion?> GetEntityByIdAsync(int id)
         {
+            if(!RepoValidation.ValidarID(id))
+            {
+                return null;
+            }
             return await _context.EstadoHabitacion.FindAsync(id);
         }
 
@@ -100,12 +104,26 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod, DateTime fechaMod)
         {
             OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarID(id) ||
+                !RepoValidation.ValidarID(idUsuarioMod) ||
+                !RepoValidation.ValidarEntidad(fechaMod))
+            {
+                result.Message = _configuration["ErrorEstadoHabitacionRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                await _context.EstadoHabitacion.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+                await _context.EstadoHabitacion
+                .Where(e => e.Id == id)
+                .ExecuteUpdateAsync(setters => setters
+                .SetProperty(e => e.Borrado, true)
+                .SetProperty(e => e.UsuarioMod, idUsuarioMod)
+                .SetProperty(e => e.FechaModificacion, fechaMod)
+                );
             }
             catch (Exception ex)
             {

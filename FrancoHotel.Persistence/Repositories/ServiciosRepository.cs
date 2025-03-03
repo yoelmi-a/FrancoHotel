@@ -50,7 +50,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<Servicios?> GetEntityByIdAsync(int id)
         {
-            if (id <= 0)
+            if(!RepoValidation.ValidarID(id))
             {
                 return null;
             }
@@ -104,12 +104,26 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod, DateTime fechaMod)
         {
             OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarID(id) ||
+                !RepoValidation.ValidarID(idUsuarioMod) ||
+                !RepoValidation.ValidarEntidad(fechaMod))
+            {
+                result.Message = _configuration["ErrorServiciosRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                await _context.Servicios.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+                await _context.Servicios
+                .Where(e => e.Id == id)
+                .ExecuteUpdateAsync(setters => setters
+                .SetProperty(e => e.Borrado, true)
+                .SetProperty(e => e.UsuarioMod, idUsuarioMod)
+                .SetProperty(e => e.FechaModificacion, fechaMod)
+                );
             }
             catch (Exception ex)
             {

@@ -21,7 +21,7 @@ namespace FrancoHotel.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult> Save(EstadoHabitacionSaveDto dto)
+        public Task<OperationResult> Save(SaveEstadoHabitacionDto dto)
         {
             throw new NotImplementedException();
         }

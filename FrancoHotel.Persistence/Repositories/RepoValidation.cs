@@ -66,7 +66,9 @@ namespace FrancoHotel.Persistence.Repositories
                     !RepoValidation.ValidarPrecio(entity.Precio) ||
                     !RepoValidation.ValidarID(entity.IdPiso) ||
                     !RepoValidation.ValidarID(entity.IdCategoria) ||
-                    !RepoValidation.ValidarEntidad(entity.EstadoYFecha.Estado!))
+                    !RepoValidation.ValidarEntidad(entity.EstadoYFecha.Estado!) ||
+                    !RepoValidation.ValidarEntidad(entity.EstadoYFecha.FechaCreacion!) ||
+                    !RepoValidation.ValidarID(entity.CreadorPorU))
             {
                 return false;
             }

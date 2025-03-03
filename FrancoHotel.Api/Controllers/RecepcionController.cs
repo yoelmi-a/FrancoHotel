@@ -63,9 +63,9 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpDelete("RemoveRecepcion")]
-        public async Task<IActionResult> RemovePiso(int id)
+        public async Task<IActionResult> RemovePiso(int id, int idUsuarioMod, DateTime fechaMod)
         {
-            await _recepcionRepository.RemoveEntityAsync(id);
+            await _recepcionRepository.RemoveEntityAsync(id, idUsuarioMod, fechaMod);
             return Ok(id);
         }
     }

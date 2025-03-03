@@ -52,7 +52,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<Habitacion?> GetEntityByIdAsync(int id)
         {
-            if (RepoValidation.ValidarID(id))
+            if(!RepoValidation.ValidarID(id))
             {
                 return null;
             }
@@ -87,7 +87,8 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> UpdateEntityAsync(Habitacion entity)
         {
             OperationResult result = new OperationResult();
-            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarHabitacion(entity))
+            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarHabitacion(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
             {
                 result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
                 result.Success = false;
@@ -108,10 +109,12 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod, DateTime fechaMod)
         {
             OperationResult result = new OperationResult();
-            if (RepoValidation.ValidarID(id))
+            if (!RepoValidation.ValidarID(id) ||
+                !RepoValidation.ValidarID(idUsuarioMod) ||
+                !RepoValidation.ValidarEntidad(fechaMod))
             {
                 result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
                 result.Success = false;
@@ -119,7 +122,13 @@ namespace FrancoHotel.Persistence.Repositories
             }
             try
             {
-                await _context.Habitacion.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+                await _context.Habitacion
+                    .Where(e => e.Id == id)
+                    .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(e => e.Borrado, true)
+                    .SetProperty(e => e.UsuarioMod, idUsuarioMod)
+                    .SetProperty(e => e.FechaModificacion, fechaMod)
+                    );
             }
             catch (Exception ex)
             {

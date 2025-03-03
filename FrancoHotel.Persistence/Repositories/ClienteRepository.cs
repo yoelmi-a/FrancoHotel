@@ -4,6 +4,7 @@ using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Base;
 using FrancoHotel.Persistence.Context;
 using FrancoHotel.Persistence.Interfaces;
+using FrancoHotel.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -270,12 +271,26 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         return result;
     }
 
-    public override async Task<OperationResult> RemoveEntityAsync(int id)
+    public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod, DateTime fechaMod)
     {
         OperationResult result = new OperationResult();
+        if (!RepoValidation.ValidarID(id) ||
+            !RepoValidation.ValidarID(idUsuarioMod) ||
+            !RepoValidation.ValidarEntidad(fechaMod))
+        {
+            result.Message = _configuration["ErrorClienteRepository:InvalidData"]!;
+            result.Success = false;
+            return result;
+        }
         try
         {
-            await _context.Cliente.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+            await _context.Cliente
+                .Where(e => e.Id == id)
+                .ExecuteUpdateAsync(setters => setters
+                .SetProperty(e => e.Borrado, true)
+                .SetProperty(e => e.UsuarioMod, idUsuarioMod)
+                .SetProperty(e => e.FechaModificacion, fechaMod)
+                );
         }
         catch (Exception ex)
         {
