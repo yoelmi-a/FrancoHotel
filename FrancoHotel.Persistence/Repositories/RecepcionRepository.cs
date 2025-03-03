@@ -92,7 +92,7 @@ namespace FrancoHotel.Persistence.Repositories
         {
             if (id <= 0)
             {
-                return null;
+                return null!;
             }
 
             return await _context.Recepcion.FindAsync(id).ConfigureAwait(false);
@@ -108,7 +108,7 @@ namespace FrancoHotel.Persistence.Repositories
             catch (Exception ex)
             {
 
-                result.Message = this._configuration["ErrorRecepcionRepository:RemoveEntity"];
+                result.Message = this._configuration["ErrorRecepcionRepository:RemoveEntity"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }

@@ -74,7 +74,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorHabitacionRepository:SaveEntityAsync"];
+                result.Message = this._configuration["ErrorHabitacionRepository:SaveEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -88,7 +88,7 @@ namespace FrancoHotel.Persistence.Repositories
             {
                 if(!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarHabitacion(entity))
                 {
-                    result.Message = this._configuration["ErrorHabitacionRepository:InvalidData"]!;
+                    result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
                     result.Success = false;
                     return result;
                 }
@@ -98,7 +98,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorHabitacionRepository:UpdateEntityAsync"];
+                result.Message = this._configuration["ErrorHabitacionRepository:UpdateEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -110,12 +110,18 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
+                if (RepoValidation.ValidarID(id))
+                {
+                    result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
+                    result.Success = false;
+                    return result;
+                }
                 await _context.Habitacion.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
             }
             catch (Exception ex)
             {
 
-                result.Message = this._configuration["ErrorHabitacionRepository:RemoveEntity"];
+                result.Message = this._configuration["ErrorHabitacionRepository:RemoveEntity"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
