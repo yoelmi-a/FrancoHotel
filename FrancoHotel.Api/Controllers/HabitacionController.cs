@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using FrancoHotel.Persistence.Repositories;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -68,9 +69,11 @@ namespace FrancoHotel.Api.Controllers
             return Ok(habitacion);
         }
 
-  /*      [HttpDelete("{id}")]
-        public async void Delete(int id)
+        [HttpDelete("RemoveHabitacion")]
+        public async Task<IActionResult> RemovePiso(int id)
         {
-        }*/
+            await _habitacionRepository.RemoveEntityAsync(id);
+            return Ok(id);
+        }
     }
 }

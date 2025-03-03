@@ -1,5 +1,6 @@
 ﻿using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
+using FrancoHotel.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -74,9 +75,11 @@ namespace FrancoHotel.Api.Controllers
             return Ok(cliente);
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("RemoveCliente")]
+        public async Task<IActionResult> RemovePiso(int id)
         {
+            await _clienteRepository.RemoveEntityAsync(id);
+            return Ok(id);
         }
     }
 }

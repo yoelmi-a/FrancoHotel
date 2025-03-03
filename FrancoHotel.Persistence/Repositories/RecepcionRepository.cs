@@ -1,4 +1,6 @@
-﻿using FrancoHotel.Domain.Base;
+using System.Linq;
+using System.Linq.Expressions;
+using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Base;
 using FrancoHotel.Persistence.Context;
@@ -24,63 +26,95 @@ namespace FrancoHotel.Persistence.Repositories
             this._configuration = configuration;
 
         }
-        public async Task<OperationResult> SaveEntityAsync(Recepcion recepcion)
+        public override async Task<OperationResult> SaveEntityAsync(Recepcion entity)
         {
             OperationResult result = new OperationResult();
-            try
-            {
-                await _context.Recepcion.AddAsync(recepcion);
+            
+
+                await _context.Recepcion.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
-                result.Data = recepcion;
+                result.Data = entity;
+
+            return result;
+        }
+
+
+
+        public override async Task<OperationResult> UpdateEntityAsync(Recepcion entity)
+        {
+            OperationResult result = new OperationResult();
+
+            if (entity.Id >= 0)
+            {
+
+            }
+            try
+            {
+
+
+                _context.Recepcion.Update(entity);
+                await _context.SaveChangesAsync();
+
             }
             catch (Exception ex)
             {
-                result.Message = _configuration["ErrorRecepcionRepository:AddRecepcionAsync"];
+                result.Message = this._configuration["ErrorRecepcionRepository:UpdateEntityAsync"];
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
-        public async Task<OperationResult> UpdateRecepcion(int id, Recepcion updatedRecepcion)
+
+        public override async Task<OperationResult> GetAllAsync(Expression<Func<Recepcion, bool>> filter)
+        {
+            OperationResult result = new OperationResult();
+            result.Data = await _context.Recepcion.Where(filter)
+                                                           .AsNoTracking()
+                                                           .ToListAsync()
+                                                           .ConfigureAwait(false);
+            return result;
+        }
+
+        public override async Task<List<Recepcion>> GetAllAsync()
+        {
+            OperationResult result = new OperationResult();
+            result.Data = await _context.Recepcion.AsNoTracking()
+                                                           .ToListAsync()
+                                                           .ConfigureAwait(false);
+            return result.Data;
+        }
+        public override async Task<bool> Exists(Expression<Func<Recepcion, bool>> filter)
+        {
+            return await _context.Recepcion.AnyAsync(filter).ConfigureAwait(false);
+        }
+        public override async Task<Recepcion> GetEntityByIdAsync(int id)
+        {
+            if (id <= 0)
+            {
+                return null!;
+            }
+
+            return await _context.Recepcion.FindAsync(id).ConfigureAwait(false);
+        }
+
+        public override async Task<OperationResult> RemoveEntityAsync(int id)
         {
             OperationResult result = new OperationResult();
             try
             {
-                var recepcion = await _context.Recepcion.FindAsync(id);
-                if (recepcion == null)
-                {
-                    result.Message = "Recepción no encontrada";
-                    result.Success = false;
-                    return result;
-                }
-
-                // Actualizar los campos necesarios
-                recepcion.IdCliente = updatedRecepcion.IdCliente;
-                recepcion.IdHabitacion = updatedRecepcion.IdHabitacion;
-                recepcion.FechaEntrada = updatedRecepcion.FechaEntrada;
-                recepcion.FechaSalida = updatedRecepcion.FechaSalida;
-                recepcion.FechaSalidaConfirmacion = updatedRecepcion.FechaSalidaConfirmacion;
-                recepcion.PrecioInicial = updatedRecepcion.PrecioInicial;
-                recepcion.Adelanto = updatedRecepcion.Adelanto;
-                recepcion.PrecioRestante = updatedRecepcion.PrecioRestante;
-                recepcion.TotalPagado = updatedRecepcion.TotalPagado;
-                recepcion.CostoPenalidad = updatedRecepcion.CostoPenalidad;
-                recepcion.Obsevacion = updatedRecepcion.Obsevacion;
-                recepcion.Estado = updatedRecepcion.Estado;
-                // Agregar otros campos si es necesario
-
-                await _context.SaveChangesAsync();
-                result.Data = recepcion;
+                await _context.Recepcion.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
             }
             catch (Exception ex)
             {
-                result.Message = _configuration["ErrorRecepcionRepository:EditRecepcionAsync"];
+
+                result.Message = this._configuration["ErrorRecepcionRepository:RemoveEntity"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
+
 
     }
 }

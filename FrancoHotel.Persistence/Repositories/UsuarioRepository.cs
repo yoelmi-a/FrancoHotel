@@ -277,5 +277,22 @@ namespace FrancoHotel.Persistence.Repositories
 
             return result;
         }
+
+        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        {
+            OperationResult result = new OperationResult();
+            try
+            {
+                await _context.Usuario.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+            }
+            catch (Exception ex)
+            {
+
+                result.Message = this._configuration["ErrorUsuarioRepository:RemoveEntity"];
+                result.Success = false;
+                this._logger.LogError(result.Message, ex.ToString());
+            }
+            return result;
+        }
     }
 }
