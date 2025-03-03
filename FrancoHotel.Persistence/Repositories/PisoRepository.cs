@@ -57,7 +57,7 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override async Task<Piso> GetEntityByIdAsync(int id)
+        public override async Task<Piso?> GetEntityByIdAsync(int id)
         {
             if(id <= 0)
             {
@@ -83,7 +83,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorPisoRepository:SaveEntityAsync"];
+                result.Message = this._configuration["ErrorPisoRepository:SaveEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -106,7 +106,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorPisoRepository:UpdateEntityAsync"];
+                result.Message = this._configuration["ErrorPisoRepository:UpdateEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -123,7 +123,7 @@ namespace FrancoHotel.Persistence.Repositories
             catch (Exception ex)
             {
 
-                result.Message = this._configuration["ErrorPisoRepository:RemoveEntity"];
+                result.Message = this._configuration["ErrorPisoRepository:RemoveEntity"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }

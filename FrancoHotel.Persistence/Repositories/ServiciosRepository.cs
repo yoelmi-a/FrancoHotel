@@ -48,7 +48,7 @@ namespace FrancoHotel.Persistence.Repositories
             return await _context.Servicios.AsNoTracking().ToListAsync();
         }
 
-        public override async Task<Servicios> GetEntityByIdAsync(int id)
+        public override async Task<Servicios?> GetEntityByIdAsync(int id)
         {
             if (id <= 0)
             {
@@ -74,7 +74,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorServiciosRepository:SaveEntityAsync"];
+                result.Message = this._configuration["ErrorServiciosRepository:SaveEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -97,7 +97,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorServiciosRepository:UpdateEntityAsync"];
+                result.Message = this._configuration["ErrorServiciosRepository:UpdateEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -114,7 +114,7 @@ namespace FrancoHotel.Persistence.Repositories
             catch (Exception ex)
             {
 
-                result.Message = this._configuration["ErrorServiciosRepository:RemoveEntity"];
+                result.Message = this._configuration["ErrorServiciosRepository:RemoveEntity"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }

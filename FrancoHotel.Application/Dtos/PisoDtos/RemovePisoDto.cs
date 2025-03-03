@@ -1,7 +1,7 @@
 ﻿namespace FrancoHotel.Application.Dtos.PisoDtos
 {
-    public class RemovePisoDto : PisoDto
+    public class RemovePisoDto : DtoBase
     {
-        public int Id { get; set; }
+        public int IdPiso { get; set; }
     }
 }
