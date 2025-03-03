@@ -61,55 +61,7 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> SaveEntityAsync(EstadoHabitacion entity)
         {
             OperationResult result = new OperationResult();
-            try
-            {
-                if (string.IsNullOrWhiteSpace(entity.Descripcion) || !entity.EstadoYFecha.Estado.HasValue)
-                {
-                    throw new ArgumentNullException("El estado de la habitacion debe tener estado y descripción");
-                }
-
-                _context.EstadoHabitacion.Add(entity);
-                await _context.SaveChangesAsync();
-
-            }
-            catch (Exception ex)
-            {
-                result.Message = this._configuration["ErrorEstadoHabitacionRepository:SaveEntityAsync"]!;
-                result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
-            }
-            return result;
-        }
-
-        public override async Task<OperationResult> UpdateEntityAsync(EstadoHabitacion entity)
-        {
-            OperationResult result = new OperationResult();
-            try
-            {
-                if (string.IsNullOrWhiteSpace(entity.Descripcion) || !entity.EstadoYFecha.Estado.HasValue)
-                {
-                    throw new ArgumentNullException("El estado de la habitacion debe tener estado y descripción");
-                }
-
-                _context.EstadoHabitacion.Update(entity);
-                await _context.SaveChangesAsync();
-
-            }
-            catch (Exception ex)
-            {
-                result.Message = this._configuration["ErrorEstadoHabitacionRepository:UpdateEntityAsync"]!;
-                result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
-            }
-            return result;
-        }
-
-        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod, DateTime fechaMod)
-        {
-            OperationResult result = new OperationResult();
-            if (!RepoValidation.ValidarID(id) ||
-                !RepoValidation.ValidarID(idUsuarioMod) ||
-                !RepoValidation.ValidarEntidad(fechaMod))
+            if (!RepoValidation.ValidarEstadoHabitacion(entity))
             {
                 result.Message = _configuration["ErrorEstadoHabitacionRepository:InvalidData"]!;
                 result.Success = false;
@@ -117,20 +69,41 @@ namespace FrancoHotel.Persistence.Repositories
             }
             try
             {
-                await _context.EstadoHabitacion
-                .Where(e => e.Id == id)
-                .ExecuteUpdateAsync(setters => setters
-                .SetProperty(e => e.Borrado, true)
-                .SetProperty(e => e.UsuarioMod, idUsuarioMod)
-                .SetProperty(e => e.FechaModificacion, fechaMod)
-                );
+
+                _context.EstadoHabitacion.Add(entity);
+                await _context.SaveChangesAsync();
+
             }
             catch (Exception ex)
             {
-
-                result.Message = this._configuration["ErrorEstadoHabitacionRepository:RemoveEntity"]!;
+                result.Message = _configuration["ErrorEstadoHabitacionRepository:SaveEntityAsync"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
+            }
+            return result;
+        }
+
+        public override async Task<OperationResult> UpdateEntityAsync(EstadoHabitacion entity)
+        {
+            OperationResult result = new OperationResult();
+            if(!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarEstadoHabitacion(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+            {
+                result.Message = _configuration["ErrorEstadoHabitacionRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            try
+            {
+                _context.EstadoHabitacion.Update(entity);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                result.Message = _configuration["ErrorEstadoHabitacionRepository:UpdateEntityAsync"]!;
+                result.Success = false;
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }

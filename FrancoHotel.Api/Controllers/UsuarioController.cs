@@ -83,10 +83,19 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpDelete("RemoveUsuario")]
-        public async Task<IActionResult> RemovePiso(int id, int idUsuarioMod, DateTime fechaMod)
+        public async Task<IActionResult> RemoveUsuario(int id, int idUsuarioMod)
         {
-            await _usuarioRepository.RemoveEntityAsync(id, idUsuarioMod, fechaMod);
-            return Ok(id);
+            var entity = await _usuarioRepository.GetEntityByIdAsync(id);
+            if (entity == null)
+            {
+                return NotFound("Usuario no encontrado");
+            }
+            entity.Borrado = true;
+            entity.BorradoPorU = idUsuarioMod;
+            entity.UsuarioMod = idUsuarioMod;
+            entity.FechaModificacion = DateTime.Now;
+            await _usuarioRepository.UpdateEntityAsync(entity);
+            return Ok("Usuario borrado");
         }
     }
 }

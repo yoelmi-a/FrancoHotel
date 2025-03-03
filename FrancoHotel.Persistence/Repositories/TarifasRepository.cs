@@ -233,36 +233,5 @@ namespace FrancoHotel.Persistence.Repositories
                 throw;
             }
         }
-
-        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod, DateTime fechaMod)
-        {
-            OperationResult result = new OperationResult();
-            if (!RepoValidation.ValidarID(id) ||
-                !RepoValidation.ValidarID(idUsuarioMod) ||
-                !RepoValidation.ValidarEntidad(fechaMod))
-            {
-                result.Message = _configuration["ErrorTarifasRepository:InvalidData"]!;
-                result.Success = false;
-                return result;
-            }
-            try
-            {
-                await _context.Tarifas
-                .Where(e => e.Id == id)
-                .ExecuteUpdateAsync(setters => setters
-                .SetProperty(e => e.Borrado, true)
-                .SetProperty(e => e.UsuarioMod, idUsuarioMod)
-                .SetProperty(e => e.FechaModificacion, fechaMod)
-                );
-            }
-            catch (Exception ex)
-            {
-
-                result.Message = this._configuration["ErrorTarifasRepository:RemoveEntity"]!;
-                result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
-            }
-            return result;
-        }
     }
 }

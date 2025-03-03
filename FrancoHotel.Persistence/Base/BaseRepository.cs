@@ -82,34 +82,5 @@ namespace FrancoHotel.Persistence.Base
             }
             return result;
         }
-
-        public virtual async Task<OperationResult> RemoveEntityAsync(Ttype id, Ttype idUsuarioMod, DateTime fechaModificacion)
-        {
-            OperationResult result = new OperationResult();
-            try
-            {
-                var entity = await Entity.FindAsync(id);
-
-                if (entity == null)
-                {
-                    result.Success = false;
-                    result.Message = "La entidad no fue encontrada.";
-                    return result;
-                }
-
-                _context.Entry(entity).Property("Borrado").CurrentValue = true;
-                _context.Entry(entity).Property("UsuarioMod").CurrentValue = idUsuarioMod;
-                _context.Entry(entity).Property("FechaModificacion").CurrentValue = fechaModificacion;
-
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-
-                result.Success = false;
-                result.Message = "Ocurrio un error guardando los datos.";
-            }
-            return result;
-        }
     }
 }
