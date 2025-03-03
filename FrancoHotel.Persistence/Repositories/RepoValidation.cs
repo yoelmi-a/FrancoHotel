@@ -10,7 +10,7 @@ namespace FrancoHotel.Persistence.Repositories
             if (string.IsNullOrWhiteSpace(texto))
             {
                 return false;
-                
+
             }
 
             return true;
@@ -28,7 +28,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public static bool ValidarLongitudString(string texto, int longitud)
         {
-            if(texto.Length > longitud)
+            if (texto.Length > longitud)
             {
                 return false;
             }
@@ -38,7 +38,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public static bool ValidarID(int? id)
         {
-            if(id <= 0)
+            if (id <= 0)
             {
                 return false;
             }
@@ -70,7 +70,55 @@ namespace FrancoHotel.Persistence.Repositories
             {
                 return false;
             }
-
+            return true;
+        }
+        public static bool ValidarUsuario(Usuario entity)
+        {
+            if (!RepoValidation.ValidarEntidad(entity) ||
+                !RepoValidation.ValidarString(entity.NombreCompleto!) ||
+                !RepoValidation.ValidarLongitudString(entity.NombreCompleto!, 50) ||
+                !RepoValidation.ValidarString(entity.Correo!) ||
+                !RepoValidation.ValidarLongitudString(entity.Correo!, 50) ||
+                !RepoValidation.ValidarString(entity.Clave!) ||
+                !RepoValidation.ValidarLongitudString(entity.Clave!, 50) ||
+                !RepoValidation.ValidarEntidad(entity.EstadoYFecha.Estado!) ||
+                !RepoValidation.ValidarEntidad(entity.EstadoYFecha.FechaCreacion!) ||
+                !RepoValidation.ValidarID(entity.CreadorPorU))
+            {
+                return false;
+            }
+            return true;
+        }
+        public static bool ValidarRolUsuario(RolUsuario entity)
+        {
+            if (!RepoValidation.ValidarEntidad(entity) ||
+                !RepoValidation.ValidarString(entity.Descripcion!) ||
+                !RepoValidation.ValidarLongitudString(entity.Descripcion!, 50) ||
+                !RepoValidation.ValidarEntidad(entity.EstadoYFecha.Estado!) ||
+                !RepoValidation.ValidarEntidad(entity.EstadoYFecha.FechaCreacion!) ||
+                !RepoValidation.ValidarID(entity.CreadorPorU))
+            {
+                return false;
+            }
+            return true;
+        }
+        public static bool ValidarCliente(Cliente entity)
+        {
+            if (!RepoValidation.ValidarEntidad(entity) ||
+                !RepoValidation.ValidarString(entity.TipoDocumento!) ||
+                !RepoValidation.ValidarLongitudString(entity.TipoDocumento!, 15) ||
+                !RepoValidation.ValidarString(entity.Documento!) ||
+                !RepoValidation.ValidarLongitudString(entity.Documento!, 15) ||
+                !RepoValidation.ValidarString(entity.NombreCompleto!) ||
+                !RepoValidation.ValidarLongitudString(entity.NombreCompleto!, 50) ||
+                !RepoValidation.ValidarString(entity.Correo!) ||
+                !RepoValidation.ValidarLongitudString(entity.Correo!, 50) ||
+                !RepoValidation.ValidarEntidad(entity.EstadoYFecha.Estado!) ||
+                !RepoValidation.ValidarEntidad(entity.EstadoYFecha.FechaCreacion!) ||
+                !RepoValidation.ValidarID(entity.CreadorPorU))
+            {
+                return false;
+            }
             return true;
         }
     }

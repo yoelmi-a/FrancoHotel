@@ -6,7 +6,7 @@ namespace FrancoHotel.Persistence.Interfaces
 {
     public interface IRolUsuarioRepository : IBaseRepository<RolUsuario, int>
     {
-        Task<List<RolUsuario>> GetRolUsuarioByDescripcion(string descripcion)
+        Task<RolUsuario> GetRolUsuarioByDescripcion(string descripcion);
         Task<List<RolUsuario>> GetRolesUsuarioByEstado(bool estado);
 
         Task<OperationResult> UpdateDescripcion(RolUsuario idRolUsuario, string nuevaDescripcion);
