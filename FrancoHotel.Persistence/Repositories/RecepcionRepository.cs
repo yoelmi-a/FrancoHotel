@@ -98,6 +98,23 @@ namespace FrancoHotel.Persistence.Repositories
             return await _context.Recepcion.FindAsync(id).ConfigureAwait(false);
         }
 
-        
+        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        {
+            OperationResult result = new OperationResult();
+            try
+            {
+                await _context.Recepcion.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+            }
+            catch (Exception ex)
+            {
+
+                result.Message = this._configuration["ErrorRecepcionRepository:RemoveEntity"];
+                result.Success = false;
+                this._logger.LogError(result.Message, ex.ToString());
+            }
+            return result;
+        }
+
+
     }
 }

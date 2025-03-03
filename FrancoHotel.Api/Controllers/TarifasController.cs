@@ -78,6 +78,13 @@ namespace FrancoHotel.Api.Controllers
             await _tarifasRepository.UpdateEntityAsync(tarifas);
             return Ok(tarifas);
         }
+
+        [HttpDelete("RemoveTarifa")]
+        public async Task<IActionResult> RemovePiso(int id)
+        {
+            await _tarifasRepository.RemoveEntityAsync(id);
+            return Ok(id);
+        }
     }
 }
 

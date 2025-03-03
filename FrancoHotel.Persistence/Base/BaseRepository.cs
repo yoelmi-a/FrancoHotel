@@ -82,5 +82,10 @@ namespace FrancoHotel.Persistence.Base
             }
             return result;
         }
+
+        public virtual async Task<OperationResult> RemoveEntityAsync(Ttype id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

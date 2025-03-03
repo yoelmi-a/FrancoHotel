@@ -16,5 +16,6 @@ namespace FrancoHotel.Domain.Repository
         Task<List<TEntity>> GetAllAsync();
         Task<OperationResult> GetAllAsync(Expression<Func<TEntity, bool>> filter);
         Task<bool> Exists(Expression<Func<TEntity, bool>> filter);
+        Task<OperationResult> RemoveEntityAsync(Ttype id);
     }
 }
