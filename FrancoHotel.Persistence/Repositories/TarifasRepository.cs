@@ -171,28 +171,25 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override async Task<Tarifas> GetEntityByIdAsync(int id)
+        public override async Task<Tarifas?> GetEntityByIdAsync(int id)
         {
-            if (id <= 0)
+            OperationResult result = new OperationResult();
+            if (RepoValidation.ValidarID(id))
             {
                 return null;
             }
-            return await _context.Tarifas.FindAsync(id).ConfigureAwait(false);
+                return await _context.Tarifas.FindAsync(id).ConfigureAwait(false);
         }
 
         public override async Task<OperationResult> SaveEntityAsync(Tarifas entity)
         {
             OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarID(entity.Id))
+            {
+
+            }
             try
             {
-                /*
-                if (entity.IdHabitacion >= 0)
-                {
-                }
-                else if (entity.IdHabitacion >= 0)
-                {
-                }
-                */
                 _context.Tarifas.Add(entity);
                 await _context.SaveChangesAsync();
             }
@@ -244,7 +241,7 @@ namespace FrancoHotel.Persistence.Repositories
             catch (Exception ex)
             {
 
-                result.Message = this._configuration["ErrorTarifasRepository:RemoveEntity"];
+                result.Message = this._configuration["ErrorTarifasRepository:RemoveEntity"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
