@@ -3,6 +3,7 @@ using FrancoHotel.Persistence.Interfaces;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using FrancoHotel.Persistence.Repositories;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -44,6 +45,13 @@ namespace FrancoHotel.Api.Controllers
         {
             await _serviciosRepository.UpdateEntityAsync(servicio);
             return Ok(servicio);
+        }
+
+        [HttpDelete("RemoveServicio")]
+        public async Task<IActionResult> RemovePiso(int id)
+        {
+            await _serviciosRepository.RemoveEntityAsync(id);
+            return Ok(id);
         }
     }
 }

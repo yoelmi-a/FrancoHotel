@@ -8,10 +8,10 @@ namespace FrancoHotel.IOC.Dependencies
 {
     public static class PisoDependency
     {
-        public static void AddPisoDependency(this IServiceCollection service)
+        public static void AddPisoDependency(this IServiceCollection services)
         {
-            service.AddScoped<IPisoRepository, PisoRepository>();
-            service.AddTransient<IPisoService, PisoService>();
+            services.AddScoped<IPisoRepository, PisoRepository>();
+            services.AddTransient<IPisoService, PisoService>();
         }
     }
 }

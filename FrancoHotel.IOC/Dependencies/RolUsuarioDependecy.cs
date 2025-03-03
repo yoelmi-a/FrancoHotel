@@ -4,11 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FrancoHotel.IOC.Dependencies
 {
-    public static class RecepcionDependecy
+    public static class RolUsuarioDependecy
     {
-        public static void AddRecepcionDependency(this IServiceCollection services)
+        public static void AddRolUsuarioDependecy(this IServiceCollection services)
         {
-            services.AddScoped<IRecepcionRepository, RecepcionRepository>();
+            services.AddScoped<IRolUsuarioRepository, RolUsuarioRepository>();
         }
     }
 }
