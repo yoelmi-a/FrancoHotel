@@ -277,5 +277,40 @@ namespace FrancoHotel.Persistence.Repositories
 
             return result;
         }
+
+        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
+        {
+            OperationResult result = new OperationResult();
+            Usuario? entity = await GetEntityByIdAsync(id);
+
+            if (!RepoValidation.ValidarID(id) ||
+                !RepoValidation.ValidarID(idUsuarioMod))
+            {
+                result.Message = _configuration["ErrorUsuarioRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            else if (!RepoValidation.ValidarEntidad(entity!))
+            {
+                result.Message = _configuration["ErrorUsuarioRepository:UserNotFound"]!;
+                result.Success = false;
+                return result;
+            }
+            try
+            {
+                entity!.Borrado = true;
+                entity.BorradoPorU = idUsuarioMod;
+                entity.UsuarioMod = idUsuarioMod;
+                entity.FechaModificacion = DateTime.Now;
+                await UpdateEntityAsync(entity);
+            }
+            catch (Exception ex)
+            {
+                result.Message = _configuration["ErrorUsuarioRepository:RemoveEntity"]!;
+                result.Success = false;
+                _logger.LogError(result.Message, ex.ToString());
+            }
+            return result;
+        }
     }
 }

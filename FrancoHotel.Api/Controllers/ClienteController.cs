@@ -78,16 +78,7 @@ namespace FrancoHotel.Api.Controllers
         [HttpDelete("RemoveCliente")]
         public async Task<IActionResult> RemoveCliente(int id, int idUsuarioMod)
         {
-            var entity = await _clienteRepository.GetEntityByIdAsync(id);
-            if(entity == null)
-            {
-                return NotFound("Cliente no encontrado");
-            }
-            entity.Borrado = true;
-            entity.BorradoPorU = idUsuarioMod;
-            entity.UsuarioMod = idUsuarioMod;
-            entity.FechaModificacion = DateTime.Now;
-            await _clienteRepository.UpdateEntityAsync(entity);
+            await _clienteRepository.RemoveEntityAsync(id, idUsuarioMod);
             return Ok("Cliente borrado");
         }
     }
