@@ -67,7 +67,6 @@ namespace FrancoHotel.Persistence.Repositories
                     !RepoValidation.ValidarLongitudString(entity.Detalle!, 100) ||
                     !RepoValidation.ValidarString(entity.Numero!) ||
                     !RepoValidation.ValidarLongitudString(entity.Numero!, 50) ||
-                    !RepoValidation.ValidarPrecio(entity.Precio) ||
                     !RepoValidation.ValidarID(entity.IdPiso) ||
                     !RepoValidation.ValidarID(entity.IdCategoria) ||
                     !RepoValidation.ValidarEntidad(entity.EstadoYFecha.Estado!) ||
@@ -118,7 +117,8 @@ namespace FrancoHotel.Persistence.Repositories
                !RepoValidation.ValidarString(servicio.Nombre) ||
                !RepoValidation.ValidarLongitudString(servicio.Nombre!, 200) ||
                !RepoValidation.ValidarString(servicio.Descripcion!) ||
-               !RepoValidation.ValidarLongitudString(servicio.Descripcion, 1073741823))
+               !RepoValidation.ValidarLongitudString(servicio.Descripcion, 1073741823) ||
+               !RepoValidation.ValidarPrecio(servicio.Precio))
             {
                 return false;
             }
