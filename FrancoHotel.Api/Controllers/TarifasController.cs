@@ -80,11 +80,19 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpDelete("RemoveTarifa")]
-        public async Task<IActionResult> RemovePiso(int id)
+        public async Task<IActionResult> RemoveTarifa(int id, int idUsuarioMod)
         {
-            await _tarifasRepository.RemoveEntityAsync(id);
-            return Ok(id);
+            await _tarifasRepository.RemoveEntityAsync(id, idUsuarioMod);
+            return Ok("Cliente borrado");
         }
+
+        [HttpPut("UpdateTarifaByCategoria")]
+        public async Task<IActionResult> Put([FromQuery] string categoria, [FromQuery] decimal precio)
+        {
+            var result = await _tarifasRepository.UpdateTarifaByCategoria(categoria, precio);
+            return Ok(new { message = "Tarifas actualizadas correctamente." });
+        }
+
     }
 }
 

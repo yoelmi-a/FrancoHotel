@@ -7,7 +7,7 @@ namespace FrancoHotel.Persistence.Interfaces
 {
     public interface ITarifasRepository : IBaseRepository<Tarifas, int>
     {
-        Task<OperationResult> AddTarifaByCategoria(string IdCategoria, double Precio);  
+        Task<OperationResult> UpdateTarifaByCategoria(string IdCategoria, decimal precio);  
 
        
         Task<OperationResult> UpdateTarifasByFechas(DateTime FechaInicio, DateTime FechaFinal, double porcentajeCambio);

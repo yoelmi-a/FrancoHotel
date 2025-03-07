@@ -24,12 +24,16 @@ namespace FrancoHotel.Persistence.Repositories
             this._configuration = configuration;
         }
 
-        public async Task<OperationResult> AddTarifaByCategoria(string categoria, double precio)
+        public async Task<OperationResult> UpdateTarifaByCategoria(string categoria, decimal precio)
         {
             OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarLongitudString(categoria, 20) || !RepoValidation.ValidarPrecio(precio))
+            {
+                result.Message = this._configuration["ErrorTarifasRepository:AddTarifaByCategoria"]!;
+            }
             try
             {
-                var tarifas = await _context.Tarifas
+                 await _context.Tarifas
                     .Join(_context.Habitacion,
                         t => t.IdHabitacion,
                         h => h.Id,
@@ -39,28 +43,19 @@ namespace FrancoHotel.Persistence.Repositories
                         c => c.Id,
                         (th, c) => new { th.t, th.h, c })
                     .Where(x => x.c.Descripcion == categoria)
-                    .ToListAsync();
-
-                foreach (var tarifa in tarifas)
-                {
-                    tarifa.t.PrecioPorNoche = (decimal)precio;
-                }
-
-                await _context.SaveChangesAsync();
+                    .Select(x => x.t)
+                    .ExecuteUpdateAsync(setters => setters.SetProperty(t => t.PrecioPorNoche, precio));
 
                 result.Success = true;
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorTarifasRepository:AddTarifaByCategoria"]!;
+                result.Message = _configuration["ErrorTarifasRepository:AddTarifaByCategoria"]!;
                 result.Success = false;
                 Console.WriteLine(result.Message + $": {ex.Message}");
             }
             return result;
         }
-
-
-
 
         public async Task<OperationResult> UpdateTarifasByFechas(DateTime fechaInicio, DateTime fechaFin, double porcentajeCambio)
         {
@@ -234,19 +229,37 @@ namespace FrancoHotel.Persistence.Repositories
             }
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
         {
             OperationResult result = new OperationResult();
+            Tarifas? entity = await GetEntityByIdAsync(id);
+
+            if (!RepoValidation.ValidarID(id) ||
+                !RepoValidation.ValidarID(idUsuarioMod))
+            {
+                result.Message = _configuration["ErrorTarifasRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            else if (!RepoValidation.ValidarEntidad(entity!))
+            {
+                result.Message = _configuration["ErrorTarifasRepository:UserNotFound"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                await _context.Tarifas.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+                entity!.Borrado = true;
+                entity.BorradoPorU = idUsuarioMod;
+                entity.UsuarioMod = idUsuarioMod;
+                entity.FechaModificacion = DateTime.Now;
+                await UpdateEntityAsync(entity);
             }
             catch (Exception ex)
             {
-
-                result.Message = this._configuration["ErrorTarifasRepository:RemoveEntity"]!;
+                result.Message = _configuration["ErrorTarifasRepository:RemoveEntity"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
