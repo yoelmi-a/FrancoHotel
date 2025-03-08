@@ -35,7 +35,7 @@ namespace FrancoHotel.Persistence.Repositories
             {
                  await _context.Tarifas
                     .Join(_context.Habitacion,
-                        t => t.IdHabitacion,
+                        t => t.IdCategoria,
                         h => h.Id,
                         (t, h) => new { t, h })
                     .Join(_context.Categoria,
@@ -110,7 +110,7 @@ namespace FrancoHotel.Persistence.Repositories
 
                 // Obtener la tarifa correspondiente a la categoría
                 var tarifa = await _context.Tarifas
-                    .Where(t => t.IdHabitacion == categoria.Id && t.Estado == null)
+                    .Where(t => t.IdCategoria == categoria.Id && t.Estado == null)
                     .FirstOrDefaultAsync();
 
                 if (tarifa == null)

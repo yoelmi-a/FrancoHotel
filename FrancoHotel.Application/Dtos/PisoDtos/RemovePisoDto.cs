@@ -2,6 +2,6 @@
 {
     public class RemovePisoDto : DtoBase
     {
-        public int IdPiso { get; set; }
+        public int Id { get; set; }
     }
 }
