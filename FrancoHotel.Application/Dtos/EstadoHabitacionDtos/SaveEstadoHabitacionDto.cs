@@ -2,6 +2,5 @@
 {
     public class SaveEstadoHabitacionDto : EstadoHabitacionDto
     {
-        public int IdEstadoHabitacion { get; set; }
     }
 }
