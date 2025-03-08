@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using FrancoHotel.Application.Base;
-using FrancoHotel.Application.Dtos.PisoDtos;
+using FrancoHotel.Application.Dtos.TarifasDto;
+using FrancoHotel.Application.Dtos.TarifasDtos;
 
 namespace FrancoHotel.Application.Interfaces
 {
-    public interface ITarifasService : IBaseService< UpdatePisoDto, RemovePisoDto>
+    public interface ITarifasService : IBaseService<RemoveTarifasDto, SaveTarifasDtos, UpdateTarifasDto>
     {
     }
 }

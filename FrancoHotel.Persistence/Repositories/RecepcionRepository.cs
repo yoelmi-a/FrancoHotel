@@ -30,29 +30,50 @@ namespace FrancoHotel.Persistence.Repositories
         {
             OperationResult result = new OperationResult();
             
-
+            if (RepoValidation.ValidarID(entity.IdCliente))
+            {
+                result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsync"]!;
+            }
+            if (RepoValidation.ValidarID(entity.IdHabitacion))
+            {
+                result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsync"]!;
+            }
+            try
+            {
                 await _context.Recepcion.AddAsync(entity);
                 await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
+                result.Success = false;
+                this._logger.LogError(result.Message, ToString());
+            }
 
-                result.Data = entity;
 
             return result;
         }
 
-
+       
 
         public override async Task<OperationResult> UpdateEntityAsync(Recepcion entity)
         {
             OperationResult result = new OperationResult();
 
-            if (entity.Id >= 0)
+            if (RepoValidation.ValidarID(entity.Id) == null)
             {
-
+                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
+            }
+            else if(RepoValidation.ValidarID(entity.IdCliente) == null)
+            {
+                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
+            }
+            else if(RepoValidation.ValidarID(entity.IdHabitacion) == null)
+            {
+                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
             }
             try
             {
-
-
                 _context.Recepcion.Update(entity);
                 await _context.SaveChangesAsync();
 
@@ -90,17 +111,21 @@ namespace FrancoHotel.Persistence.Repositories
         }
         public override async Task<Recepcion?> GetEntityByIdAsync(int id)
         {
-            if (id <= 0)
+            OperationResult result = new OperationResult();
+            if (RepoValidation.ValidarID(id) == null)
             {
-                return null!;
+                return null;
             }
-
-            return await _context.Recepcion.FindAsync(id).ConfigureAwait(false);
+                return await _context.Recepcion.FindAsync(id);
         }
 
         public override async Task<OperationResult> RemoveEntityAsync(int id)
         {
             OperationResult result = new OperationResult();
+            if (RepoValidation.ValidarID(id) == null)
+            {
+                result.Message = _configuration["ErrorRecepcionRepository:RemoveEntity"]!;
+            }
             try
             {
                 await _context.Recepcion.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
