@@ -14,4 +14,8 @@
     <ProjectReference Include="..\FrancoHotel.Persistence\FrancoHotel.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mappers\" />
+  </ItemGroup>
+
 </Project>
