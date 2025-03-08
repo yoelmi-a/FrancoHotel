@@ -33,18 +33,18 @@ namespace FrancoHotel.Persistence.Repositories
             }
             try
             {
-                await _context.Tarifas
-                   .Join(_context.Habitacion,
-                       t => t.IdHabitacion,
-                       h => h.Id,
-                       (t, h) => new { t, h })
-                   .Join(_context.Categoria,
-                       th => th.h.IdCategoria,
-                       c => c.Id,
-                       (th, c) => new { th.t, th.h, c })
-                   .Where(x => x.c.Descripcion == categoria)
-                   .Select(x => x.t)
-                   .ExecuteUpdateAsync(setters => setters.SetProperty(t => t.PrecioPorNoche, precio));
+                 await _context.Tarifas
+                    .Join(_context.Habitacion,
+                        t => t.IdHabitacion,
+                        h => h.Id,
+                        (t, h) => new { t, h })
+                    .Join(_context.Categoria,
+                        th => th.h.IdCategoria,
+                        c => c.Id,
+                        (th, c) => new { th.t, th.h, c })
+                    .Where(x => x.c.Descripcion == categoria)
+                    .Select(x => x.t)
+                    .ExecuteUpdateAsync(setters => setters.SetProperty(t => t.PrecioPorNoche, precio));
 
                 result.Success = true;
             }
@@ -56,10 +56,6 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return result;
         }
-
-
-
-
         public async Task<OperationResult> UpdateTarifasByFechas(DateTime fechaInicio, DateTime fechaFin, decimal porcentajeCambio)
         {
             OperationResult result = new OperationResult();
@@ -231,19 +227,37 @@ namespace FrancoHotel.Persistence.Repositories
             }
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
         {
             OperationResult result = new OperationResult();
+            Tarifas? entity = await GetEntityByIdAsync(id);
+
+            if (!RepoValidation.ValidarID(id) ||
+                !RepoValidation.ValidarID(idUsuarioMod))
+            {
+                result.Message = _configuration["ErrorTarifasRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            else if (!RepoValidation.ValidarEntidad(entity!))
+            {
+                result.Message = _configuration["ErrorTarifasRepository:UserNotFound"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                await _context.Tarifas.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+                entity!.Borrado = true;
+                entity.BorradoPorU = idUsuarioMod;
+                entity.UsuarioMod = idUsuarioMod;
+                entity.FechaModificacion = DateTime.Now;
+                await UpdateEntityAsync(entity);
             }
             catch (Exception ex)
             {
-
-                result.Message = this._configuration["ErrorTarifasRepository:RemoveEntity"]!;
+                result.Message = _configuration["ErrorTarifasRepository:RemoveEntity"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }

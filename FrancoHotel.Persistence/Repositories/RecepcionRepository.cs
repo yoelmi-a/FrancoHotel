@@ -119,27 +119,39 @@ namespace FrancoHotel.Persistence.Repositories
                 return await _context.Recepcion.FindAsync(id);
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
         {
             OperationResult result = new OperationResult();
-            if (RepoValidation.ValidarID(id) == null)
+            Recepcion? entity = await GetEntityByIdAsync(id);
+
+            if (!RepoValidation.ValidarID(id) ||
+                !RepoValidation.ValidarID(idUsuarioMod))
             {
-                result.Message = _configuration["ErrorRecepcionRepository:RemoveEntity"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            else if (!RepoValidation.ValidarEntidad(entity!))
+            {
+                result.Message = _configuration["ErrorRecepcionRepository:UserNotFound"]!;
+                result.Success = false;
+                return result;
             }
             try
             {
-                await _context.Recepcion.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+                entity!.Borrado = true;
+                entity.BorradoPorU = idUsuarioMod;
+                entity.UsuarioMod = idUsuarioMod;
+                entity.FechaModificacion = DateTime.Now;
+                await UpdateEntityAsync(entity);
             }
             catch (Exception ex)
             {
-
-                result.Message = this._configuration["ErrorRecepcionRepository:RemoveEntity"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:RemoveEntity"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
-
-
     }
 }

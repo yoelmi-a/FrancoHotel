@@ -50,23 +50,26 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override async Task<Habitacion> GetEntityByIdAsync(int id)
+        public override async Task<Habitacion?> GetEntityByIdAsync(int id)
         {
-
+            if(!RepoValidation.ValidarID(id))
+            {
+                return null;
+            }
             return await _context.Habitacion.FindAsync(id).ConfigureAwait(false);
         }
 
         public override async Task<OperationResult> SaveEntityAsync(Habitacion entity)
         {
             OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarHabitacion(entity))
+            {
+                result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                if(!RepoValidation.ValidarHabitacion(entity))
-                {
-                    result.Message = this._configuration["ErrorHabitacionRepository:InvalidData"]!;
-                    result.Success = false;
-                    return result;
-                }
 
                 _context.Habitacion.Add(entity);
                 await _context.SaveChangesAsync();
@@ -74,9 +77,9 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorHabitacionRepository:SaveEntityAsync"]!;
+                result.Message = _configuration["ErrorHabitacionRepository:SaveEntityAsync"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
@@ -84,46 +87,59 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> UpdateEntityAsync(Habitacion entity)
         {
             OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarHabitacion(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+            {
+                result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                if(!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarHabitacion(entity))
-                {
-                    result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
-                    result.Success = false;
-                    return result;
-                }
                 _context.Habitacion.Update(entity);
                 await _context.SaveChangesAsync();
 
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorHabitacionRepository:UpdateEntityAsync"]!;
+                result.Message = _configuration["ErrorHabitacionRepository:UpdateEntityAsync"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
         {
             OperationResult result = new OperationResult();
+            Habitacion? entity = await GetEntityByIdAsync(id);
+
+            if (!RepoValidation.ValidarID(id) ||
+                !RepoValidation.ValidarID(idUsuarioMod))
+            {
+                result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            else if (!RepoValidation.ValidarEntidad(entity!))
+            {
+                result.Message = _configuration["ErrorHabitacionRepository:UserNotFound"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                if (RepoValidation.ValidarID(id))
-                {
-                    result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
-                    result.Success = false;
-                    return result;
-                }
-                await _context.Habitacion.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+                entity!.Borrado = true;
+                entity.BorradoPorU = idUsuarioMod;
+                entity.UsuarioMod = idUsuarioMod;
+                entity.FechaModificacion = DateTime.Now;
+                await UpdateEntityAsync(entity);
             }
             catch (Exception ex)
             {
-
-                result.Message = this._configuration["ErrorHabitacionRepository:RemoveEntity"]!;
+                result.Message = _configuration["ErrorHabitacionRepository:RemoveEntity"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }

@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
+using FrancoHotel.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.Api.Controllers
@@ -53,10 +54,10 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpDelete("RemovePiso")]
-        public async Task<IActionResult> RemovePiso(int id)
+        public async Task<IActionResult> RemovePiso(int id, int idUsuarioMod)
         {
-            await _pisoRepository.RemoveEntityAsync(id);
-            return Ok(id);
+            await _pisoRepository.RemoveEntityAsync(id, idUsuarioMod);
+            return Ok("Cliente borrado");
         }
     }
 }

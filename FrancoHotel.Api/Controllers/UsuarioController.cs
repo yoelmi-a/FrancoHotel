@@ -69,9 +69,9 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpPost("UpdateClave")]
-        public async Task<IActionResult> PutClave([FromBody] Usuario usuario)
+        public async Task<IActionResult> PutClave([FromBody] Usuario usuario, string nuevaClave)
         {
-            await _usuarioRepository.UpdateEntityAsync(usuario);
+            await _usuarioRepository.UpdateClave(usuario, nuevaClave);
             return Ok(usuario);
         }
 
@@ -83,10 +83,10 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpDelete("RemoveUsuario")]
-        public async Task<IActionResult> RemovePiso(int id)
+        public async Task<IActionResult> RemoveUsuario(int id, int idUsuarioMod)
         {
-            await _usuarioRepository.RemoveEntityAsync(id);
-            return Ok(id);
+            await _usuarioRepository.RemoveEntityAsync(id, idUsuarioMod);
+            return Ok("Cliente borrado");
         }
     }
 }

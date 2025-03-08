@@ -22,9 +22,9 @@ namespace FrancoHotel.Persistence.Repositories
                               ILogger<PisoRepository> logger, 
                               IConfiguration configuration) : base(context)
         {
-            this._context = context;
-            this._logger = logger;
-            this._configuration = configuration;
+            _context = context;
+            _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<List<PisoModel>> GetPisoByEstado(bool? estado)
@@ -57,9 +57,9 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override async Task<Piso> GetEntityByIdAsync(int id)
+        public override async Task<Piso?> GetEntityByIdAsync(int id)
         {
-            if(id <= 0)
+            if(!RepoValidation.ValidarID(id))
             {
                 return null;
             }
@@ -70,12 +70,14 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> SaveEntityAsync(Piso entity)
         {
             OperationResult result = new OperationResult();
+            if(!RepoValidation.ValidarPiso(entity))
+            {
+                result.Message = _configuration["ErrorPisoRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                if (string.IsNullOrWhiteSpace(entity.Descripcion) || !entity.EstadoYFecha.Estado.HasValue)
-                {
-                    throw new ArgumentNullException("El piso debe tener descripcion y estado");
-                }
 
                 _context.Piso.Add(entity);
                 await _context.SaveChangesAsync();
@@ -83,9 +85,9 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorPisoRepository:SaveEntityAsync"];
+                result.Message = _configuration["ErrorPisoRepository:SaveEntityAsync"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
@@ -93,39 +95,58 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> UpdateEntityAsync(Piso entity)
         {
             OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarPiso(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+            {
+                result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                if (string.IsNullOrWhiteSpace(entity.Descripcion))
-                {
-                    throw new ArgumentNullException("El piso debe tener descripcion");
-                }
-
                 _context.Piso.Update(entity);
                 await _context.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorPisoRepository:UpdateEntityAsync"];
+                result.Message = _configuration["ErrorPisoRepository:UpdateEntityAsync"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
         {
             OperationResult result = new OperationResult();
+            Piso? entity = await GetEntityByIdAsync(id);
+
+            if (!RepoValidation.ValidarID(id) ||
+                !RepoValidation.ValidarID(idUsuarioMod))
+            {
+                result.Message = _configuration["ErrorPisoRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            else if (!RepoValidation.ValidarEntidad(entity!))
+            {
+                result.Message = _configuration["ErrorPisoRepository:UserNotFound"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                await _context.Piso.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+                entity!.Borrado = true;
+                entity.BorradoPorU = idUsuarioMod;
+                entity.UsuarioMod = idUsuarioMod;
+                entity.FechaModificacion = DateTime.Now;
+                await UpdateEntityAsync(entity);
             }
             catch (Exception ex)
             {
-
-                result.Message = this._configuration["ErrorPisoRepository:RemoveEntity"];
+                result.Message = _configuration["ErrorPisoRepository:RemoveEntity"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }

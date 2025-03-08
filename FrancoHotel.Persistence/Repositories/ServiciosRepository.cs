@@ -48,9 +48,9 @@ namespace FrancoHotel.Persistence.Repositories
             return await _context.Servicios.AsNoTracking().ToListAsync();
         }
 
-        public override async Task<Servicios> GetEntityByIdAsync(int id)
+        public override async Task<Servicios?> GetEntityByIdAsync(int id)
         {
-            if (id <= 0)
+            if(!RepoValidation.ValidarID(id))
             {
                 return null;
             }
@@ -61,22 +61,22 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> SaveEntityAsync(Servicios entity)
         {
             OperationResult result = new OperationResult();
+            if(!RepoValidation.ValidarServicio(entity))
+            {
+                result.Message = _configuration["ErrorServiciosRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                if (string.IsNullOrWhiteSpace(entity.Descripcion) || string.IsNullOrWhiteSpace(entity.Nombre))
-                { 
-                    throw new ArgumentNullException("El servicio debe tener nombre y descripción");
-                }
-
                 _context.Servicios.Add(entity);
                 await _context.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorServiciosRepository:SaveEntityAsync"];
+                result.Message = _configuration["ErrorServiciosRepository:SaveEntityAsync"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
@@ -84,39 +84,58 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> UpdateEntityAsync(Servicios entity)
         {
             OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarServicio(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+            {
+                result.Message = _configuration["ErrorServiciosRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                if (string.IsNullOrWhiteSpace(entity.Descripcion) || string.IsNullOrWhiteSpace(entity.Nombre))
-                {
-                    throw new ArgumentNullException("El servicio debe tener nombre y descripción");
-                }
-
                 _context.Servicios.Update(entity);
                 await _context.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {
-                result.Message = this._configuration["ErrorServiciosRepository:UpdateEntityAsync"];
+                result.Message = _configuration["ErrorServiciosRepository:UpdateEntityAsync"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id)
+        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
         {
             OperationResult result = new OperationResult();
+            Servicios? entity = await GetEntityByIdAsync(id);
+
+            if (!RepoValidation.ValidarID(id) ||
+                !RepoValidation.ValidarID(idUsuarioMod))
+            {
+                result.Message = _configuration["ErrorServiciosRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            else if (!RepoValidation.ValidarEntidad(entity!))
+            {
+                result.Message = _configuration["ErrorServiciosRepository:UserNotFound"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                await _context.Servicios.Where(e => e.Id == id).ExecuteUpdateAsync(setters => setters.SetProperty(e => e.Borrado, true));
+                entity!.Borrado = true;
+                entity.BorradoPorU = idUsuarioMod;
+                entity.UsuarioMod = idUsuarioMod;
+                entity.FechaModificacion = DateTime.Now;
+                await UpdateEntityAsync(entity);
             }
             catch (Exception ex)
             {
-
-                result.Message = this._configuration["ErrorServiciosRepository:RemoveEntity"];
+                result.Message = _configuration["ErrorServiciosRepository:RemoveEntity"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ex.ToString());
+                _logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
