@@ -1,4 +1,6 @@
 ﻿using System.Linq.Expressions;
+using FrancoHotel.Application.Dtos.PisoDtos;
+using FrancoHotel.Application.Interfaces;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
@@ -11,11 +13,13 @@ namespace FrancoHotel.Api.Controllers
     public class PisoController : ControllerBase
     {
         private readonly IPisoRepository _pisoRepository;
+        private readonly IPisoService _pisoService;
 
         public PisoController(IPisoRepository pisoRepository,
-                              ILogger<PisoController> logger)
+                              IPisoService pisoService)
         {
             _pisoRepository = pisoRepository;
+            _pisoService = pisoService;
         }
 
         [HttpGet("GetPisos")]
@@ -40,9 +44,9 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpPost("SavePiso")]
-        public async Task<IActionResult> Post([FromBody] Piso piso)
+        public async Task<IActionResult> Post([FromBody] SavePisoDto piso)
         {
-            await _pisoRepository.SaveEntityAsync(piso);
+            await _pisoService.Save(piso);
             return Ok(piso);
         }
 
