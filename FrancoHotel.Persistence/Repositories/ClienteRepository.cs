@@ -184,31 +184,24 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
         return result;
     }
 
-    public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
+    public override async Task<OperationResult> RemoveEntityAsync(Cliente entity)
     {
         OperationResult result = new OperationResult();
-        Cliente? entity = await GetEntityByIdAsync(id);
 
-        if (!RepoValidation.ValidarID(id) ||
-            !RepoValidation.ValidarID(idUsuarioMod))
+        if (!RepoValidation.ValidarCliente(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) ||
+                !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
+                !RepoValidation.ValidarID(entity.BorradoPorU) ||
+                !RepoValidation.ValidarEntidad(entity.Borrado!))
         {
             result.Message = _configuration["ErrorClienteRepository:InvalidData"]!;
             result.Success = false;
             return result;
         }
-        else if (!RepoValidation.ValidarEntidad(entity!))
-        {
-            result.Message = _configuration["ErrorClienteRepository:UserNotFound"]!;
-            result.Success = false;
-            return result;
-        }
         try
         {
-            entity!.Borrado = true;
-            entity.BorradoPorU = idUsuarioMod;
-            entity.UsuarioMod = idUsuarioMod;
-            entity.FechaModificacion = DateTime.Now;
-            await UpdateEntityAsync(entity);
+            _context.Cliente.Update(entity);
+            await _context.SaveChangesAsync();
         }
         catch (Exception ex)
         {

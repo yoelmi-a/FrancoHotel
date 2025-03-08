@@ -7,6 +7,5 @@ namespace FrancoHotel.Persistence.Interfaces
 {
     public interface IPisoRepository : IBaseRepository<Piso, int>
     {
-        Task<List<PisoModel>> GetPisoByEstado(bool? estado);
     }
 }

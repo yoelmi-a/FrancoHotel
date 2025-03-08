@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using FrancoHotel.Application.Dtos.PisoDtos;
 using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
@@ -51,16 +52,17 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpPut("UpdatePiso")]
-        public async Task<IActionResult> Put([FromBody] Piso piso)
+        public async Task<IActionResult> Put([FromBody] UpdatePisoDto piso)
         {
-            await _pisoRepository.UpdateEntityAsync(piso);
-            return Ok(piso);
+            OperationResult result = new OperationResult();
+            result = await _pisoService.Update(piso);
+            return Ok(result.Message);
         }
 
         [HttpDelete("RemovePiso")]
-        public async Task<IActionResult> RemovePiso(int id, int idUsuarioMod)
+        public async Task<IActionResult> RemovePiso(RemovePisoDto dto)
         {
-            await _pisoRepository.RemoveEntityAsync(id, idUsuarioMod);
+            await _pisoService.Remove(dto);
             return Ok("Cliente borrado");
         }
     }

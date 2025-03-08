@@ -16,6 +16,7 @@ namespace FrancoHotel.Application.Services
     {
         private readonly IPisoRepository _pisoRepository;
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IRecepcionRepository _recepcionRepository;
         private readonly ILogger<PisoService> _logger;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
@@ -24,13 +25,15 @@ namespace FrancoHotel.Application.Services
                            ILogger<PisoService> logger,
                            IConfiguration configuration,
                            IMapper mapper,
-                           IUsuarioRepository usuarioRepository)
+                           IUsuarioRepository usuarioRepository,
+                           IRecepcionRepository recepcionRepository)
         {
             this._pisoRepository = pisoRepository;
             this._logger = logger;
             this._configuration = configuration;
             _mapper = mapper;
             _usuarioRepository = usuarioRepository;
+            _recepcionRepository = recepcionRepository;
         }
 
         public async Task<OperationResult> GetAll()
@@ -48,27 +51,44 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
-        public Task<OperationResult> GetPisoByEstado(bool? estado)
+        public async Task<OperationResult> Remove(RemovePisoDto dto)
         {
-            throw new NotImplementedException();
-        }
+            OperationResult result = new OperationResult();
+            bool hasReservations = await _recepcionRepository.GetHabitacionInPisoBooked(dto.Id);
+            if (hasReservations)
+            {
+                result.Success = false;
+                result.Message = "El piso no se puede remover porque tiene reservas activas";
+                return result;
+            }
 
-        public Task<OperationResult> Remove(RemovePisoDto dto)
-        {
-            throw new NotImplementedException();
+            Piso? piso = await _pisoRepository.GetEntityByIdAsync(dto.Id);
+            if (piso != null)
+            {
+                result = await _pisoRepository.RemoveEntityAsync(_mapper.Map(dto, piso));
+            }
+
+            return result;
         }
 
         public async Task<OperationResult> Save(SavePisoDto dto)
         {
             OperationResult result = new OperationResult();
-            if()
             result = await _pisoRepository.SaveEntityAsync(_mapper.Map<Piso>(dto));
             return result;
         }
 
-        public Task<OperationResult> Update(UpdatePisoDto dto)
+        public async Task<OperationResult> Update(UpdatePisoDto dto)
         {
-            throw new NotImplementedException();
+            Piso? piso = await _pisoRepository.GetEntityByIdAsync(dto.Id);
+            OperationResult result = new OperationResult();
+            if (piso != null)
+            {
+                result = await _pisoRepository.UpdateEntityAsync(_mapper.Map(dto, piso));
+            }
+            result.Success = false;
+            result.Message = "El piso a modificar no está registrado";
+            return result;
         }
     }
 }
