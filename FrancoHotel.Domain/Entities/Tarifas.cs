@@ -9,13 +9,20 @@ namespace FrancoHotel.Domain.Entities
         [Column("IdTarifa")]
         [Key]
         public override int Id { get; set; }
-        public int IdHabitacion { get; set; }
+        public int? IdCategoria { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }
         public decimal PrecioPorNoche { get; set; }
         public decimal Descuento { get; set; }
         public string Descripcion { get; set; }
         public string Estado { get; set; }
+        public int [CreadorPorU] { get; set; }
+        public int IdHabitacion { get; set; }
+        public int IdHabitacion { get; set; }
+        public int IdHabitacion { get; set; }
+        public int IdHabitacion { get; set; }
+        public int IdHabitacion { get; set; }
+
     }
 }
 

@@ -17,12 +17,14 @@ namespace FrancoHotel.Api.Controllers
         {
             _tarifasRepository = tarifasRepository;
         }
+
         [HttpGet("GetTarigas")]
         public async Task<IActionResult> GetAll()
         {
             var tarifas = await _tarifasRepository.GetAllAsync();
             return Ok(tarifas);
         }
+
         [HttpGet("GetTarifasByFilter")]
         public async Task<IActionResult> GetAllByFilter([FromQuery] string estado,
                                                         [FromQuery] string comparacion,
@@ -46,19 +48,19 @@ namespace FrancoHotel.Api.Controllers
             var tarifasfiltradas = await _tarifasRepository.GetAllAsync(filter);
             return Ok(tarifasfiltradas);
         }
+
         [HttpGet("GetTarifasById")]
         public async Task<IActionResult> GetById(short id)
         {
             var tarifas = await _tarifasRepository.GetEntityByIdAsync(id);
             return Ok(tarifas);
         }
+
         [HttpGet("ExistTarifas/{id}")]
         public async Task<IActionResult> GetExistTarifa(short id)
         {
-            // Obtener la tarifa usando el ID
             var tarifas = await _tarifasRepository.GetEntityByIdAsync(id);
 
-            // Verificar si la tarifa existe y si su descuento es mayor a cero
             if (tarifas != null && tarifas.Descuento > 0)
             {
                 return Ok(true);
@@ -66,12 +68,31 @@ namespace FrancoHotel.Api.Controllers
 
             return Ok(false);
         }
+
         [HttpPost("SaveTarifas")]
         public async Task<IActionResult> Post([FromBody] Tarifas tarifas)
         {
             await _tarifasRepository.SaveEntityAsync(tarifas);
             return Ok(tarifas);
         }
+
+        [HttpPut("UpdateTarifaByCategoria")]
+        public async Task<IActionResult> Put([FromQuery] string categoria, [FromQuery] decimal precio)
+        {
+            var result = await _tarifasRepository.UpdateTarifaByCategoria(categoria, precio);
+            return Ok(new { message = "Tarifas actualizadas correctamente." });
+        }
+
+
+        [HttpPut("UpdateTarifasByFechas")]
+        public async Task<IActionResult> Put([FromQuery]  DateTime fechaInicio, [FromQuery]  DateTime fechaFin, [FromQuery] decimal porcentajeCambio)
+        {
+            var result = await _tarifasRepository.UpdateTarifasByFechas(fechaInicio, fechaFin, porcentajeCambio);
+            return Ok(new { message = "Tarifas actualizadas correctamente." });
+        }
+
+
+
         [HttpPut("UpdateTarifas")]
         public async Task<IActionResult> Put([FromBody] Tarifas tarifas)
         {
@@ -80,11 +101,19 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpDelete("RemoveTarifa")]
-        public async Task<IActionResult> RemovePiso(int id)
+        public async Task<IActionResult> RemoveTarifa(int id, int idUsuarioMod)
         {
-            await _tarifasRepository.RemoveEntityAsync(id);
-            return Ok(id);
+            await _tarifasRepository.RemoveEntityAsync(id, idUsuarioMod);
+            return Ok("Cliente borrado");
         }
+
+        [HttpPut("UpdateTarifaByCategoria")]
+        public async Task<IActionResult> Put([FromQuery] string categoria, [FromQuery] decimal precio)
+        {
+            var result = await _tarifasRepository.UpdateTarifaByCategoria(categoria, precio);
+            return Ok(new { message = "Tarifas actualizadas correctamente." });
+        }
+
     }
 }
 

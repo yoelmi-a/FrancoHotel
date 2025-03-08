@@ -26,7 +26,7 @@ namespace FrancoHotel.Api.Controllers
         [HttpGet("GetRecepcionByFilter")]
         public async Task<IActionResult> GetAllByFilter([FromQuery] DateTime fechaInicio,
                                                  [FromQuery] DateTime fechaFin,
-                                                 [FromQuery] bool estado)
+                                                 [FromQuery] short estado)
         {
             Expression<Func<Recepcion, bool>> filter = r =>
                 r.FechaEntrada >= fechaInicio &&
@@ -45,7 +45,7 @@ namespace FrancoHotel.Api.Controllers
         [HttpGet("ExistRecepcion")]
         public async Task<IActionResult> GetExist([FromQuery] int id)
         {
-            Expression<Func<Recepcion, bool>> filter = r => r.Id == id && r.Estado;
+            Expression<Func<Recepcion, bool>> filter = r => r.Id == id;
             var recepcion = await _recepcionRepository.Exists(filter);
             return Ok(recepcion);
         }
@@ -63,10 +63,10 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpDelete("RemoveRecepcion")]
-        public async Task<IActionResult> RemovePiso(int id)
+        public async Task<IActionResult> RemoveRecepcion(int id, int idUsuarioMod)
         {
-            await _recepcionRepository.RemoveEntityAsync(id);
-            return Ok(id);
+            await _recepcionRepository.RemoveEntityAsync(id, idUsuarioMod);
+            return Ok("Cliente borrado");
         }
     }
 }

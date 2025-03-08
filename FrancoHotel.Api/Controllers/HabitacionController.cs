@@ -32,8 +32,7 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> GetAllbyFilter([FromQuery]bool estado, [FromQuery]decimal precioMax)
         {
             Expression<Func<Habitacion, bool>> filter = h =>
-                h.EstadoYFecha.Estado == estado &&
-                h.Precio <= precioMax;
+                h.EstadoYFecha.Estado == estado;
             var estadoHabitacion = await _habitacionRepository.GetAllAsync(filter);
             return Ok(estadoHabitacion);
         }
@@ -49,8 +48,7 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> GetExistPiso([FromQuery]bool estado, [FromQuery]decimal precioMax)
         {
             Expression<Func<Habitacion, bool>> filter = h =>
-                h.EstadoYFecha.Estado == estado &&
-                h.Precio <= precioMax;
+                h.EstadoYFecha.Estado == estado;
             var estadoHabitacion = await _habitacionRepository.Exists(filter);
             return Ok(estadoHabitacion);
         }
@@ -70,10 +68,10 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpDelete("RemoveHabitacion")]
-        public async Task<IActionResult> RemovePiso(int id)
+        public async Task<IActionResult> RemoveHabitacion(int id, int idUsuarioMod)
         {
-            await _habitacionRepository.RemoveEntityAsync(id);
-            return Ok(id);
+            await _habitacionRepository.RemoveEntityAsync(id, idUsuarioMod);
+            return Ok("Cliente borrado");
         }
     }
 }

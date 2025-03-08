@@ -1,14 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using FrancoHotel.Domain.Base;
+﻿using FrancoHotel.Domain.Base;
 
-namespace FrancoHotel.Domain.Entities
+namespace FrancoHotel.Application.Dtos.RecepcionDtos
 {
-    public sealed class Recepcion : BaseEntity<int>
+    public class RecepcionDtos
     {
-        [Column("IdRecepcion")]
-        [Key]
-        public override int Id { get; set; }
         public int? IdCliente { get; set; }
         public int? IdHabitacion { get; set; }
         public DateTime? FechaEntrada { get; set; }
@@ -20,10 +15,6 @@ namespace FrancoHotel.Domain.Entities
         public decimal? TotalPagado { get; set; }
         public decimal? CostoPenalidad { get; set; }
         public string? Observacion { get; set; }
-        public short Estado { get; set; }
-        public int? CantidadPersonas { get; set; }
-        public int? IdServicioPorCategoria { get; set; }
-        public decimal PrecioServiciosExtra { get; set; }
+        public bool Estado { get; set; }
     }
 }
-

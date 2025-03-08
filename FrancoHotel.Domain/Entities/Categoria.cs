@@ -10,7 +10,7 @@ namespace FrancoHotel.Domain.Entities
         [Key]
         public override int Id { get; set;}
         public string? Descripcion { get; set;}
-        public short IdServicio { get; set;}
+        public int? IdCombinacion { get; set;}
         public BaseEstadoYFecha EstadoYFecha { get; set;} = new BaseEstadoYFecha();
     }
 }
