@@ -7,7 +7,6 @@ namespace FrancoHotel.Persistence.Context
     {
         public HotelContext(DbContextOptions<HotelContext> options) : base(options)
         {
-            
         }
 
         public DbSet<Categoria> Categoria { get; set; }
@@ -20,5 +19,16 @@ namespace FrancoHotel.Persistence.Context
         public DbSet<Servicios> Servicios { get; set; }
         public DbSet<Tarifas> Tarifas { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
+        public DbSet<CategoriaServicios> CategoriaServicios { get; set; }
+        public DbSet<CombinacionServiciosCategoria> CombinacionServiciosCategorias { get; set; }
+        public DbSet<ServiciosExtra> ServiciosExtra { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ServiciosExtra>()
+                .HasKey(se => new { se.IdServicio, se.IdRecepcion });
+        }
     }
 }
