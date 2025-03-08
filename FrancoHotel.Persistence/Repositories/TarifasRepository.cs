@@ -56,11 +56,13 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return result;
         }
-
-        public async Task<OperationResult> UpdateTarifasByFechas(DateTime fechaInicio, DateTime fechaFin, double porcentajeCambio)
+        public async Task<OperationResult> UpdateTarifasByFechas(DateTime fechaInicio, DateTime fechaFin, decimal porcentajeCambio)
         {
             OperationResult result = new OperationResult();
-
+            if (!RepoValidation.ValidarPrecio(porcentajeCambio))
+            {
+                result.Message = this._configuration["ErrorTarifasRepository:UpdateTarifasByFechas"]!;
+            }
             try
             {
                 var parametros = new[]
@@ -70,7 +72,7 @@ namespace FrancoHotel.Persistence.Repositories
                     new SqlParameter("@PorcentajeCambio", porcentajeCambio)
                 };
 
-                await _context.Database.ExecuteSqlRawAsync("EXEC AjustarTarifas @FechaInicio, @FechaFin, @PorcentajeCambio", parametros);
+                await _context.Database.ExecuteSqlRawAsync("EXEC UpdateTarifasByFechas @FechaInicio, @FechaFin, @PorcentajeCambio", parametros);
 
                 result.Success = true;
             }
@@ -89,7 +91,10 @@ namespace FrancoHotel.Persistence.Repositories
         public async Task<OperationResult> TotalTarifa(int IdCategoria, int Days, int? ServiciosAdicionales)
         {
             OperationResult result = new OperationResult();
-
+            if(!RepoValidation.ValidarID(IdCategoria))
+            {
+                result.Message = _configuration["ErrorTarifasRepository:UpdateTarifasByFechas"]!;
+            }
             try
             {
                 // Obtener la categoría de habitación
@@ -168,32 +173,29 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<Tarifas?> GetEntityByIdAsync(int id)
         {
-            if (id <= 0)
+            OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarID(id))
             {
                 return null;
             }
-            return await _context.Tarifas.FindAsync(id).ConfigureAwait(false);
+                return await _context.Tarifas.FindAsync(id).ConfigureAwait(false);
         }
 
         public override async Task<OperationResult> SaveEntityAsync(Tarifas entity)
         {
             OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarID(entity.Id))
+            {
+                result.Message = _configuration["ErrorTarifasRepository:SaveEntityAsync"]!;
+            }
             try
             {
-                /*
-                if (entity.IdHabitacion >= 0)
-                {
-                }
-                else if (entity.IdHabitacion >= 0)
-                {
-                }
-                */
                 _context.Tarifas.Add(entity);
                 await _context.SaveChangesAsync();
             }
             catch (Exception)
             {
-                result.Message = this._configuration["ErrorTarifasRepository:SaveEntityAsync"]!;
+                result.Message = _configuration["ErrorTarifasRepository:SaveEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message);
             }
@@ -205,17 +207,13 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
             try
             {
-                if (entity.Id >= 0)
+                if (RepoValidation.ValidarID(entity.Id))
                 {
-
+                    result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
                 }
-                if (entity.IdHabitacion >= 0)
+                else if (RepoValidation.ValidarID(entity.IdHabitacion))
                 {
-
-                }
-                if (entity.IdHabitacion >= 0)
-                {
-
+                    result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
                 }
 
                 _context.Tarifas.Update(entity);
