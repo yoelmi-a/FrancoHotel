@@ -83,12 +83,11 @@ namespace FrancoHotel.Persistence.Base
             return result;
         }
 
-        public virtual async Task<OperationResult> RemoveEntityAsync(Ttype id, Ttype idUsuarioMod)
+        public virtual async Task<OperationResult> RemoveEntityAsync(TEntity entity)
         {
             OperationResult result = new OperationResult();
             try
             {
-                var entity = await Entity.FindAsync(id);
 
                 if (entity == null)
                 {
@@ -97,11 +96,7 @@ namespace FrancoHotel.Persistence.Base
                     return result;
                 }
 
-                _context.Entry(entity).Property("Borrado").CurrentValue = true;
-                _context.Entry(entity).Property("BorradoPorU").CurrentValue = idUsuarioMod;
-                _context.Entry(entity).Property("UsuarioMod").CurrentValue = idUsuarioMod;
-                _context.Entry(entity).Property("FechaModificacion").CurrentValue = DateTime.Now;
-
+                Entity.Update(entity);
                 await _context.SaveChangesAsync();
             }
             catch (Exception)

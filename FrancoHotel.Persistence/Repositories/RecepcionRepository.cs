@@ -119,31 +119,24 @@ namespace FrancoHotel.Persistence.Repositories
                 return await _context.Recepcion.FindAsync(id);
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
+        public override async Task<OperationResult> RemoveEntityAsync(Recepcion entity)
         {
             OperationResult result = new OperationResult();
-            Recepcion? entity = await GetEntityByIdAsync(id);
 
-            if (!RepoValidation.ValidarID(id) ||
-                !RepoValidation.ValidarID(idUsuarioMod))
+            if (!RepoValidation.ValidarEntidad(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) ||
+                !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
+                !RepoValidation.ValidarID(entity.BorradoPorU) ||
+                !RepoValidation.ValidarEntidad(entity.Borrado!))
             {
                 result.Message = _configuration["ErrorRecepcionRepository:InvalidData"]!;
                 result.Success = false;
                 return result;
             }
-            else if (!RepoValidation.ValidarEntidad(entity!))
-            {
-                result.Message = _configuration["ErrorRecepcionRepository:UserNotFound"]!;
-                result.Success = false;
-                return result;
-            }
             try
             {
-                entity!.Borrado = true;
-                entity.BorradoPorU = idUsuarioMod;
-                entity.UsuarioMod = idUsuarioMod;
-                entity.FechaModificacion = DateTime.Now;
-                await UpdateEntityAsync(entity);
+                _context.Recepcion.Update(entity);
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -152,6 +145,20 @@ namespace FrancoHotel.Persistence.Repositories
                 _logger.LogError(result.Message, ex.ToString());
             }
             return result;
+        }
+
+        public async Task<bool> GetHabitacionInPisoBooked(int idPiso)
+        {
+            return await _context.Recepcion
+                .Join(_context.Habitacion,
+                    r => r.IdHabitacion,
+                    h => h.Id,
+                    (r, h) => new { r, h })
+                .Join(_context.Piso,
+                    rh => rh.h.IdPiso,
+                    p => idPiso,
+                    (rh, p) => new { rh.r })
+                .AnyAsync(x => DateTime.Now < x.r.FechaSalida);
         }
     }
 }
