@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
-using AutoMapper;
 using FrancoHotel.Application.Dtos.PisoDtos;
 using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
@@ -19,12 +19,12 @@ namespace FrancoHotel.Application.Services
         private readonly IRecepcionRepository _recepcionRepository;
         private readonly ILogger<PisoService> _logger;
         private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
+        private readonly IPisoMapper _mapper;
 
         public PisoService(IPisoRepository pisoRepository, 
                            ILogger<PisoService> logger,
                            IConfiguration configuration,
-                           IMapper mapper,
+                           IPisoMapper mapper,
                            IUsuarioRepository usuarioRepository,
                            IRecepcionRepository recepcionRepository)
         {
@@ -65,7 +65,7 @@ namespace FrancoHotel.Application.Services
             Piso? piso = await _pisoRepository.GetEntityByIdAsync(dto.Id);
             if (piso != null)
             {
-                result = await _pisoRepository.RemoveEntityAsync(_mapper.Map(dto, piso));
+                result = await _pisoRepository.RemoveEntityAsync(_mapper.RemoveDtoToEntity(dto, piso));
             }
 
             return result;
@@ -74,7 +74,7 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> Save(SavePisoDto dto)
         {
             OperationResult result = new OperationResult();
-            result = await _pisoRepository.SaveEntityAsync(_mapper.Map<Piso>(dto));
+            result = await _pisoRepository.SaveEntityAsync(_mapper.SaveDtoToEntity(dto));
             return result;
         }
 
@@ -84,7 +84,7 @@ namespace FrancoHotel.Application.Services
             OperationResult result = new OperationResult();
             if (piso != null)
             {
-                result = await _pisoRepository.UpdateEntityAsync(_mapper.Map(dto, piso));
+                result = await _pisoRepository.UpdateEntityAsync(_mapper.UpdateDtoToEntity(dto, piso));
             }
             result.Success = false;
             result.Message = "El piso a modificar no está registrado";
