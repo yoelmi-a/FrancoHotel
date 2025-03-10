@@ -105,31 +105,24 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
+        public override async Task<OperationResult> RemoveEntityAsync(Servicios entity)
         {
             OperationResult result = new OperationResult();
-            Servicios? entity = await GetEntityByIdAsync(id);
 
-            if (!RepoValidation.ValidarID(id) ||
-                !RepoValidation.ValidarID(idUsuarioMod))
+            if (!RepoValidation.ValidarServicio(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) ||
+                !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
+                !RepoValidation.ValidarID(entity.BorradoPorU) ||
+                !RepoValidation.ValidarEntidad(entity.Borrado!))
             {
                 result.Message = _configuration["ErrorServiciosRepository:InvalidData"]!;
                 result.Success = false;
                 return result;
             }
-            else if (!RepoValidation.ValidarEntidad(entity!))
-            {
-                result.Message = _configuration["ErrorServiciosRepository:UserNotFound"]!;
-                result.Success = false;
-                return result;
-            }
             try
             {
-                entity!.Borrado = true;
-                entity.BorradoPorU = idUsuarioMod;
-                entity.UsuarioMod = idUsuarioMod;
-                entity.FechaModificacion = DateTime.Now;
-                await UpdateEntityAsync(entity);
+                _context.Servicios.Update(entity);
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {

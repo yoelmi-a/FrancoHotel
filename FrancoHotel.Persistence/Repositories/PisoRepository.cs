@@ -27,19 +27,6 @@ namespace FrancoHotel.Persistence.Repositories
             _configuration = configuration;
         }
 
-        public async Task<List<PisoModel>> GetPisoByEstado(bool? estado)
-        {
-            return await (from piso in _context.Piso
-                                   where piso.EstadoYFecha.Estado == estado
-                                   select new PisoModel()
-                                   {
-                                       IdPiso = piso.Id,
-                                       Descripcion = piso.Descripcion,
-                                       Estado = piso.EstadoYFecha.Estado,
-                                       FechaCreacion = piso.EstadoYFecha.FechaCreacion
-                                   }).AsNoTracking().ToListAsync();
-        }
-
         public override async Task<List<Piso>> GetAllAsync()
         {
             return await _context.Piso.ToListAsync();
@@ -116,31 +103,24 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
+        public override async Task<OperationResult> RemoveEntityAsync(Piso entity)
         {
             OperationResult result = new OperationResult();
-            Piso? entity = await GetEntityByIdAsync(id);
 
-            if (!RepoValidation.ValidarID(id) ||
-                !RepoValidation.ValidarID(idUsuarioMod))
+            if (!RepoValidation.ValidarPiso(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) ||
+                !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
+                !RepoValidation.ValidarID(entity.BorradoPorU) ||
+                !RepoValidation.ValidarEntidad(entity.Borrado!))
             {
                 result.Message = _configuration["ErrorPisoRepository:InvalidData"]!;
                 result.Success = false;
                 return result;
             }
-            else if (!RepoValidation.ValidarEntidad(entity!))
-            {
-                result.Message = _configuration["ErrorPisoRepository:UserNotFound"]!;
-                result.Success = false;
-                return result;
-            }
             try
             {
-                entity!.Borrado = true;
-                entity.BorradoPorU = idUsuarioMod;
-                entity.UsuarioMod = idUsuarioMod;
-                entity.FechaModificacion = DateTime.Now;
-                await UpdateEntityAsync(entity);
+                _context.Piso.Update(entity);
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {

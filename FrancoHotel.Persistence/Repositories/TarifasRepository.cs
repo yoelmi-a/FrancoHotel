@@ -211,10 +211,6 @@ namespace FrancoHotel.Persistence.Repositories
                 {
                     result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
                 }
-                else if (RepoValidation.ValidarID(entity.IdHabitacion))
-                {
-                    result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
-                }
 
                 _context.Tarifas.Update(entity);
                 await _context.SaveChangesAsync();
@@ -227,31 +223,24 @@ namespace FrancoHotel.Persistence.Repositories
             }
         }
 
-        public override async Task<OperationResult> RemoveEntityAsync(int id, int idUsuarioMod)
+        public override async Task<OperationResult> RemoveEntityAsync(Tarifas entity)
         {
             OperationResult result = new OperationResult();
-            Tarifas? entity = await GetEntityByIdAsync(id);
 
-            if (!RepoValidation.ValidarID(id) ||
-                !RepoValidation.ValidarID(idUsuarioMod))
+            if (!RepoValidation.ValidarEntidad(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) ||
+                !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
+                !RepoValidation.ValidarID(entity.BorradoPorU) ||
+                !RepoValidation.ValidarEntidad(entity.Borrado!))
             {
                 result.Message = _configuration["ErrorTarifasRepository:InvalidData"]!;
                 result.Success = false;
                 return result;
             }
-            else if (!RepoValidation.ValidarEntidad(entity!))
-            {
-                result.Message = _configuration["ErrorTarifasRepository:UserNotFound"]!;
-                result.Success = false;
-                return result;
-            }
             try
             {
-                entity!.Borrado = true;
-                entity.BorradoPorU = idUsuarioMod;
-                entity.UsuarioMod = idUsuarioMod;
-                entity.FechaModificacion = DateTime.Now;
-                await UpdateEntityAsync(entity);
+                _context.Tarifas.Update(entity);
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {

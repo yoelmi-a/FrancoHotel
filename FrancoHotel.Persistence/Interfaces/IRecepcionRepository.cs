@@ -8,6 +8,6 @@ namespace FrancoHotel.Persistence.Interfaces
 {
     public interface IRecepcionRepository : IBaseRepository<Recepcion, int>
     {
-    
+        Task<bool> GetHabitacionInPisoBooked(int idPiso); 
     }
 }
