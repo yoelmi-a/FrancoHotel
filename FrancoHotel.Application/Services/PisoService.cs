@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
-using AutoMapper;
 using FrancoHotel.Application.Dtos.PisoDtos;
 using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
@@ -16,21 +16,24 @@ namespace FrancoHotel.Application.Services
     {
         private readonly IPisoRepository _pisoRepository;
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IRecepcionRepository _recepcionRepository;
         private readonly ILogger<PisoService> _logger;
         private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
+        private readonly IPisoMapper _mapper;
 
-        public PisoService(IPisoRepository pisoRepository, 
+        public PisoService(IPisoRepository pisoRepository,
                            ILogger<PisoService> logger,
                            IConfiguration configuration,
-                           IMapper mapper,
-                           IUsuarioRepository usuarioRepository)
+                           IPisoMapper mapper,
+                           IUsuarioRepository usuarioRepository,
+                           IRecepcionRepository recepcionRepository)
         {
             this._pisoRepository = pisoRepository;
             this._logger = logger;
             this._configuration = configuration;
             _mapper = mapper;
             _usuarioRepository = usuarioRepository;
+            _recepcionRepository = recepcionRepository;
         }
 
         public async Task<OperationResult> GetAll()
@@ -48,27 +51,50 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
-        public Task<OperationResult> GetPisoByEstado(bool? estado)
+        public async Task<OperationResult> Remove(RemovePisoDto dto)
         {
-            throw new NotImplementedException();
-        }
+            OperationResult result = new OperationResult();
+            bool hasReservations = await _recepcionRepository.GetHabitacionInPisoBooked(dto.Id);
+            if (hasReservations)
+            {
+                result.Success = false;
+                result.Message = "El piso no se puede remover porque tiene reservas activas";
+                return result;
+            }
 
-        public Task<OperationResult> Remove(RemovePisoDto dto)
-        {
-            throw new NotImplementedException();
+            Piso? piso = await _pisoRepository.GetEntityByIdAsync(dto.Id);
+            if (piso != null)
+            {
+                result = await _pisoRepository.RemoveEntityAsync(_mapper.RemoveDtoToEntity(dto, piso));
+                return result;
+            }
+            else
+            {
+                result.Success = false;
+                result.Message = "No se pudo encontrar el piso para remover";
+                return result;
+            }
+
         }
 
         public async Task<OperationResult> Save(SavePisoDto dto)
         {
             OperationResult result = new OperationResult();
-            if()
-            result = await _pisoRepository.SaveEntityAsync(_mapper.Map<Piso>(dto));
+            result = await _pisoRepository.SaveEntityAsync(_mapper.SaveDtoToEntity(dto));
             return result;
         }
 
-        public Task<OperationResult> Update(UpdatePisoDto dto)
+        public async Task<OperationResult> Update(UpdatePisoDto dto)
         {
-            throw new NotImplementedException();
+            Piso? piso = await _pisoRepository.GetEntityByIdAsync(dto.Id);
+            OperationResult result = new OperationResult();
+            if (piso != null)
+            {
+                result = await _pisoRepository.UpdateEntityAsync(_mapper.UpdateDtoToEntity(dto, piso));
+            }
+            result.Success = false;
+            result.Message = "El piso a modificar no está registrado";
+            return result;
         }
     }
 }

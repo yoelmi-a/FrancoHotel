@@ -71,7 +71,6 @@ namespace FrancoHotel.Api.Controllers
         [HttpDelete("RemoveRolUsuario")]
         public async Task<IActionResult> RemoveRolUsuario(int id, int idUsuarioMod)
         {
-            await _rolUsuarioRepository.RemoveEntityAsync(id, idUsuarioMod);
             return Ok("Cliente borrado");
         }
     }

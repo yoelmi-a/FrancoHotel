@@ -1,9 +1,9 @@
 ﻿using System.Linq.Expressions;
 using FrancoHotel.Application.Dtos.PisoDtos;
 using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
-using FrancoHotel.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.Api.Controllers
@@ -12,56 +12,46 @@ namespace FrancoHotel.Api.Controllers
     [ApiController]
     public class PisoController : ControllerBase
     {
-        private readonly IPisoRepository _pisoRepository;
         private readonly IPisoService _pisoService;
 
-        public PisoController(IPisoRepository pisoRepository,
-                              IPisoService pisoService)
+        public PisoController(IPisoService pisoService)
         {
-            _pisoRepository = pisoRepository;
             _pisoService = pisoService;
         }
 
         [HttpGet("GetPisos")]
         public async Task<IActionResult> GetAll()
         {
-            var pisos = await _pisoRepository.GetAllAsync();
-            return Ok(pisos);
-        }
-
-        [HttpGet("GetPisoByEstado")]
-        public async Task<IActionResult> GetByEstado(bool? estado)
-        {
-            var pisos = await _pisoRepository.GetPisoByEstado(estado);
-            return Ok(pisos);
+            var result = await _pisoService.GetAll();
+            return Ok(result);
         }
 
         [HttpGet("GetPisoById")]
         public async Task<IActionResult> GetById(int id)
         {
-            var piso = await _pisoRepository.GetEntityByIdAsync(id);
-            return Ok(piso);
+            var result = await _pisoService.GetById(id);
+            return Ok(result);
         }
 
         [HttpPost("SavePiso")]
         public async Task<IActionResult> Post([FromBody] SavePisoDto piso)
         {
-            await _pisoService.Save(piso);
-            return Ok(piso);
+            var result = await _pisoService.Save(piso);
+            return Ok(result);
         }
 
         [HttpPut("UpdatePiso")]
-        public async Task<IActionResult> Put([FromBody] Piso piso)
+        public async Task<IActionResult> Put([FromBody] UpdatePisoDto piso)
         {
-            await _pisoRepository.UpdateEntityAsync(piso);
-            return Ok(piso);
+            var result = await _pisoService.Update(piso);
+            return Ok(result);
         }
 
         [HttpDelete("RemovePiso")]
-        public async Task<IActionResult> RemovePiso(int id, int idUsuarioMod)
+        public async Task<IActionResult> RemovePiso(RemovePisoDto dto)
         {
-            await _pisoRepository.RemoveEntityAsync(id, idUsuarioMod);
-            return Ok("Cliente borrado");
+            var result = await _pisoService.Remove(dto);
+            return Ok(result);
         }
     }
 }

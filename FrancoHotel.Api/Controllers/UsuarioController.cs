@@ -33,13 +33,6 @@ namespace FrancoHotel.Api.Controllers
             return Ok(usuario);
         }
 
-        [HttpGet("GetUsuarioByClave")]
-        public async Task<IActionResult> Get(string clave)
-        {
-            var usuario = await _usuarioRepository.GetUsuarioByClave(clave);
-            return Ok(usuario);
-        }
-
         [HttpGet("GetUsuarioByIdRolUsuario")]
         public async Task<IActionResult> GetRolUsuario(int idRolUsuario)
         {
@@ -85,7 +78,6 @@ namespace FrancoHotel.Api.Controllers
         [HttpDelete("RemoveUsuario")]
         public async Task<IActionResult> RemoveUsuario(int id, int idUsuarioMod)
         {
-            await _usuarioRepository.RemoveEntityAsync(id, idUsuarioMod);
             return Ok("Cliente borrado");
         }
     }
