@@ -21,7 +21,7 @@ namespace FrancoHotel.Application.Services
         private readonly IConfiguration _configuration;
         private readonly IPisoMapper _mapper;
 
-        public PisoService(IPisoRepository pisoRepository, 
+        public PisoService(IPisoRepository pisoRepository,
                            ILogger<PisoService> logger,
                            IConfiguration configuration,
                            IPisoMapper mapper,
@@ -66,9 +66,15 @@ namespace FrancoHotel.Application.Services
             if (piso != null)
             {
                 result = await _pisoRepository.RemoveEntityAsync(_mapper.RemoveDtoToEntity(dto, piso));
+                return result;
+            }
+            else
+            {
+                result.Success = false;
+                result.Message = "No se pudo encontrar el piso para remover";
+                return result;
             }
 
-            return result;
         }
 
         public async Task<OperationResult> Save(SavePisoDto dto)
