@@ -75,7 +75,7 @@ namespace FrancoHotel.Application.Services
             OperationResult result = new OperationResult();
             if (habitacion != null)
             {
-                result = await _habitacionRepository.UpdateEntityAsync(_mapper.UpdateDtoToEntity(dto, habitacion);
+                result = await _habitacionRepository.UpdateEntityAsync(_mapper.UpdateDtoToEntity(dto, habitacion));
             }
             result.Success = false;
             result.Message = "La habitacion a modificar no esta registrada";
