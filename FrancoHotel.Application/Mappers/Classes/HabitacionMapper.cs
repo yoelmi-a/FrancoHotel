@@ -47,9 +47,6 @@ namespace FrancoHotel.Application.Mappers.Classes
 
         public override Habitacion SaveDtoToEntity(SaveHabitacionDto dto)
         {
-
-        public override Habitacion UpdateDtoToEntity(UpdateHabitacionDto dto, Habitacion entity)
-        {
             Habitacion h = new Habitacion();
             h.Capacidad = dto.Capacidad;
             h.IdEstadoHabitacion = dto.IdEstadoHabitacion;
