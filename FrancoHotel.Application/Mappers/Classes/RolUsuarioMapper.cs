@@ -6,6 +6,18 @@ namespace FrancoHotel.Application.Mappers.Classes
 {
     public sealed class RolUsuarioMapper : BaseMapper<SaveRolUsuarioDtos, UpdateRolUsuarioDtos, RemoveRolUsuarioDtos, RolUsuario>, IRolUsuarioMapper
     {
+        public override List<UpdateRolUsuarioDtos> DtoList(List<RolUsuario> entities)
+        {
+            return entities.Select(entity => new UpdateRolUsuarioDtos()
+            {
+                IdRolUsuario = entity.Id,
+                Descripcion = entity.Descripcion,
+                Estado = entity.EstadoYFecha.Estado,
+                Fecha = (DateTime)entity.EstadoYFecha.FechaCreacion!,
+                Usuario = (int)entity.CreadorPorU!
+            }).ToList();
+        }
+
         public override UpdateRolUsuarioDtos EntityToDto(RolUsuario entity)
         {
             UpdateRolUsuarioDtos dto = new UpdateRolUsuarioDtos();

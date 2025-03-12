@@ -8,5 +8,6 @@ namespace FrancoHotel.Application.Mappers.Classes
         public abstract TENtity RemoveDtoToEntity(TDtoRemove dto, TENtity entity);
         public abstract TENtity SaveDtoToEntity(TDtoSave dto);
         public abstract TENtity UpdateDtoToEntity(TDtoUpdate dto, TENtity entity);
+        public abstract List<TDtoUpdate> DtoList(List<TENtity> entities);
     }
 }

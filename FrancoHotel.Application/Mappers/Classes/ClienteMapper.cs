@@ -6,6 +6,21 @@ namespace FrancoHotel.Application.Mappers.Classes
 {
     public sealed class ClienteMapper : BaseMapper<SaveClienteDtos, UpdateClienteDtos, RemoveClienteDtos, Cliente>, IClienteMapper
     {
+        public override List<UpdateClienteDtos> DtoList(List<Cliente> entities)
+        {
+            return entities.Select(entity => new UpdateClienteDtos()
+            {
+                IdCliente = entity.Id,
+                TipoDocumento = entity.TipoDocumento,
+                Documento = entity.Documento,
+                NombreCompleto = entity.NombreCompleto,
+                Correo = entity.Correo,
+                Estado = entity.EstadoYFecha.Estado,
+                Fecha = (DateTime)entity.EstadoYFecha.FechaCreacion!,
+                Usuario = (int)entity.CreadorPorU!
+            }).ToList();
+        }
+
         public override UpdateClienteDtos EntityToDto(Cliente entity)
         {
             UpdateClienteDtos dto = new UpdateClienteDtos();

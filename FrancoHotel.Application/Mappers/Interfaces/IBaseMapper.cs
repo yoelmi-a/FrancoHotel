@@ -6,6 +6,7 @@
         public TEntity RemoveDtoToEntity(TDtoRemove dto, TEntity entity);
         public TEntity UpdateDtoToEntity(TDtoUpdate dto, TEntity entity);
         public TDtoUpdate EntityToDto(TEntity entity);
-        
+        public List<TDtoUpdate> DtoList(List<TEntity> entities);
+
     }
 }
