@@ -1,4 +1,5 @@
-﻿using FrancoHotel.Application.Mappers.Interfaces;
+﻿using FrancoHotel.Application.Mappers.Classes;
+using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Application.Services;
 using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
@@ -12,7 +13,7 @@ namespace FrancoHotel.IOC.Dependencies
         {
             services.AddScoped<IRolUsuarioRepository, RolUsuarioRepository>();
             services.AddTransient<IRolUsuarioService, RolUsuarioService>();
-            services.AddTransient<IRolUsuarioMapper, IRolUsuarioMapper>();
+            services.AddTransient<IRolUsuarioMapper, RolUsuarioMapper>();
         }
     }
 }
