@@ -1,9 +1,8 @@
-﻿using FrancoHotel.Domain.Entities;
+﻿using FrancoHotel.Application.Dtos.ClienteDtos;
+using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
-using FrancoHotel.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -11,74 +10,74 @@ namespace FrancoHotel.Api.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-        private readonly IClienteRepository _clienteRepository;
+        private readonly IClienteService _clienteService;
 
-        public ClienteController(IClienteRepository clienteRepository,
-                                 ILogger<ClienteController> logger)
+        public ClienteController(IClienteService clienteService)
         {
-            _clienteRepository = clienteRepository;
+            _clienteService = clienteService;
         }
 
         [HttpGet("GetClientes")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
-            var clientes = await _clienteRepository.GetAllAsync();
-            return Ok(clientes);
+            var result = await _clienteService.GetAll();
+            return Ok(result);
         }
 
         [HttpGet("GetClienteById")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var cliente = await _clienteRepository.GetEntityByIdAsync(id);
-            return Ok(cliente);
+            var result = await _clienteService.GetById(id);
+            return Ok(result);
         }
 
         [HttpGet("GetClienteByDocumento")]
-        public async Task<IActionResult> Get(string documento)
+        public async Task<IActionResult> GetByDocumento(string documento)
         {
-            var cliente = await _clienteRepository.GetClienteByDocumento(documento);
-            return Ok(cliente);
+            var result = await _clienteService.GetClienteByDocumento(documento);
+            return Ok(result);
         }
 
         [HttpGet("GetClientesByEstado")]
-        public async Task<IActionResult> Get(bool estado)
+        public async Task<IActionResult> GetByEstado(bool estado)
         {
-            var cliente = await _clienteRepository.GetClientesByEstado(estado);
-            return Ok(cliente);
+            var result = await _clienteService.GetClientesByEstado(estado);
+            return Ok(result);
         }
 
         [HttpPost("SaveCliente")]
-        public async Task<IActionResult> Post([FromBody] Cliente cliente)
+        public async Task<IActionResult> Post([FromBody] SaveClienteDtos cliente)
         {
-            await _clienteRepository.SaveEntityAsync(cliente);
-            return Ok(cliente);
+            var result = await _clienteService.Save(cliente);
+            return Ok(result);
         }
 
         [HttpPut("UpdateCliente")]
-        public async Task<IActionResult> Put([FromBody] Cliente cliente)
+        public async Task<IActionResult> Put([FromBody] UpdateClienteDtos cliente)
         {
-            await _clienteRepository.UpdateEntityAsync(cliente);
-            return Ok(cliente);
+            var result = await _clienteService.Update(cliente);
+            return Ok(result);
         }
 
         [HttpPut("UpdateTipoDocumento")]
         public async Task<IActionResult> PutDocumento([FromBody] Cliente cliente)
         {
-            await _clienteRepository.UpdateTipoDocumento(cliente);
-            return Ok(cliente);
+            var result = await _clienteService.UpdateTipoDocumento(cliente);
+            return Ok(result);
         }
 
         [HttpPut("UpdateEstado")]
-        public async Task<IActionResult> PutEstado([FromBody] Cliente cliente , bool nuevoEstado)
+        public async Task<IActionResult> PutEstado([FromBody] Cliente cliente, bool nuevoEstado)
         {
-            await _clienteRepository.UpdateEstado(cliente , nuevoEstado);
-            return Ok(cliente);
+            var result = await _clienteService.UpdateEstado(cliente, nuevoEstado);
+            return Ok(result);
         }
 
         [HttpDelete("RemoveCliente")]
-        public async Task<IActionResult> RemoveCliente(int id, int idUsuarioMod)
+        public async Task<IActionResult> RemoveCliente([FromBody] RemoveClienteDtos dto)
         {
-            return Ok("Cliente borrado");
+            var result = await _clienteService.Remove(dto);
+            return Ok(result);
         }
     }
 }

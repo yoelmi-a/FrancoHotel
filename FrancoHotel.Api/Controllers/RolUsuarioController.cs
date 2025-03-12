@@ -1,9 +1,8 @@
-﻿using FrancoHotel.Domain.Entities;
+﻿using FrancoHotel.Application.Dtos.RolUsuariosDtos;
+using FrancoHotel.Application.Interfaces;
 using FrancoHotel.Persistence.Interfaces;
-using FrancoHotel.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.Threading.Tasks;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -11,67 +10,53 @@ namespace FrancoHotel.Api.Controllers
     [ApiController]
     public class RolUsuarioController : ControllerBase
     {
-        private readonly IRolUsuarioRepository _rolUsuarioRepository;
+        private readonly IRolUsuarioService _rolUsuarioService;
 
-        public RolUsuarioController(IRolUsuarioRepository rolUsuarioRepository,
-                                    ILogger<RolUsuarioController> logger)
+        public RolUsuarioController(IRolUsuarioService rolUsuarioService)
         {
-            _rolUsuarioRepository = rolUsuarioRepository;
+            _rolUsuarioService = rolUsuarioService;
         }
 
         [HttpGet("GetRolUsuarios")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
-            var rolUsuarios = await _rolUsuarioRepository.GetAllAsync();
-            return Ok(rolUsuarios);
+            var result = await _rolUsuarioService.GetAll();
+            return Ok(result);
         }
 
         [HttpGet("GetRolUsuarioById")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var rolUsuario = await _rolUsuarioRepository.GetEntityByIdAsync(id);
-            return Ok(rolUsuario);
+            var result = await _rolUsuarioService.GetById(id);
+            return Ok(result);
         }
 
         [HttpGet("GetRolUsuarioByDescripcion")]
-        public async Task<IActionResult> Get(string descripcion)
+        public async Task<IActionResult> GetByDescripcion(string descripcion)
         {
-            var rolUsuario = await _rolUsuarioRepository.GetRolUsuarioByDescripcion(descripcion);
-            return Ok(rolUsuario);
+            var result = await _rolUsuarioService.GetRolUsuarioByDescripcion(descripcion);
+            return Ok(result);
         }
 
         [HttpPost("SaveRolUsuario")]
-        public async Task<IActionResult> Post([FromBody] RolUsuario rolUsuario)
+        public async Task<IActionResult> Post([FromBody] SaveRolUsuarioDtos rolUsuario)
         {
-            await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
-            return Ok(rolUsuario);
+            var result = await _rolUsuarioService.Save(rolUsuario);
+            return Ok(result);
         }
 
-        [HttpPost("UpdateRolUsuario")]
-        public async Task<IActionResult> Put([FromBody] RolUsuario rolUsuario)
+        [HttpPut("UpdateRolUsuario")]
+        public async Task<IActionResult> Put([FromBody] UpdateRolUsuarioDtos rolUsuario)
         {
-            await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
-            return Ok(rolUsuario);
-        }
-
-        [HttpPost("UpdateDescripcion")]
-        public async Task<IActionResult> PutDescripcion([FromBody] RolUsuario rolUsuario, string nuevaDescripcion)
-        {
-            await _rolUsuarioRepository.UpdateDescripcion(rolUsuario, nuevaDescripcion);
-            return Ok(rolUsuario);
-        }
-
-        [HttpPost("UpdateEstado")]
-        public async Task<IActionResult> PutEstado([FromBody] RolUsuario RolUsuario, bool nuevoEstado)
-        {
-            await _rolUsuarioRepository.UpdateEstado(RolUsuario, nuevoEstado);
-            return Ok(RolUsuario);
+            var result = await _rolUsuarioService.Update(rolUsuario);
+            return Ok(result);
         }
 
         [HttpDelete("RemoveRolUsuario")]
-        public async Task<IActionResult> RemoveRolUsuario(int id, int idUsuarioMod)
+        public async Task<IActionResult> RemoveRolUsuario([FromBody] RemoveRolUsuarioDtos dto)
         {
-            return Ok("Cliente borrado");
+            var result = await _rolUsuarioService.Remove(dto);
+            return Ok(result);
         }
     }
 }

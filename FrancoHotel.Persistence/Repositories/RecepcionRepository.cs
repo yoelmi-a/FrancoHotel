@@ -52,8 +52,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return result;
         }
-
-
+        
         public override async Task<OperationResult> UpdateEntityAsync(Recepcion entity)
         {
             OperationResult result = new OperationResult();
@@ -131,7 +130,8 @@ namespace FrancoHotel.Persistence.Repositories
                 result.Success = false;
                 return result;
             }
-            try 
+
+            try
             {
                 _context.Recepcion.Update(entity);
                 await _context.SaveChangesAsync();

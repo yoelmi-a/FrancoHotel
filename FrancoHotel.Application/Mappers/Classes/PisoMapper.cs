@@ -6,12 +6,25 @@ namespace FrancoHotel.Application.Mappers.Classes
 {
     public sealed class PisoMapper : BaseMapper<SavePisoDto, UpdatePisoDto, RemovePisoDto, Piso>, IPisoMapper
     {
+        public override List<UpdatePisoDto> DtoList(List<Piso> entities)
+        {
+            return entities.Select(e => new UpdatePisoDto()
+            {
+                Descripcion = e.Descripcion!,
+                Estado = e.EstadoYFecha.Estado,
+                Id = e.Id,
+                Usuario = (int)e.CreadorPorU!,
+                Fecha = (DateTime)e.EstadoYFecha.FechaCreacion!
+            }).ToList();
+        }
         public override UpdatePisoDto EntityToDto(Piso entity)
         {
             UpdatePisoDto dto = new UpdatePisoDto();
             dto.Id = entity.Id;
             dto.Descripcion = entity.Descripcion!;
             dto.Estado = entity.EstadoYFecha.Estado;
+            dto.Usuario = (int)entity.CreadorPorU!;
+            dto.Fecha = (DateTime)entity.EstadoYFecha.FechaCreacion!;
             return dto;
         }
 
