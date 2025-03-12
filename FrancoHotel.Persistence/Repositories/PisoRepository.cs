@@ -40,7 +40,7 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> GetAllAsync(Expression<Func<Piso, bool>> filter)
         {
             OperationResult result = new OperationResult(); 
-            result.Data = await _context.Piso.Where(filter).AsNoTracking().ToListAsync();
+            result.Data = await _context.Piso.Where(filter).Where(p => p.Borrado == false).AsNoTracking().ToListAsync();
             return result;
         }
 

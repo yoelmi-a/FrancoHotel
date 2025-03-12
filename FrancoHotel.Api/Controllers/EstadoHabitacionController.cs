@@ -3,6 +3,8 @@ using FrancoHotel.Persistence.Interfaces;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Application.Dtos.EstadoHabitacionDtos;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -10,46 +12,46 @@ namespace FrancoHotel.Api.Controllers
     [ApiController]
     public class EstadoHabitacionController : ControllerBase
     {
-        private readonly IEstadoHabitacionRepository _estadoHabitacionRepository;
+        private readonly IEstadoHabitacionService _estadoHabitacionService;
 
-        public EstadoHabitacionController(IEstadoHabitacionRepository estadoHabitacionRepository,
-                              ILogger<PisoController> logger)
+        public EstadoHabitacionController(IEstadoHabitacionService estadoHabitacionService)
         {
-            _estadoHabitacionRepository = estadoHabitacionRepository;
+            _estadoHabitacionService = estadoHabitacionService;
         }
 
         [HttpGet("GetEstadoHabitacion")]
         public async Task<IActionResult> GetAll()
         {
-            var estadoHabitacion = await _estadoHabitacionRepository.GetAllAsync();
-            return Ok(estadoHabitacion);
+            var result = await _estadoHabitacionService.GetAll();
+            return Ok(result);
         }
 
         [HttpGet("GetEstadoHabitacionById")]
-        public async Task<IActionResult> GetById(short id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var estadoHabitacion = await _estadoHabitacionRepository.GetEntityByIdAsync(id);
-            return Ok(estadoHabitacion);
+            var result = await _estadoHabitacionService.GetById(id);
+            return Ok(result);
         }
 
         [HttpPost("SaveEstadoHabitacion")]
-        public async Task<IActionResult> Post([FromBody] EstadoHabitacion estadoHabitacion)
+        public async Task<IActionResult> Post([FromBody] SaveEstadoHabitacionDto estadoHabitacion)
         {
-            await _estadoHabitacionRepository.SaveEntityAsync(estadoHabitacion);
-            return Ok(estadoHabitacion);
+            var result = await _estadoHabitacionService.Save(estadoHabitacion);
+            return Ok(result);
         }
 
         [HttpPut("UpdateEstadoHabitacion")]
-        public async Task<IActionResult> Put([FromBody] EstadoHabitacion estadoHabitacion)
+        public async Task<IActionResult> Put([FromBody] UpdateEstadoHabitacionDto estadoHabitacion)
         {
-            await _estadoHabitacionRepository.UpdateEntityAsync(estadoHabitacion);
-            return Ok(estadoHabitacion);
+            var result = await _estadoHabitacionService.Update(estadoHabitacion);
+            return Ok(result);
         }
 
         [HttpDelete("RemoveEstadoHabitacion")]
-        public async Task<IActionResult> RemoveEsEstadoHabitacion(int id, int idUsuarioMod)
+        public async Task<IActionResult> RemoveEsEstadoHabitacion([FromBody] RemoveEstadoHabitacionDto estadoHabitacion)
         {
-            return Ok("Cliente borrado");
+            var result = await _estadoHabitacionService.Remove(estadoHabitacion);
+            return Ok(result);
         }
     }
 }

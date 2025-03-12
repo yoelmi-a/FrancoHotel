@@ -45,7 +45,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<List<Servicios>> GetAllAsync()
         {
-            return await _context.Servicios.AsNoTracking().ToListAsync();
+            return await _context.Servicios.Where(s => s.Borrado == false).AsNoTracking().ToListAsync();
         }
 
         public override async Task<Servicios?> GetEntityByIdAsync(int id)

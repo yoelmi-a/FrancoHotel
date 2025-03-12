@@ -4,6 +4,8 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using FrancoHotel.Persistence.Repositories;
+using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Application.Dtos.ServiciosDto;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -11,46 +13,46 @@ namespace FrancoHotel.Api.Controllers
     [ApiController]
     public class ServicioController : ControllerBase
     {
-        private readonly IServiciosRepository _serviciosRepository;
+        private readonly IServiciosService _serviciosService;
 
-        public ServicioController(IServiciosRepository serviciosRepository,
-                              ILogger<PisoController> logger)
+        public ServicioController(IServiciosService serviciosService)
         {
-            _serviciosRepository = serviciosRepository;
+            _serviciosService = serviciosService;
         }
 
         [HttpGet("GetServicios")]
         public async Task<IActionResult> GetAll()
         {
-            var servicios = await _serviciosRepository.GetAllAsync();
+            var servicios = await _serviciosService.GetAll();
             return Ok(servicios);
         }
 
         [HttpGet("GetServicioById")]
-        public async Task<IActionResult> GetById(short id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var servicio = await _serviciosRepository.GetEntityByIdAsync(id);
-            return Ok(servicio);
+            var result = await _serviciosService.GetById(id);
+            return Ok(result);
         }
 
         [HttpPost("SaveServicio")]
-        public async Task<IActionResult> Post([FromBody] Servicios servicio)
+        public async Task<IActionResult> Post([FromBody] SaveServiciosDto servicio)
         {
-            await _serviciosRepository.SaveEntityAsync(servicio);
-            return Ok(servicio);
+            var result = await _serviciosService.Save(servicio);
+            return Ok(result);
         }
 
         [HttpPut("UpdateServicio")]
-        public async Task<IActionResult> Put([FromBody] Servicios servicio)
+        public async Task<IActionResult> Put([FromBody] UpdateServiciosDto servicio)
         {
-            await _serviciosRepository.UpdateEntityAsync(servicio);
-            return Ok(servicio);
+            var result = await _serviciosService.Update(servicio);
+            return Ok(result);
         }
 
         [HttpDelete("RemoveServicio")]
-        public async Task<IActionResult> RemoveServicio(int id, int idUsuarioMod)
+        public async Task<IActionResult> RemoveServicio([FromBody] RemoveServiciosDto servicio)
         {
-            return Ok("Cliente borrado");
+            var result = await _serviciosService.Remove(servicio);
+            return Ok(result);
         }
     }
 }

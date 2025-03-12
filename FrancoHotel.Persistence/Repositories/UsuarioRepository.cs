@@ -42,6 +42,7 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> GetAllAsync(Expression<Func<Usuario, bool>> filter)
         {
             var usuarios = await _context.Usuario
+                                         .Where(u => u.Borrado == false)
                                          .AsNoTracking()
                                          .Where(filter)
                                          .ToListAsync()
