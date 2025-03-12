@@ -1,4 +1,9 @@
 ﻿using System.Linq.Expressions;
+using FrancoHotel.Application.Dtos.RecepcionDtos;
+using FrancoHotel.Application.Dtos.UsuariosDtos;
+using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Application.Services;
+
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
@@ -12,18 +17,18 @@ namespace FrancoHotel.Api.Controllers
     [ApiController]
     public class RecepcionController : ControllerBase
     {
-        private readonly IRecepcionRepository _recepcionRepository;
-        public RecepcionController(IRecepcionRepository recepcionRepository,
-                                 ILogger<PisoController> logger)
+        private readonly IRecepcionService _recepcionService;
+        public RecepcionController(IRecepcionService recepcionService)
         {
-            _recepcionRepository = recepcionRepository;
+            _recepcionService = recepcionService;
         }
         [HttpGet("GetRecepcion")]
         public async Task<IActionResult> GetAll()
         {
-            var recepcion = await _recepcionRepository.GetAllAsync();
+            var recepcion = await _recepcionService.GetAll();
             return Ok(recepcion);
         }
+        
         [HttpGet("GetRecepcionByFilter")]
         public async Task<IActionResult> GetAllByFilter([FromQuery] DateTime fechaInicio,
                                                  [FromQuery] DateTime fechaFin,
@@ -34,39 +39,44 @@ namespace FrancoHotel.Api.Controllers
                 r.FechaSalida <= fechaFin &&
                 r.Estado == estado; 
 
-            var recepciones = await _recepcionRepository.GetAllAsync(filter);
+            var recepciones = await _recepcionService.GetAllByFilter(filter);
             return Ok(recepciones);
         }
+        
         [HttpGet("GetRecepcionById")]
         public async Task<IActionResult> GetById(short id)
         {
-            var recepcion = await _recepcionRepository.GetEntityByIdAsync(id);
+            var recepcion = await _recepcionService.GetById(id);
             return Ok(recepcion);
         }
+        
         [HttpGet("ExistRecepcion")]
         public async Task<IActionResult> GetExist([FromQuery] int id)
         {
             Expression<Func<Recepcion, bool>> filter = r => r.Id == id;
-            var recepcion = await _recepcionRepository.Exists(filter);
+            var recepcion = await _recepcionService.Exists(filter);
             return Ok(recepcion);
         }
+        
         [HttpPost("SaveRecepcion")]
-        public async Task<IActionResult> Post([FromBody] Recepcion recepcion)
+        public async Task<IActionResult> Post([FromBody] SaveRecepcionDto recepcion)
         {
-            await _recepcionRepository.SaveEntityAsync(recepcion);
-            return Ok(recepcion);
-        }
-        [HttpPut("UpdateRecepcion")]
-        public async Task<IActionResult> Put([FromBody] Recepcion  recepcion)
-        {
-            await _recepcionRepository.UpdateEntityAsync(recepcion);
+            await _recepcionService.Save(recepcion);
             return Ok(recepcion);
         }
 
-        [HttpDelete("RemoveRecepcion")]
-        public async Task<IActionResult> RemoveRecepcion(int id, int idUsuarioMod)
+        [HttpPut("UpdateRecepcion")]
+        public async Task<IActionResult> Put([FromBody] UpdateRecepcionDto  recepcion)
         {
-            return Ok("Cliente borrado");
+            await _recepcionService.Update(recepcion);
+            return Ok(recepcion);
+        }
+        
+        [HttpDelete("RemoveRecepcion")]
+        public async Task<IActionResult> RemoveRecepcion([FromBody] RemoveRecepcionDto recepcionDto)
+        {
+            var result = await _recepcionService.Remove(recepcionDto);
+            return Ok(result);
         }
     }
 }

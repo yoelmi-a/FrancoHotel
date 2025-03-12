@@ -20,10 +20,10 @@ namespace FrancoHotel.Domain.Entities
         public decimal? TotalPagado { get; set; }
         public decimal? CostoPenalidad { get; set; }
         public string? Observacion { get; set; }
+        public EstadoReserva Estado { get; set; }
         public int? CantidadPersonas { get; set; }
         public int? IdServicioPorCategoria { get; set; }
-        public decimal PrecioServiciosExtra { get; set; }
-        public EstadoReserva Estado { get; set;}
+        public decimal? PrecioServiciosExtra { get; set; }
     }
 }
 

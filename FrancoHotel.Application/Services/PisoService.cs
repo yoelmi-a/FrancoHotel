@@ -74,7 +74,6 @@ namespace FrancoHotel.Application.Services
                 result.Message = "No se pudo encontrar el piso para remover";
                 return result;
             }
-
         }
 
         public async Task<OperationResult> Save(SavePisoDto dto)

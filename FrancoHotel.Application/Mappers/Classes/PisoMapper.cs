@@ -45,7 +45,6 @@ namespace FrancoHotel.Application.Mappers.Classes
             entity.EstadoYFecha.Estado = dto.Estado;
             entity.CreadorPorU = dto.Usuario;
             return entity;
-
         }
 
         public override Piso UpdateDtoToEntity(UpdatePisoDto dto, Piso entity)

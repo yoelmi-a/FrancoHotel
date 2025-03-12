@@ -4,6 +4,11 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using FrancoHotel.Persistence.Repositories;
+using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Application.Services;
+using FrancoHotel.Application.Dtos.TarifasDto;
+using FrancoHotel.Application.Dtos.RecepcionDtos;
+using FrancoHotel.Application.Dtos.TarifasDtos;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -11,17 +16,16 @@ namespace FrancoHotel.Api.Controllers
     [ApiController]
     public class TarifasController : ControllerBase
     {
-        private readonly ITarifasRepository _tarifasRepository;
-        public TarifasController(ITarifasRepository tarifasRepository,
-                                    ILogger<TarifasController> logger)
+        private readonly  TarifasService _tarifasService;
+        public TarifasController(ITarifasService tarifasService)
         {
-            _tarifasRepository = tarifasRepository;
+            _tarifasService = (TarifasService?)tarifasService;
         }
 
         [HttpGet("GetTarigas")]
         public async Task<IActionResult> GetAll()
         {
-            var tarifas = await _tarifasRepository.GetAllAsync();
+            var tarifas = await _tarifasService.GetAll();
             return Ok(tarifas);
         }
 
@@ -45,65 +49,57 @@ namespace FrancoHotel.Api.Controllers
                 return BadRequest("El parámetro comparacion debe ser 'mayor' o 'menor'");
             }
 
-            var tarifasfiltradas = await _tarifasRepository.GetAllAsync(filter);
+            var tarifasfiltradas = await _tarifasService.GetAllByFilter(filter);
             return Ok(tarifasfiltradas);
         }
 
         [HttpGet("GetTarifasById")]
         public async Task<IActionResult> GetById(short id)
         {
-            var tarifas = await _tarifasRepository.GetEntityByIdAsync(id);
+            var tarifas = await _tarifasService.GetById(id);
             return Ok(tarifas);
         }
 
         [HttpGet("ExistTarifas/{id}")]
         public async Task<IActionResult> GetExistTarifa(short id)
         {
-            var tarifas = await _tarifasRepository.GetEntityByIdAsync(id);
-
-            if (tarifas != null && tarifas.Descuento > 0)
-            {
-                return Ok(true);
-            }
-
-            return Ok(false);
+            var tarifas = await _tarifasService.GetById(id);
+            return Ok(tarifas);
         }
 
         [HttpPost("SaveTarifas")]
-        public async Task<IActionResult> Post([FromBody] Tarifas tarifas)
+        public async Task<IActionResult> Post([FromBody] SaveTarifasDtos tarifas)
         {
-            await _tarifasRepository.SaveEntityAsync(tarifas);
+            await _tarifasService.Save(tarifas);
             return Ok(tarifas);
         }
 
         [HttpPut("UpdateTarifaByCategoria")]
         public async Task<IActionResult> Put([FromQuery] string categoria, [FromQuery] decimal precio)
         {
-            var result = await _tarifasRepository.UpdateTarifaByCategoria(categoria, precio);
+            var result = await _tarifasService.UpdateTarifaByCategoria(categoria, precio);
             return Ok(new { message = "Tarifas actualizadas correctamente." });
         }
-
 
         [HttpPut("UpdateTarifasByFechas")]
         public async Task<IActionResult> Put([FromQuery]  DateTime fechaInicio, [FromQuery]  DateTime fechaFin, [FromQuery] decimal porcentajeCambio)
         {
-            var result = await _tarifasRepository.UpdateTarifasByFechas(fechaInicio, fechaFin, porcentajeCambio);
+            var result = await _tarifasService.UpdateTarifasByFechas(fechaInicio, fechaFin, porcentajeCambio);
             return Ok(new { message = "Tarifas actualizadas correctamente." });
         }
 
-
-
         [HttpPut("UpdateTarifas")]
-        public async Task<IActionResult> Put([FromBody] Tarifas tarifas)
+        public async Task<IActionResult> Put([FromBody] UpdateTarifasDto tarifasDto)
         {
-            await _tarifasRepository.UpdateEntityAsync(tarifas);
-            return Ok(tarifas);
+            var result = await _tarifasService.Update(tarifasDto);
+            return Ok(result);
         }
 
         [HttpDelete("RemoveTarifa")]
-        public async Task<IActionResult> RemoveTarifa(int id, int idUsuarioMod)
+        public async Task<IActionResult> RemoveTarifa([FromBody] RemoveTarifasDto tarifasDto)
         {
-            return Ok("Cliente borrado");
+            var result = await _tarifasService.Remove(tarifasDto);
+            return Ok(result);
         }
 
     }

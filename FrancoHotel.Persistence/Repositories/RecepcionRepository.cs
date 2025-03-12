@@ -29,12 +29,13 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> SaveEntityAsync(Recepcion entity)
         {
             OperationResult result = new OperationResult();
+
             
-            if (RepoValidation.ValidarID(entity.IdCliente))
+            if (!RepoValidation.ValidarID(entity.IdCliente))
             {
                 result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsync"]!;
             }
-            if (RepoValidation.ValidarID(entity.IdHabitacion))
+            if (!RepoValidation.ValidarID(entity.IdHabitacion))
             {
                 result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsync"]!;
             }
@@ -49,24 +50,22 @@ namespace FrancoHotel.Persistence.Repositories
                 result.Success = false;
                 this._logger.LogError(result.Message, ToString());
             }
-
-
             return result;
         }
-
+        
         public override async Task<OperationResult> UpdateEntityAsync(Recepcion entity)
         {
             OperationResult result = new OperationResult();
 
-            if (RepoValidation.ValidarID(entity.Id) == null)
+            if (RepoValidation.ValidarID(entity.Id))
             {
                 result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
             }
-            else if(RepoValidation.ValidarID(entity.IdCliente) == null)
+            else if(RepoValidation.ValidarID(entity.IdCliente))
             {
                 result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
             }
-            else if(RepoValidation.ValidarID(entity.IdHabitacion) == null)
+            else if(RepoValidation.ValidarID(entity.IdHabitacion))
             {
                 result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
             }
@@ -107,10 +106,11 @@ namespace FrancoHotel.Persistence.Repositories
         {
             return await _context.Recepcion.AnyAsync(filter).ConfigureAwait(false);
         }
+
         public override async Task<Recepcion?> GetEntityByIdAsync(int id)
         {
             OperationResult result = new OperationResult();
-            if (RepoValidation.ValidarID(id) == null)
+            if (!RepoValidation.ValidarID(id))
             {
                 return null;
             }
@@ -121,8 +121,7 @@ namespace FrancoHotel.Persistence.Repositories
         {
             OperationResult result = new OperationResult();
 
-            if (!RepoValidation.ValidarEntidad(entity) ||
-                !RepoValidation.ValidarID(entity.UsuarioMod) ||
+            if (!RepoValidation.ValidarID(entity.UsuarioMod) ||
                 !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
                 !RepoValidation.ValidarID(entity.BorradoPorU) ||
                 !RepoValidation.ValidarEntidad(entity.Borrado!))
@@ -131,6 +130,7 @@ namespace FrancoHotel.Persistence.Repositories
                 result.Success = false;
                 return result;
             }
+
             try
             {
                 _context.Recepcion.Update(entity);
