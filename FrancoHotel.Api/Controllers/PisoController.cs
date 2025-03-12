@@ -48,7 +48,7 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpDelete("RemovePiso")]
-        public async Task<IActionResult> RemovePiso([FromBody] RemovePisoDto dto)
+        public async Task<IActionResult> RemovePiso(RemovePisoDto dto)
         {
             var result = await _pisoService.Remove(dto);
             return Ok(result);

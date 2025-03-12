@@ -54,8 +54,6 @@ namespace FrancoHotel.Persistence.Repositories
             return result;
         }
 
-       
-
         public override async Task<OperationResult> UpdateEntityAsync(Recepcion entity)
         {
             OperationResult result = new OperationResult();

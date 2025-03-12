@@ -17,7 +17,6 @@ namespace FrancoHotel.Application.Mappers.Classes
                 Fecha = (DateTime)e.EstadoYFecha.FechaCreacion!
             }).ToList();
         }
-
         public override UpdatePisoDto EntityToDto(Piso entity)
         {
             UpdatePisoDto dto = new UpdatePisoDto();

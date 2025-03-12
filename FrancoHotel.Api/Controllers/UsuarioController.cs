@@ -1,9 +1,9 @@
-﻿using FrancoHotel.Domain.Entities;
+﻿using FrancoHotel.Application.Dtos.UsuariosDtos;
+using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
-using FrancoHotel.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.Threading.Tasks;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -11,74 +11,77 @@ namespace FrancoHotel.Api.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IUsuarioService _usuarioService;
 
-        public UsuarioController(IUsuarioRepository usuarioRepository,
-                                 ILogger<UsuarioController> logger)
+        public UsuarioController(IUsuarioService usuarioService)
         {
-            _usuarioRepository = usuarioRepository;
+            _usuarioService = usuarioService;
         }
 
         [HttpGet("GetUsuarios")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
-            var usuarios = await _usuarioRepository.GetAllAsync();
-            return Ok(usuarios);
+            var result = await _usuarioService.GetAll();
+            return Ok(result);
         }
 
         [HttpGet("GetUsuarioById")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var usuario = await _usuarioRepository.GetEntityByIdAsync(id);
-            return Ok(usuario);
+            var result = await _usuarioService.GetById(id);
+            return Ok(result);
         }
 
         [HttpGet("GetUsuarioByIdRolUsuario")]
-        public async Task<IActionResult> GetRolUsuario(int idRolUsuario)
+        public async Task<IActionResult> GetByRolUsuario(int idRolUsuario)
         {
-            var usuario = await _usuarioRepository.GetUsuarioByIdRolUsuario(idRolUsuario);
-            return Ok(usuario);
+            var result = await _usuarioService.GetUsuarioByIdRolUsuario(idRolUsuario);
+            return Ok(result);
         }
 
         [HttpGet("GetUsuariosByEstado")]
-        public async Task<IActionResult> GetEstado(bool estado)
+        public async Task<IActionResult> GetByEstado(bool estado)
         {
-            var usuario = await _usuarioRepository.GetUsuariosByEstado(estado);
-            return Ok(usuario);
+            var result = await _usuarioService.GetUsuariosByEstado(estado);
+            return Ok(result);
         }
 
         [HttpPost("SaveUsuario")]
-        public async Task<IActionResult> Post([FromBody] Usuario usuario)
+        public async Task<IActionResult> Post([FromBody] SaveUsuarioDtos usuario)
         {
-            await _usuarioRepository.SaveEntityAsync(usuario);
-            return Ok(usuario);
+            var result = await _usuarioService.Save(usuario);
+            return Ok(result);
         }
 
-        [HttpPost("UpdateUsuario")]
-        public async Task<IActionResult> Put([FromBody] Usuario usuario)
+        [HttpPut("UpdateUsuario")]
+        public async Task<IActionResult> Put([FromBody] UpdateUsuarioDtos usuario)
         {
-            await _usuarioRepository.UpdateEntityAsync(usuario);
-            return Ok(usuario);
+            var result = await _usuarioService.Update(usuario);
+            return Ok(result);
         }
 
-        [HttpPost("UpdateClave")]
-        public async Task<IActionResult> PutClave([FromBody] Usuario usuario, string nuevaClave)
+        [HttpPut("UpdateClave")]
+        public async Task<IActionResult> PutClave([FromBody] UpdateUsuarioDtos updateUsuarioDto)
         {
-            await _usuarioRepository.UpdateClave(usuario, nuevaClave);
-            return Ok(usuario);
+            var usuario = await _usuarioService.GetById(updateUsuarioDto.IdUsuario.Value);
+            var result = await _usuarioService.UpdateClave((Usuario)usuario.Data, updateUsuarioDto.Clave);
+            return Ok(result);
         }
 
-        [HttpPost("UpdateEstado")]
-        public async Task<IActionResult> PutEstado([FromBody] Usuario entity, bool nuevoEstado)
+        [HttpPut("UpdateEstado")]
+        public async Task<IActionResult> PutEstado([FromBody] UpdateUsuarioDtos updateUsuarioDto)
         {
-            await _usuarioRepository.UpdateEstado(entity, nuevoEstado);
-            return Ok(entity);
+            var usuario = await _usuarioService.GetById(updateUsuarioDto.IdUsuario.Value);
+            var result = await _usuarioService.UpdateEstado((Usuario)usuario.Data, updateUsuarioDto.Estado.Value);
+            return Ok(result);
         }
+
 
         [HttpDelete("RemoveUsuario")]
-        public async Task<IActionResult> RemoveUsuario(int id, int idUsuarioMod)
+        public async Task<IActionResult> RemoveUsuario([FromBody] RemoveUsuarioDtos dto)
         {
-            return Ok("Cliente borrado");
+            var result = await _usuarioService.Remove(dto);
+            return Ok(result);
         }
     }
 }

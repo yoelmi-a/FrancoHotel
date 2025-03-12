@@ -5,7 +5,7 @@ using FrancoHotel.Domain.Entities;
 
 namespace FrancoHotel.Persistence.Interfaces
 {
-    public interface IUsuarioService : IBaseService<SaveUsuarioDtos, UpdateUsuario, RemoveUsuarioDtos>
+    public interface IUsuarioService : IBaseService<SaveUsuarioDtos, UpdateUsuarioDtos, RemoveUsuarioDtos>
     {
         Task<OperationResult> GetUsuarioByIdRolUsuario(int idRolUsuario);
         Task<List<OperationResult>> GetUsuariosByEstado(bool estado);
