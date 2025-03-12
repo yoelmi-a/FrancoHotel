@@ -1,4 +1,5 @@
-﻿using FrancoHotel.Persistence.Interfaces;
+﻿using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 

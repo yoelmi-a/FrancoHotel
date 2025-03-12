@@ -29,6 +29,9 @@ namespace FrancoHotel.Persistence.Context
 
             modelBuilder.Entity<ServiciosExtra>()
                 .HasKey(se => new { se.IdServicio, se.IdRecepcion });
+            modelBuilder.Entity<Recepcion>()
+                .Property(r => r.Estado)
+                .HasConversion<byte>();
         }
     }
 }
