@@ -40,6 +40,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
     public override async Task<OperationResult> GetAllAsync(Expression<Func<Cliente, bool>> filter)
     {
         var clientes = await _context.Cliente
+            .Where(c => c.Borrado == false)
             .AsNoTracking()
             .Where(filter)
             .ToListAsync()

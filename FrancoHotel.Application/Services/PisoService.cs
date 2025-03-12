@@ -66,14 +66,13 @@ namespace FrancoHotel.Application.Services
             if (piso != null)
             {
                 result = await _pisoRepository.RemoveEntityAsync(_mapper.RemoveDtoToEntity(dto, piso));
-                return result;
             }
             else
             {
                 result.Success = false;
                 result.Message = "No se pudo encontrar el piso para remover";
-                return result;
             }
+            return result;
         }
 
         public async Task<OperationResult> Save(SavePisoDto dto)
@@ -91,8 +90,11 @@ namespace FrancoHotel.Application.Services
             {
                 result = await _pisoRepository.UpdateEntityAsync(_mapper.UpdateDtoToEntity(dto, piso));
             }
-            result.Success = false;
-            result.Message = "El piso a modificar no está registrado";
+            else
+            {
+                result.Success = false;
+                result.Message = "El piso a modificar no está registrado"; 
+            }
             return result;
         }
     }
