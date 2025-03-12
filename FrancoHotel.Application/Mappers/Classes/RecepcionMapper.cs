@@ -2,10 +2,16 @@
 using FrancoHotel.Application.Dtos.RecepcionDtos;
 using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Domain.Entities;
+
 namespace FrancoHotel.Application.Mappers.Classes
 {
     public class RecepcionMapper : BaseMapper<SaveRecepcionDto, UpdateRecepcionDto, RemoveRecepcionDto, Recepcion>, IRecepcionMapper
     {
+        public override List<UpdateRecepcionDto> DtoList(List<Recepcion> entities)
+        {
+            throw new NotImplementedException();
+        }
+
         public override UpdateRecepcionDto EntityToDto(Recepcion entity)
         {
             UpdateRecepcionDto dto = new UpdateRecepcionDto();

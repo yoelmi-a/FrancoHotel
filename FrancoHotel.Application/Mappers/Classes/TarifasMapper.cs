@@ -10,9 +10,14 @@ using FrancoHotel.Domain.Entities;
 
 namespace FrancoHotel.Application.Mappers.Classes
 {
-    public class TarifasMapper : IBaseMapper<SaveTarifasDtos, UpdateTarifasDto, RemoveTarifasDto, Tarifas>, ITarifasMapper
+    public class TarifasMapper : BaseMapper<SaveTarifasDtos, UpdateTarifasDto, RemoveTarifasDto, Tarifas>, ITarifasMapper
     {
-        public UpdateTarifasDto EntityToDto(Tarifas entity)
+        public override List<UpdateTarifasDto> DtoList(List<Tarifas> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override UpdateTarifasDto EntityToDto(Tarifas entity)
         {
             UpdateTarifasDto dto = new UpdateTarifasDto();
             dto.Id = entity.Id;
@@ -26,7 +31,7 @@ namespace FrancoHotel.Application.Mappers.Classes
             return dto;
         }
 
-        public Tarifas RemoveDtoToEntity(RemoveTarifasDto dto, Tarifas entity)
+        public override Tarifas RemoveDtoToEntity(RemoveTarifasDto dto, Tarifas entity)
         {
             entity.FechaModificacion = dto.Fecha;
             entity.UsuarioMod = dto.Usuario;
@@ -35,7 +40,7 @@ namespace FrancoHotel.Application.Mappers.Classes
             return entity;
         }
 
-        public Tarifas SaveDtoToEntity(SaveTarifasDtos dto)
+        public override Tarifas SaveDtoToEntity(SaveTarifasDtos dto)
         {
             Tarifas entity = new Tarifas();
             dto.IdCategoria = entity.IdCategoria;
@@ -48,7 +53,7 @@ namespace FrancoHotel.Application.Mappers.Classes
             return entity;
         }
 
-        public Tarifas UpdateDtoToEntity(UpdateTarifasDto dto, Tarifas entity)
+        public override Tarifas UpdateDtoToEntity(UpdateTarifasDto dto, Tarifas entity)
         {
             dto.IdCategoria = entity.IdCategoria;
             dto.FechaInicio = entity.FechaInicio;
