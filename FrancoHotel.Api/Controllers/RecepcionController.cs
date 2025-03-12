@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
@@ -26,7 +27,7 @@ namespace FrancoHotel.Api.Controllers
         [HttpGet("GetRecepcionByFilter")]
         public async Task<IActionResult> GetAllByFilter([FromQuery] DateTime fechaInicio,
                                                  [FromQuery] DateTime fechaFin,
-                                                 [FromQuery] short estado)
+                                                 [FromQuery] EstadoReserva estado)
         {
             Expression<Func<Recepcion, bool>> filter = r =>
                 r.FechaEntrada >= fechaInicio &&

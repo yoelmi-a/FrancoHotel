@@ -34,7 +34,8 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<List<Habitacion>> GetAllAsync()
         {
             OperationResult result = new OperationResult();
-            result.Data = await _context.Habitacion.AsNoTracking()
+            result.Data = await _context.Habitacion.Where(h => h.Borrado == false)
+                                                           .AsNoTracking()
                                                            .ToListAsync()
                                                            .ConfigureAwait(false);
             return result.Data;

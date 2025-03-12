@@ -24,14 +24,14 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> GetAll()
         {
             OperationResult result = new OperationResult();
-            result.Data = await _habitacionRepository.GetAllAsync();
+            result.Data = _mapper.DtoList(await _habitacionRepository.GetAllAsync());
             return result;
         }
 
         public async Task<OperationResult> GetById(int id)
         {
             OperationResult result = new OperationResult();
-            result.Data = await _habitacionRepository.GetEntityByIdAsync(id);
+            result.Data = _mapper.EntityToDto(await _habitacionRepository.GetEntityByIdAsync(id));
             return result;
         }
 

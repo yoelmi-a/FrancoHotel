@@ -39,7 +39,7 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> GetAll()
         {
             OperationResult result = new OperationResult();
-            result.Data = await _pisoRepository.GetAllAsync();
+            result.Data = _mapper.DtoList(await _pisoRepository.GetAllAsync());
 
             return result;
         }
@@ -47,7 +47,7 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> GetById(int id)
         {
             OperationResult result = new OperationResult();
-            result.Data = await _pisoRepository.GetEntityByIdAsync(id);
+            result.Data = _mapper.EntityToDto(await _pisoRepository.GetEntityByIdAsync(id));
             return result;
         }
 
