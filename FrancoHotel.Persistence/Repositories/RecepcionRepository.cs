@@ -105,7 +105,7 @@ namespace FrancoHotel.Persistence.Repositories
                                                            .ConfigureAwait(false);
             return result.Data;
         }
-        public override async Task<bool> Exists(` filter)
+        public override async Task<bool> Exists(Expression<Func<Recepcion, bool>> filter)
         {
             return await _context.Recepcion.AnyAsync(filter).ConfigureAwait(false);
         }

@@ -1,5 +1,5 @@
 ﻿using FrancoHotel.Application.Dtos.HabitacionDtos;
-using FrancoHotel.Domain.Entities;Queryable
+using FrancoHotel.Domain.Entities;
 
 namespace FrancoHotel.Application.Mappers.Interfaces
 {
