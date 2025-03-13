@@ -17,7 +17,7 @@ namespace FrancoHotel.Persistence.Test
         public UnitTestPiso()
         {
             var mockLogger = MocksTest.GetLoggerMock<PisoRepository>();
-            var mockConfiguration = MocksTest.GetConfigurationBuilder();
+            var mockConfiguration = MocksTest.GetConfigurationBuilderELi();
             var mockContext = MocksTest.GetContextInMemory();
             _repository = new PisoRepository(mockContext, mockLogger.Object, mockConfiguration);
         }

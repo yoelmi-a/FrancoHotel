@@ -12,16 +12,16 @@ using Microsoft.Extensions.Logging;
 public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepository
 {
     private readonly HotelContext _context;
-    private readonly ILogger<PisoRepository> _logger;
+    private readonly ILogger<ClienteRepository> _logger;
     private readonly IConfiguration _configuration;
 
     public ClienteRepository(HotelContext context,
-                          ILogger<PisoRepository> logger,
-                          IConfiguration configuration) : base(context)
+                             ILogger<ClienteRepository> logger,
+                             IConfiguration configuration) : base(context)
     {
-        this._context = context;
-        this._logger = logger;
-        this._configuration = configuration;
+        _context = context;
+        _logger = logger;
+        _configuration = configuration;
     }
 
     public override async Task<bool> Exists(Expression<Func<Cliente, bool>> filter)
