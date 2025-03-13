@@ -51,6 +51,7 @@ namespace FrancoHotel.Application.Mappers.Classes
             entity.EstadoYFecha.FechaCreacion = dto.Fecha;
             entity.EstadoYFecha.Estado = dto.Estado;
             entity.CreadorPorU = dto.Usuario;
+            entity.Borrado = false;
             return entity;
         }
 
