@@ -63,7 +63,6 @@ namespace FrancoHotel.Application.Services
             OperationResult result = new OperationResult();
             Recepcion? recepcion = await _recepcionRepository.GetEntityByIdAsync(dto.Id);
 
-
             if (recepcion != null)
             {
                 result = await _recepcionRepository.RemoveEntityAsync(_mapper.RemoveDtoToEntity(dto, recepcion));
@@ -99,16 +98,6 @@ namespace FrancoHotel.Application.Services
 
             }
             return result;
-        }
-
-        public Task<OperationResult> UpdateTarifaByCategoria(string IdCategoria, decimal Precio)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<OperationResult> UpdateTarifasByFechas(DateTime FechaInicio, DateTime FechaFinal, decimal porcentajeCambio)
-        {
-            throw new NotImplementedException();
         }
     }
 }

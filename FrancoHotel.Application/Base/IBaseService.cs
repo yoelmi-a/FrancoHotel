@@ -1,4 +1,6 @@
-﻿using FrancoHotel.Domain.Base;
+﻿using System.Linq.Expressions;
+using FrancoHotel.Domain.Base;
+using FrancoHotel.Domain.Entities;
 
 namespace FrancoHotel.Application.Base
 {

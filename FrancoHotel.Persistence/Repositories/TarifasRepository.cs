@@ -56,6 +56,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return result;
         }
+
         public async Task<OperationResult> UpdateTarifasByFechas(DateTime fechaInicio, DateTime fechaFin, decimal porcentajeCambio)
         {
             OperationResult result = new OperationResult();
@@ -85,8 +86,6 @@ namespace FrancoHotel.Persistence.Repositories
 
             return result;
         }
-
-
 
         public async Task<OperationResult> TotalTarifa(int IdCategoria, int Days, int? ServiciosAdicionales)
         {
@@ -147,6 +146,7 @@ namespace FrancoHotel.Persistence.Repositories
 
             return result;
         }
+
         public override async Task<bool> Exists(Expression<Func<Tarifas, bool>> filter)
         {
             return await _context.Tarifas.AnyAsync(filter).ConfigureAwait(false);

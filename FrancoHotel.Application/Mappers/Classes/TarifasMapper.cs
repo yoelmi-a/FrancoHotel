@@ -43,26 +43,29 @@ namespace FrancoHotel.Application.Mappers.Classes
         public override Tarifas SaveDtoToEntity(SaveTarifasDtos dto)
         {
             Tarifas entity = new Tarifas();
-            dto.IdCategoria = entity.IdCategoria;
-            dto.FechaInicio = entity.FechaInicio;
-            dto.FechaFin = entity.FechaFin;
-            dto.PrecioPorNoche = entity.PrecioPorNoche;
-            dto.Descuento = entity.Descuento;
-            dto.Descripcion = entity.Descripcion;
-            dto.Estado = entity.Estado;
+            entity.CreadorPorU = dto.Usuario;
+            entity.IdCategoria = dto.IdCategoria;
+            entity.FechaInicio = dto.FechaInicio;
+            entity.FechaFin = dto.FechaFin;
+            entity.PrecioPorNoche = dto.PrecioPorNoche;
+            entity.Descuento = dto.Descuento;
+            entity.Descripcion = dto.Descripcion;
+            entity.Estado = dto.Estado;
+            entity.Borrado = false;
             return entity;
         }
 
         public override Tarifas UpdateDtoToEntity(UpdateTarifasDto dto, Tarifas entity)
         {
-            dto.IdCategoria = entity.IdCategoria;
-            dto.FechaInicio = entity.FechaInicio;
-            dto.FechaFin = entity.FechaFin;
-            dto.PrecioPorNoche = entity.PrecioPorNoche;
-            dto.Descuento = entity.Descuento;
-            dto.Descripcion = entity.Descripcion;
-            dto.Estado = entity.Estado;
-            dto.FechaModificacion = entity.FechaModificacion;
+            entity.IdCategoria = dto.IdCategoria;
+            entity.FechaInicio = dto.FechaInicio;
+            entity.FechaFin = dto.FechaFin;
+            entity.PrecioPorNoche = dto.PrecioPorNoche;
+            entity.Descuento = dto.Descuento;
+            entity.Descripcion = dto.Descripcion;
+            entity.Estado = dto.Estado;
+            entity.UsuarioMod = dto.Usuario;
+            entity.FechaModificacion = dto.Fecha;
             return entity;
         }
     }

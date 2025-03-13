@@ -22,12 +22,7 @@ namespace FrancoHotel.Api.Controllers
         {
             _recepcionService = recepcionService;
         }
-        [HttpGet("GetRecepcion")]
-        public async Task<IActionResult> GetAll()
-        {
-            var recepcion = await _recepcionService.GetAll();
-            return Ok(recepcion);
-        }
+
         
         [HttpGet("GetRecepcionByFilter")]
         public async Task<IActionResult> GetAllByFilter([FromQuery] DateTime fechaInicio,
@@ -41,6 +36,12 @@ namespace FrancoHotel.Api.Controllers
 
             var recepciones = await _recepcionService.GetAllByFilter(filter);
             return Ok(recepciones);
+        }
+        [HttpGet("GetRecepcion")]
+        public async Task<IActionResult> GetAll()
+        {
+            var recepcion = await _recepcionService.GetAll();
+            return Ok(recepcion);
         }
         
         [HttpGet("GetRecepcionById")]
