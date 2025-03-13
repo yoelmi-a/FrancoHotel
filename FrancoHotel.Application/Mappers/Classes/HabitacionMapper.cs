@@ -57,6 +57,7 @@ namespace FrancoHotel.Application.Mappers.Classes
             h.Detalle = dto.Detalle;
             h.EstadoYFecha.Estado = dto.Estado;
             h.EstadoYFecha.FechaCreacion = dto.Fecha;
+            h.Borrado = false;
             return h;
         }
 
