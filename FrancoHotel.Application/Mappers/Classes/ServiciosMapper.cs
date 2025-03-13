@@ -49,6 +49,7 @@ namespace FrancoHotel.Application.Mappers.Classes
             entity.CreadorPorU = dto.Usuario;
             entity.Nombre = dto.Nombre;
             entity.Precio = dto.Precio;
+            entity.Borrado = false;
             return entity;
         }
 
