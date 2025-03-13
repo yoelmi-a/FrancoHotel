@@ -31,9 +31,9 @@ namespace FrancoHotel.Application.Services
             _mapper = mapper;
         }
 
-        public Task<bool> Exists(Expression<Func<Tarifas, bool>> filter)
+        public async Task<bool> Exists(Expression<Func<Tarifas, bool>> filter)
         {
-            throw new NotImplementedException();
+            return await _tarifasRepository.Exists(filter);
         }
 
         public async Task<OperationResult> GetAll()
@@ -43,9 +43,11 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
-        public Task<OperationResult> GetAllByFilter(Expression<Func<Tarifas, bool>> filter)
+        public async Task<OperationResult> GetAllByFilter(Expression<Func<Tarifas, bool>> filter)
         {
-            throw new NotImplementedException();
+            OperationResult result = new OperationResult();
+            result.Data = await _tarifasRepository.GetAllAsync(filter);
+            return result;
         }
 
         public async Task<OperationResult> GetById(int id)
@@ -55,7 +57,6 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
-
         public async Task<OperationResult> Remove(RemoveTarifasDto dto)
         {
             OperationResult result = new OperationResult();
@@ -63,6 +64,7 @@ namespace FrancoHotel.Application.Services
             result = await _tarifasRepository.RemoveEntityAsync(_mapper.RemoveDtoToEntity(dto, tarifas));
             return result;
         }
+
         public async Task<OperationResult> Save(SaveTarifasDtos dto)
         {
             OperationResult result = new OperationResult();
@@ -70,9 +72,11 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
-        public Task<OperationResult> TotalTarifa(int IdCategoria, int Days, int? ServiciosAdicionales)
+        public async Task<OperationResult> TotalTarifa(int IdCategoria, int Days, int? ServiciosAdicionales)
         {
-            throw new NotImplementedException();
+            OperationResult result = new OperationResult();
+            result.Data = await _tarifasRepository.TotalTarifa(IdCategoria, Days, ServiciosAdicionales);
+            return result;
         }
 
         public async Task<OperationResult> Update(UpdateTarifasDto dto)
@@ -87,14 +91,18 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
-        public Task<OperationResult> UpdateTarifaByCategoria(string IdCategoria, decimal Precio)
+        public async Task<OperationResult> UpdateTarifaByCategoria(string IdCategoria, decimal Precio)
         {
-            throw new NotImplementedException();
+            OperationResult result = new OperationResult();
+            result.Data = await _tarifasRepository.UpdateTarifaByCategoria(IdCategoria, Precio);
+            return result;
         }
 
-        public Task<OperationResult> UpdateTarifasByFechas(DateTime FechaInicio, DateTime FechaFinal, decimal porcentajeCambio)
+        public async Task<OperationResult> UpdateTarifasByFechas(DateTime FechaInicio, DateTime FechaFinal, decimal porcentajeCambio)
         {
-            throw new NotImplementedException();
+            OperationResult result = new OperationResult();
+            result.Data = await _tarifasRepository.UpdateTarifasByFechas(FechaInicio, FechaFinal, porcentajeCambio);
+            return result;
         }
     }
 }

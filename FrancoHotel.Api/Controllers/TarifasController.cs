@@ -9,6 +9,7 @@ using FrancoHotel.Application.Services;
 using FrancoHotel.Application.Dtos.TarifasDto;
 using FrancoHotel.Application.Dtos.RecepcionDtos;
 using FrancoHotel.Application.Dtos.TarifasDtos;
+using FrancoHotel.Domain.Base;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -60,12 +61,21 @@ namespace FrancoHotel.Api.Controllers
             return Ok(tarifas);
         }
 
-        [HttpGet("ExistTarifas/{id}")]
-        public async Task<IActionResult> GetExistTarifa(short id)
+        [HttpGet("ExistTarifas")]
+        public async Task<IActionResult> GetExist([FromQuery] int id)
         {
-            var tarifas = await _tarifasService.GetById(id);
+            Expression<Func<Tarifas, bool>> filter = r => r.Id == id;
+            var tarifas = await _tarifasService.Exists(filter);
             return Ok(tarifas);
         }
+
+        //[HttpGet("TotalTarifas")]
+        //public async Task<IActionResult> TotalTarifas([FromBody] int IdCategoria, [FromBody] int Days, [FromBody] int? ServiciosAdicionales)
+        //{
+        //    OperationResult result = new OperationResult();
+        //    result.Data = await _tarifasService.TotalTarifa(IdCategoria, Days, ServiciosAdicionales);
+        //    return (IActionResult)result; 
+        //}
 
         [HttpPost("SaveTarifas")]
         public async Task<IActionResult> Post([FromBody] SaveTarifasDtos tarifas)

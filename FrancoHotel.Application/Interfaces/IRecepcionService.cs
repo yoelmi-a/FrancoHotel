@@ -11,9 +11,6 @@ namespace FrancoHotel.Application.Interfaces
     {
         Task<bool> Exists(Expression<Func<Recepcion, bool>> filter);
         Task<OperationResult> GetAllByFilter(Expression<Func<Recepcion, bool>> filter);
-        Task<OperationResult> UpdateTarifaByCategoria(string IdCategoria, decimal Precio);
-
-        Task<OperationResult> UpdateTarifasByFechas(DateTime FechaInicio, DateTime FechaFinal, decimal porcentajeCambio);
 
         Task<OperationResult> TotalTarifa(int IdCategoria, int Days, int? ServiciosAdicionales);
     }
