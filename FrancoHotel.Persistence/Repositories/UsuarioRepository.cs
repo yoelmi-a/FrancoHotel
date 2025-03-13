@@ -14,16 +14,16 @@ namespace FrancoHotel.Persistence.Repositories
     public class UsuarioRepository : BaseRepository<Usuario, int>, IUsuarioRepository
     {
         private readonly HotelContext _context;
-        private readonly ILogger<PisoRepository> _logger;
+        private readonly ILogger<UsuarioRepository> _logger;
         private readonly IConfiguration _configuration;
 
         public UsuarioRepository(HotelContext context,
-                              ILogger<PisoRepository> logger,
+                              ILogger<UsuarioRepository> logger,
                               IConfiguration configuration) : base(context)
         {
-            this._context = context;
-            this._logger = logger;
-            this._configuration = configuration;
+            _context = context;
+            _logger = logger;
+            _configuration = configuration;
         }
 
         public override async Task<bool> Exists(Expression<Func<Usuario, bool>> filter)
