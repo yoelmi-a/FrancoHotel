@@ -21,15 +21,15 @@ namespace FrancoHotel.Application.Services
 
         public async Task<OperationResult> GetAll()
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
             var roles = await _rolUsuarioRepository.GetAllAsync();
-            result.Data = _mapper.DtoList(roles.Where(r => !r.Borrado ?? true).ToList());
+            result.Data = _mapper.DtoList(roles.Where(r => !(r.Borrado ?? false)).ToList());
             return result;
         }
 
         public async Task<OperationResult> GetById(int id)
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
             var rol = await _rolUsuarioRepository.GetEntityByIdAsync(id);
 
             if (rol == null || (rol.Borrado ?? false))
@@ -46,14 +46,14 @@ namespace FrancoHotel.Application.Services
         public async Task<List<OperationResult>> GetRolesUsuarioByEstado(bool estado)
         {
             var roles = await _rolUsuarioRepository.GetRolesUsuarioByEstado(estado);
-            return roles.Where(r => !r.Borrado ?? true)
+            return roles.Where(r => !(r.Borrado ?? false))
                         .Select(r => new OperationResult { Data = _mapper.EntityToDto(r) })
                         .ToList();
         }
 
         public async Task<OperationResult> GetRolUsuarioByDescripcion(string descripcion)
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
             var rol = await _rolUsuarioRepository.GetRolUsuarioByDescripcion(descripcion);
 
             if (rol == null || (rol.Borrado ?? false))
@@ -67,27 +67,9 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
-        public async Task<OperationResult> Remove(RemoveRolUsuarioDtos dto)
-        {
-            var result = new OperationResult();
-            var rol = await _rolUsuarioRepository.GetEntityByIdAsync(dto.IdRolUsuario);
-
-            if (rol == null)
-            {
-                result.Success = false;
-                result.Message = "Rol de usuario no encontrado";
-                return result;
-            }
-
-            rol.Borrado = true;
-            result = await _rolUsuarioRepository.UpdateEntityAsync(rol);
-            result.Message = "Rol de usuario eliminado correctamente";
-            return result;
-        }
-
         public async Task<OperationResult> Save(SaveRolUsuarioDtos dto)
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
 
             if (string.IsNullOrWhiteSpace(dto.Descripcion))
             {
@@ -111,7 +93,15 @@ namespace FrancoHotel.Application.Services
 
         public async Task<OperationResult> Update(UpdateRolUsuarioDtos dto)
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
+
+            if (!dto.IdRolUsuario.HasValue)
+            {
+                result.Success = false;
+                result.Message = "El ID del rol de usuario es obligatorio";
+                return result;
+            }
+
             var rolExistente = await _rolUsuarioRepository.GetEntityByIdAsync(dto.IdRolUsuario.Value);
 
             if (rolExistente == null || (rolExistente.Borrado ?? false))
@@ -129,8 +119,8 @@ namespace FrancoHotel.Application.Services
             }
 
             if (await _rolUsuarioRepository.Exists(r =>
-                r.Descripcion == dto.Descripcion &&
-                r.Id != dto.IdRolUsuario))
+                    r.Descripcion == dto.Descripcion &&
+                    r.Id != dto.IdRolUsuario))
             {
                 result.Success = false;
                 result.Message = "La descripción ya está registrada en otro rol";
@@ -143,13 +133,38 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
+        public async Task<OperationResult> Remove(RemoveRolUsuarioDtos dto)
+        {
+            OperationResult result = new OperationResult();
+            var rol = await _rolUsuarioRepository.GetEntityByIdAsync(dto.IdRolUsuario);
+
+            if (rol == null)
+            {
+                result.Success = false;
+                result.Message = "Rol de usuario no encontrado";
+                return result;
+            }
+
+            rol.Borrado = true;
+            result = await _rolUsuarioRepository.UpdateEntityAsync(rol);
+            result.Message = "Rol de usuario eliminado correctamente";
+            return result;
+        }
+
         public async Task<OperationResult> UpdateDescripcion(RolUsuario rol, string nuevaDescripcion)
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
+
+            if (string.IsNullOrWhiteSpace(nuevaDescripcion))
+            {
+                result.Success = false;
+                result.Message = "La nueva descripción no puede estar vacía";
+                return result;
+            }
 
             if (await _rolUsuarioRepository.Exists(r =>
-                r.Descripcion == nuevaDescripcion &&
-                r.Id != rol.Id))
+                    r.Descripcion == nuevaDescripcion &&
+                    r.Id != rol.Id))
             {
                 result.Success = false;
                 result.Message = "La descripción ya está en uso por otro rol";
@@ -164,7 +179,7 @@ namespace FrancoHotel.Application.Services
 
         public async Task<OperationResult> UpdateEstado(RolUsuario rol, bool nuevoEstado)
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
             rol.EstadoYFecha.Estado = nuevoEstado;
             result = await _rolUsuarioRepository.UpdateEntityAsync(rol);
             result.Message = $"Estado actualizado a {(nuevoEstado ? "activo" : "inactivo")}";

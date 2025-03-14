@@ -24,7 +24,7 @@ namespace FrancoHotel.Application.Services
 
         public async Task<OperationResult> GetAll()
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
             var usuarios = await _usuarioRepository.GetAllAsync();
             result.Data = _mapper.DtoList(usuarios);
             return result;
@@ -32,7 +32,7 @@ namespace FrancoHotel.Application.Services
 
         public async Task<OperationResult> GetById(int id)
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
             var usuario = await _usuarioRepository.GetEntityByIdAsync(id);
 
             if (usuario == null || (usuario.Borrado ?? false))
@@ -48,53 +48,32 @@ namespace FrancoHotel.Application.Services
 
         public async Task<OperationResult> GetUsuarioByIdRolUsuario(int idRolUsuario)
         {
-            var result = new OperationResult();
-            var rolExists = await _rolUsuarioRepository.Exists(r => r.Id == idRolUsuario);
+            OperationResult result = new OperationResult();
+            bool rolExiste = await _rolUsuarioRepository.Exists(r => r.Id == idRolUsuario);
 
-            if (!rolExists)
+            if (!rolExiste)
             {
                 result.Success = false;
                 result.Message = "El rol especificado no existe";
                 return result;
             }
 
-            var usuarios = await _usuarioRepository.GetUsuarioByIdRolUsuario(idRolUsuario);
-            result.Data = _mapper.EntityToDto(usuarios);
+            var usuario = await _usuarioRepository.GetUsuarioByIdRolUsuario(idRolUsuario);
+            result.Data = _mapper.EntityToDto(usuario);
             return result;
         }
 
         public async Task<List<OperationResult>> GetUsuariosByEstado(bool estado)
         {
             var usuarios = await _usuarioRepository.GetUsuariosByEstado(estado);
-            return usuarios.Select(u => new OperationResult
-            {
-                Data = _mapper.EntityToDto(u)
-            }).ToList();
-        }
-
-        public async Task<OperationResult> Remove(RemoveUsuarioDtos dto)
-        {
-            var result = new OperationResult();
-            var usuario = await _usuarioRepository.GetEntityByIdAsync(dto.IdUsuario);
-
-            if (usuario == null)
-            {
-                result.Success = false;
-                result.Message = "Usuario no encontrado";
-                return result;
-            }
-
-            usuario.Borrado = true;
-            result = await _usuarioRepository.UpdateEntityAsync(usuario);
-            result.Message = "Usuario eliminado correctamente";
-            return result;
+            return usuarios.Select(u => new OperationResult { Data = _mapper.EntityToDto(u) }).ToList();
         }
 
         public async Task<OperationResult> Save(SaveUsuarioDtos dto)
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
 
-            if (!dto.Correo.Contains("@"))
+            if (string.IsNullOrWhiteSpace(dto.Correo) || !dto.Correo.Contains("@"))
             {
                 result.Success = false;
                 result.Message = "Formato de correo inválido";
@@ -123,26 +102,30 @@ namespace FrancoHotel.Application.Services
 
         public async Task<OperationResult> Update(UpdateUsuarioDtos dto)
         {
-            var result = new OperationResult();
-            var usuarioExistente = await _usuarioRepository.GetEntityByIdAsync(dto.IdUsuario.Value);
+            OperationResult result = new OperationResult();
+            if (!dto.IdUsuario.HasValue)
+            {
+                result.Success = false;
+                result.Message = "El ID del usuario es obligatorio";
+                return result;
+            }
 
-            if (usuarioExistente == null)
+            var usuarioExistente = await _usuarioRepository.GetEntityByIdAsync(dto.IdUsuario.Value);
+            if (usuarioExistente == null || (usuarioExistente.Borrado ?? false))
             {
                 result.Success = false;
                 result.Message = "Usuario no encontrado";
                 return result;
             }
 
-            if (!dto.Correo.Contains("@"))
+            if (string.IsNullOrWhiteSpace(dto.Correo) || !dto.Correo.Contains("@"))
             {
                 result.Success = false;
                 result.Message = "Formato de correo inválido";
                 return result;
             }
 
-            if (await _usuarioRepository.Exists(u =>
-                u.Correo == dto.Correo &&
-                u.Id != dto.IdUsuario))
+            if (await _usuarioRepository.Exists(u => u.Correo == dto.Correo && u.Id != dto.IdUsuario))
             {
                 result.Success = false;
                 result.Message = "El correo ya está registrado";
@@ -162,9 +145,35 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
+        public async Task<OperationResult> Remove(RemoveUsuarioDtos dto)
+        {
+            OperationResult result = new OperationResult();
+            var usuario = await _usuarioRepository.GetEntityByIdAsync(dto.IdUsuario);
+
+            if (usuario == null)
+            {
+                result.Success = false;
+                result.Message = "Usuario no encontrado";
+                return result;
+            }
+
+            usuario.Borrado = true;
+            result = await _usuarioRepository.UpdateEntityAsync(usuario);
+            result.Message = "Usuario eliminado correctamente";
+            return result;
+        }
+
         public async Task<OperationResult> UpdateClave(Usuario usuario, string nuevaClave)
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
+
+            if (string.IsNullOrWhiteSpace(nuevaClave))
+            {
+                result.Success = false;
+                result.Message = "La nueva contraseña no puede estar vacía";
+                return result;
+            }
+
             usuario.Clave = nuevaClave;
             result = await _usuarioRepository.UpdateEntityAsync(usuario);
             result.Message = "Contraseña actualizada correctamente";
@@ -173,7 +182,7 @@ namespace FrancoHotel.Application.Services
 
         public async Task<OperationResult> UpdateEstado(Usuario usuario, bool nuevoEstado)
         {
-            var result = new OperationResult();
+            OperationResult result = new OperationResult();
             usuario.EstadoYFecha.Estado = nuevoEstado;
             result = await _usuarioRepository.UpdateEntityAsync(usuario);
             result.Message = $"Estado actualizado a {(nuevoEstado ? "activo" : "inactivo")}";
