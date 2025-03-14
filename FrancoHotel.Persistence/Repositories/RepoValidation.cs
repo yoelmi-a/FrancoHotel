@@ -52,7 +52,17 @@ namespace FrancoHotel.Persistence.Repositories
 
         public static bool ValidarPrecio(decimal? precio)
         {
-            if (precio <= 0 || precio <= 9999999999.99M)
+            if (precio <= 0 || precio >= 9999999999.99M)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool ValidarPreciosExtra(decimal? precio)
+        {
+            if (precio < 0 || precio >= 9999999999.99M)
             {
                 return false;
             }
@@ -183,13 +193,13 @@ namespace FrancoHotel.Persistence.Repositories
                 !RepoValidation.ValidarPrecio(entity.Adelanto) ||
                 !RepoValidation.ValidarPrecio(entity.PrecioRestante) ||
                 !RepoValidation.ValidarPrecio(entity.TotalPagado) ||
-                !RepoValidation.ValidarPrecio(entity.CostoPenalidad) ||
+                !RepoValidation.ValidarPreciosExtra(entity.CostoPenalidad) ||
                 !RepoValidation.ValidarPrecio(entity.PrecioRestante) ||
                 !RepoValidation.ValidarString(entity.Observacion!) ||
                 !RepoValidation.ValidarID((int)entity.Estado) ||
                 !RepoValidation.ValidarID(entity.CantidadPersonas) ||
                 !RepoValidation.ValidarID(entity.IdServicioPorCategoria) ||
-                !RepoValidation.ValidarPrecio(entity.PrecioServiciosExtra))
+                !RepoValidation.ValidarPreciosExtra(entity.PrecioServiciosExtra))
             {
                 
             }

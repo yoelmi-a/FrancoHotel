@@ -97,6 +97,11 @@ namespace FrancoHotel.Application.Services
                 result = await _recepcionRepository.UpdateEntityAsync(_mapper.UpdateDtoToEntity(dto, recepcion));
 
             }
+            else
+            {
+                result.Success = false;
+                result.Message = "No se encontro la entidad"; 
+            }
             return result;
         }
     }
