@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FrancoHotel.Application\FrancoHotel.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 

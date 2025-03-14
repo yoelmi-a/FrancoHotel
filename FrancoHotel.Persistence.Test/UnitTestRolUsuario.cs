@@ -46,11 +46,14 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador", 
                 EstadoYFecha = new BaseEstadoYFecha
                 {
-                    Estado = null,
-                    FechaCreacion = null
-                }
+                    Estado = null,      
+                    FechaCreacion = null 
+                },
+                CreadorPorU = 1 
             };
 
             // Act
@@ -68,9 +71,16 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void SaveEntityAsync_ShouldReturnFailure_WhenIdIsInvalid(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
                 CreadorPorU = id
             };
 
@@ -87,10 +97,17 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void SaveEntityAsync_ShouldReturnFailure_WhenStringIsEmpty()
         {
-            //Arrange
+            // Arrange
             var rolUsuario = new RolUsuario()
             {
-                Descripcion = " "
+                Id = 1,
+                Descripcion = " ",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
@@ -106,10 +123,17 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void SaveEntityAsync_ShouldReturnFailure_WhenStringIsLonger()
         {
-            //Arrange
+            // Arrange
             var rolUsuario = new RolUsuario()
             {
-                Descripcion = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación."
+                Id = 1,
+                Descripcion = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación.",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
@@ -129,15 +153,22 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenIdIsInvalid(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
-                Id = id
+                Id = id,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -150,15 +181,23 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenIdIsInvalidUsuarioMod(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
                 UsuarioMod = id
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -174,7 +213,7 @@ namespace FrancoHotel.Persistence.Test
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -188,12 +227,20 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
                 FechaModificacion = null
             };
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -207,16 +254,19 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
                 EstadoYFecha = new BaseEstadoYFecha
                 {
                     Estado = null,
                     FechaCreacion = null
-                }
+                },
+                CreadorPorU = 1
             };
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -229,15 +279,22 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenIdIsInvalidCreadorPorU(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
                 CreadorPorU = id
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -248,15 +305,22 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenStringIsEmpty()
         {
-            //Arrange
+            // Arrange
             var rolUsuario = new RolUsuario()
             {
-                Descripcion = " "
+                Id = 1,
+                Descripcion = " ",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -267,15 +331,22 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenStringIsLonger()
         {
-            //Arrange
+            // Arrange
             var rolUsuario = new RolUsuario()
             {
-                Descripcion = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación."
+                Id = 1,
+                Descripcion = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación.",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -290,15 +361,22 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void UpdateDescripcion_ShouldReturnFailure_WhenIdIsInvalid(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
-                Id = id
+                Id = id,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateDescripcion(rolUsuario, "Descripción de prueba");
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -311,15 +389,23 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void UpdateDescripcion_ShouldReturnFailure_WhenIdIsInvalidUsuarioMod(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
                 UsuarioMod = id
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateDescripcion(rolUsuario, "Descripción de prueba");
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -335,7 +421,7 @@ namespace FrancoHotel.Persistence.Test
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateDescripcion(rolUsuario, "Descripción de prueba");
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -349,12 +435,20 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
                 FechaModificacion = null
             };
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateDescripcion(rolUsuario, "Descripción de prueba");
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -368,16 +462,19 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
                 EstadoYFecha = new BaseEstadoYFecha
                 {
                     Estado = null,
                     FechaCreacion = null
-                }
+                },
+                CreadorPorU = 1
             };
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateDescripcion(rolUsuario, "Descripción de prueba");
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -390,15 +487,22 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void UpdateDescripcion_ShouldReturnFailure_WhenIdIsInvalidCreadorPorU(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
                 CreadorPorU = id
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateDescripcion(rolUsuario, "Descripción de prueba");
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -409,15 +513,22 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void UpdateDescripcion_ShouldReturnFailure_WhenStringIsEmpty()
         {
-            //Arrange
+            // Arrange
             var rolUsuario = new RolUsuario()
             {
-                Descripcion = " "
+                Id = 1,
+                Descripcion = " ",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateDescripcion(rolUsuario, "Descripción de prueba");
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -428,15 +539,22 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void UpdateDescripcion_ShouldReturnFailure_WhenStringIsLonger()
         {
-            //Arrange
+            // Arrange
             var rolUsuario = new RolUsuario()
             {
-                Descripcion = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación."
+                Id = 1,
+                Descripcion = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación.",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateDescripcion(rolUsuario, "Descripción de prueba");
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -451,15 +569,22 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void UpdateEstado_ShouldReturnFailure_WhenIdIsInvalid(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
-                Id = id
+                Id = id,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEstado(rolUsuario, false);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -472,15 +597,23 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void UpdateEstado_ShouldReturnFailure_WhenIdIsInvalidUsuarioMod(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
                 UsuarioMod = id
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEstado(rolUsuario, false);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -496,7 +629,7 @@ namespace FrancoHotel.Persistence.Test
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEstado(rolUsuario, false);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -510,12 +643,20 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
                 FechaModificacion = null
             };
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEstado(rolUsuario, false);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -529,16 +670,19 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
                 EstadoYFecha = new BaseEstadoYFecha
                 {
                     Estado = null,
                     FechaCreacion = null
-                }
+                },
+                CreadorPorU = 1
             };
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEstado(rolUsuario, false);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -551,15 +695,22 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void UpdateEstado_ShouldReturnFailure_WhenIdIsInvalidCreadorPorU(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
                 CreadorPorU = id
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.UpdateEstado(rolUsuario, false);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -574,15 +725,22 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void RemoveEntityAsync_ShouldReturnFailure_WhenIdIsInvalid(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
-                Id = id
+                Id = id,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.RemoveEntityAsync(rolUsuario);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -595,15 +753,23 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void RemoveEntityAsync_ShouldReturnFailure_WhenIdIsInvalidUsuarioMod(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
                 UsuarioMod = id
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.RemoveEntityAsync(rolUsuario);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -619,7 +785,7 @@ namespace FrancoHotel.Persistence.Test
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.RemoveEntityAsync(rolUsuario);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -633,12 +799,20 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
                 FechaModificacion = null
             };
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.RemoveEntityAsync(rolUsuario);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -652,12 +826,20 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
                 Borrado = null
             };
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.RemoveEntityAsync(rolUsuario);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -672,16 +854,19 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
                 EstadoYFecha = new BaseEstadoYFecha
                 {
                     Estado = null,
                     FechaCreacion = null
-                }
+                },
+                CreadorPorU = 1
             };
 
             // Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.RemoveEntityAsync(rolUsuario);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -694,15 +879,22 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void RemoveEntityAsync_ShouldReturnFailure_WhenIdIsInvalidCreadorPorU(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
                 CreadorPorU = id
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.RemoveEntityAsync(rolUsuario);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -713,15 +905,22 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void RemoveEntityAsync_ShouldReturnFailure_WhenStringIsEmpty()
         {
-            //Arrange
+            // Arrange
             var rolUsuario = new RolUsuario()
             {
-                Descripcion = " "
+                Id = 1,
+                Descripcion = " ",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.RemoveEntityAsync(rolUsuario);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -732,15 +931,22 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void RemoveEntityAsync_ShouldReturnFailure_WhenStringIsLonger()
         {
-            //Arrange
+            // Arrange
             var rolUsuario = new RolUsuario()
             {
-                Descripcion = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación."
+                Id = 1,
+                Descripcion = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación.",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.RemoveEntityAsync(rolUsuario);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -753,15 +959,23 @@ namespace FrancoHotel.Persistence.Test
         [InlineData(-1)]
         public async void RemoveEntityAsync_ShouldReturnFailure_WhenIdIsInvalidBorradoPorU(int id)
         {
-            //Arrange
-            var rolUsuario = new RolUsuario
+            // Arrange
+            var rolUsuario = new RolUsuario()
             {
+                Id = 1,
+                Descripcion = "Administrador",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
                 BorradoPorU = id
             };
 
             //Act
             string message = "Datos inválidos para la operación en RolUsuarioRepository";
-            var result = await _rolUsuarioRepository.SaveEntityAsync(rolUsuario);
+            var result = await _rolUsuarioRepository.RemoveEntityAsync(rolUsuario);
 
             //Assert
             Assert.IsType<OperationResult>(result);

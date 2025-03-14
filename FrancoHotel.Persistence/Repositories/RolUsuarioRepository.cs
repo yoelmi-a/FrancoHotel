@@ -110,7 +110,7 @@ namespace FrancoHotel.Persistence.Repositories
         {
             OperationResult result = new OperationResult();
 
-            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarRolUsuario(entity) || !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+            if (!RepoValidation.ValidarRolUsuario(entity) || !RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
             {
                 result.Message = _configuration["ErrorRolUsuarioRepository:InvalidData"]!;
                 result.Success = false;
@@ -192,7 +192,8 @@ namespace FrancoHotel.Persistence.Repositories
         {
             OperationResult result = new OperationResult();
 
-            if (!RepoValidation.ValidarRolUsuario(entity) ||
+            if (!RepoValidation.ValidarRolUsuario(entity) || 
+                !RepoValidation.ValidarID(entity.Id) ||
                 !RepoValidation.ValidarID(entity.UsuarioMod) ||
                 !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
                 !RepoValidation.ValidarID(entity.BorradoPorU) ||

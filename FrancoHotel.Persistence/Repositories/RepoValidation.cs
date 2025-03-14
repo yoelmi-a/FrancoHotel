@@ -167,7 +167,8 @@ namespace FrancoHotel.Persistence.Repositories
                 !RepoValidation.ValidarLongitudString(entity.Correo!, 50) ||
                 !RepoValidation.ValidarEntidad(entity.EstadoYFecha.Estado!) ||
                 !RepoValidation.ValidarEntidad(entity.EstadoYFecha.FechaCreacion!) ||
-                !RepoValidation.ValidarID(entity.CreadorPorU))
+                !RepoValidation.ValidarID(entity.CreadorPorU) || 
+                !RepoValidation.ValidarID(entity.Id))
             {
                 return false;
             }
