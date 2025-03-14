@@ -55,7 +55,7 @@ namespace FrancoHotel.Persistence.Repositories
 
             if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarRecepcion(entity) || !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
             {
-                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync:InvalidData"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
                 result.Success = false;
                 return result;
             }
@@ -67,7 +67,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync:Error"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
