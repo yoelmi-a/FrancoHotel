@@ -63,6 +63,7 @@ namespace FrancoHotel.Application.Mappers.Classes
             entity.CantidadPersonas = dto.CantidadPersonas;
             entity.IdServicioPorCategoria = dto.IdServicioPorCategoria;
             entity.PrecioServiciosExtra = dto.PrecioServiciosExtra;
+            entity.Borrado = false;
             return entity;
         }
 
