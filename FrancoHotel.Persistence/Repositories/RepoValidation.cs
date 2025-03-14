@@ -191,7 +191,7 @@ namespace FrancoHotel.Persistence.Repositories
                 !RepoValidation.ValidarID(entity.IdServicioPorCategoria) ||
                 !RepoValidation.ValidarPrecio(entity.PrecioServiciosExtra))
             {
-                
+                return false;
             }
             return true;
         }

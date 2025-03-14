@@ -86,6 +86,7 @@ namespace FrancoHotel.Application.Mappers.Classes
             entity.PrecioServiciosExtra = dto.PrecioServiciosExtra;
             entity.UsuarioMod = dto.Usuario;
             entity.FechaModificacion = dto.Fecha;
+            entity.FechaSalidaConfirmacion = dto.FechaSalidaConfirmacion;
             return entity;
         }
     }
