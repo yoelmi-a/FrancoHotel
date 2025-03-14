@@ -4,11 +4,10 @@ namespace FrancoHotel.Application.Dtos.RecepcionDtos
 {
     public class RecepcionDtos : DtoBase
     {
-        public int? IdCliente { get; set; }
-        public int? IdHabitacion { get; set; } 
+        public int IdCliente { get; set; }
+        public int IdHabitacion { get; set; } 
         public DateTime? FechaEntrada { get; set; }
         public DateTime? FechaSalida { get; set; }
-        public DateTime? FechaSalidaConfirmacion { get; set; }
         public decimal? PrecioInicial { get; set; }
         public decimal? Adelanto { get; set; }
         public decimal? PrecioRestante { get; set; }

@@ -108,7 +108,6 @@ namespace FrancoHotel.Persistence.Repositories
 
             return true;
         }
-
         public static bool ValidarServicio(Servicios servicio)
         {
             if (!RepoValidation.ValidarEntidad(servicio) ||
@@ -170,6 +169,29 @@ namespace FrancoHotel.Persistence.Repositories
                 !RepoValidation.ValidarID(entity.CreadorPorU))
             {
                 return false;
+            }
+            return true;
+        }
+        public static bool ValidarRecepcion(Recepcion entity)
+        {
+            if (!RepoValidation.ValidarEntidad(entity) ||
+                !RepoValidation.ValidarID(entity.IdCliente) ||
+                !RepoValidation.ValidarID(entity.IdHabitacion) ||
+                !RepoValidation.ValidarEntidad(entity.FechaEntrada!) ||
+                !RepoValidation.ValidarEntidad(entity.FechaSalida!) ||
+                !RepoValidation.ValidarPrecio(entity.PrecioInicial) ||
+                !RepoValidation.ValidarPrecio(entity.Adelanto) ||
+                !RepoValidation.ValidarPrecio(entity.PrecioRestante) ||
+                !RepoValidation.ValidarPrecio(entity.TotalPagado) ||
+                !RepoValidation.ValidarPrecio(entity.CostoPenalidad) ||
+                !RepoValidation.ValidarPrecio(entity.PrecioRestante) ||
+                !RepoValidation.ValidarString(entity.Observacion!) ||
+                !RepoValidation.ValidarID((int)entity.Estado) ||
+                !RepoValidation.ValidarID(entity.CantidadPersonas) ||
+                !RepoValidation.ValidarID(entity.IdServicioPorCategoria) ||
+                !RepoValidation.ValidarPrecio(entity.PrecioServiciosExtra))
+            {
+                
             }
             return true;
         }

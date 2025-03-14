@@ -31,13 +31,9 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
 
             
-            if (!RepoValidation.ValidarID(entity.IdCliente))
+            if (!RepoValidation.ValidarRecepcion(entity))
             {
-                result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsync"]!;
-            }
-            if (!RepoValidation.ValidarID(entity.IdHabitacion))
-            {
-                result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsync"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsync:InvalidData"]!;
             }
             try
             {
@@ -46,7 +42,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception)
             {
-                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsync:Error"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ToString());
             }
@@ -57,17 +53,11 @@ namespace FrancoHotel.Persistence.Repositories
         {
             OperationResult result = new OperationResult();
 
-            if (RepoValidation.ValidarID(entity.Id))
+            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarRecepcion(entity) || !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
             {
-                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
-            }
-            else if(RepoValidation.ValidarID(entity.IdCliente))
-            {
-                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
-            }
-            else if(RepoValidation.ValidarID(entity.IdHabitacion))
-            {
-                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync:InvalidData"]!;
+                result.Success = false;
+                return result;
             }
             try
             {
@@ -77,7 +67,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync:Error"]!;
                 result.Success = false;
                 this._logger.LogError(result.Message, ex.ToString());
             }
@@ -103,6 +93,7 @@ namespace FrancoHotel.Persistence.Repositories
                                                            .ConfigureAwait(false);
             return result.Data;
         }
+
         public override async Task<bool> Exists(Expression<Func<Recepcion, bool>> filter)
         {
             return await _context.Recepcion.AnyAsync(filter).ConfigureAwait(false);
@@ -122,7 +113,8 @@ namespace FrancoHotel.Persistence.Repositories
         {
             OperationResult result = new OperationResult();
 
-            if (!RepoValidation.ValidarID(entity.UsuarioMod) ||
+            if (!RepoValidation.ValidarEntidad(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) ||
                 !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
                 !RepoValidation.ValidarID(entity.BorradoPorU) ||
                 !RepoValidation.ValidarEntidad(entity.Borrado!))
@@ -131,7 +123,6 @@ namespace FrancoHotel.Persistence.Repositories
                 result.Success = false;
                 return result;
             }
-
             try
             {
                 _context.Recepcion.Update(entity);
@@ -139,7 +130,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = _configuration["ErrorRecepcionRepository:RemoveEntity"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:RemoveEntity:Error"]!;
                 result.Success = false;
                 _logger.LogError(result.Message, ex.ToString());
             }
