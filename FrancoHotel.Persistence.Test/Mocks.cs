@@ -28,12 +28,5 @@ namespace FrancoHotel.Application.Test
                 .AddJsonFile("C:\\Users\\Yoelmi\\Proyecto Final\\FrancoHotel\\FrancoHotel.Web\\appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
         }
-
-        public static IConfigurationRoot GetConfigurationBuilderELi()
-        {
-            return new ConfigurationBuilder()
-                .AddJsonFile("C:\\Users\\ETIMADO\\Desktop\\Clases_Itla\\Clases\\cuatrimestre_4\\programacio_2\\ProjectEND\\App\\FrancoHotel.Web\\appsettings.json", optional: false, reloadOnChange: true)
-                .Build();
-        }
     }
 }
