@@ -39,5 +39,30 @@ namespace FrancoHotel.Persistence.Test
             Assert.False(result.Success);
             Assert.Equal(message, result.Message);
         }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async void SaveEntityAsync_ShouldReturnFailure_WhenDescripcionIsNull(string data)
+        {
+
+            //Arange
+
+            Piso piso = new Piso();
+            piso.EstadoYFecha.Estado = true;
+            piso.Descripcion = data;
+            piso.EstadoYFecha.FechaCreacion = DateTime.Now;
+            piso.CreadorPorU = 1;
+
+            //Act
+            string message = "Los datos del piso no son validos";
+            var result = await _repository.SaveEntityAsync(piso);
+
+            //Assert
+            Assert.IsType<OperationResult>(result);
+            Assert.False(result.Success);
+            Assert.Equal(message, result.Message);
+        }
     }
 }
