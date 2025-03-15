@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using FrancoHotel.Persistence.Repositories;
 
 namespace FrancoHotel.Application.Services
 {
@@ -37,16 +38,7 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> GetById(int id)
         {
             OperationResult result = new OperationResult();
-            var rol = await _rolUsuarioRepository.GetEntityByIdAsync(id);
-
-            if (rol == null || (rol.Borrado ?? false))
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorRolUsuario:RolNoEncontrado"];
-                return result;
-            }
-
-            result.Data = _mapper.EntityToDto(rol);
+            result.Data = _mapper.EntityToDto(await _rolUsuarioRepository.GetEntityByIdAsync(id));
             return result;
         }
 
@@ -62,14 +54,6 @@ namespace FrancoHotel.Application.Services
         {
             OperationResult result = new OperationResult();
             var rol = await _rolUsuarioRepository.GetRolUsuarioByDescripcion(descripcion);
-
-            if (rol == null || (rol.Borrado ?? false))
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorRolUsuario:RolNoEncontrado"];
-                return result;
-            }
-
             result.Data = _mapper.EntityToDto(rol);
             return result;
         }
@@ -82,13 +66,6 @@ namespace FrancoHotel.Application.Services
             {
                 result.Success = false;
                 result.Message = _configuration["ErrorRolUsuario:DescripcionVacia"];
-                return result;
-            }
-
-            if (await _rolUsuarioRepository.Exists(r => r.Descripcion == dto.Descripcion))
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorRolUsuario:DescripcionDuplicada"];
                 return result;
             }
 
@@ -124,15 +101,6 @@ namespace FrancoHotel.Application.Services
                 return result;
             }
 
-            if (await _rolUsuarioRepository.Exists(r =>
-                    r.Descripcion == dto.Descripcion &&
-                    r.Id != dto.IdRolUsuario))
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorRolUsuario:DescripcionDuplicadaOtroRol"];
-                return result;
-            }
-
             var rolActualizado = _mapper.UpdateDtoToEntity(dto, rolExistente);
             result = await _rolUsuarioRepository.UpdateEntityAsync(rolActualizado);
             return result;
@@ -163,15 +131,6 @@ namespace FrancoHotel.Application.Services
             {
                 result.Success = false;
                 result.Message = _configuration["ErrorRolUsuario:NuevaDescripcionVacia"];
-                return result;
-            }
-
-            if (await _rolUsuarioRepository.Exists(r =>
-                    r.Descripcion == nuevaDescripcion &&
-                    r.Id != rol.Id))
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorRolUsuario:DescripcionEnUsoOtroRol"];
                 return result;
             }
 

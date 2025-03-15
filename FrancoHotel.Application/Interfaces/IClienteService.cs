@@ -10,7 +10,7 @@ namespace FrancoHotel.Persistence.Interfaces
         Task<OperationResult> GetClienteByDocumento(string documento);
         Task<List<OperationResult>> GetClientesByEstado(bool estado);
 
-        Task<OperationResult> UpdateTipoDocumento(Cliente entity);
-        Task<OperationResult> UpdateEstado(Cliente entity, bool nuevoEstado);
+        Task<OperationResult> UpdateTipoDocumento(UpdateClienteDtos dto);
+        Task<OperationResult> UpdateEstado(UpdateClienteDtos dto, bool nuevoEstado);
     }
 }

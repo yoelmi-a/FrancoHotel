@@ -56,10 +56,6 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<RolUsuario?> GetEntityByIdAsync(int id)
         {
-            if (RepoValidation.ValidarID(id))
-            {
-                return null;
-            }
             return await _context.RolUsuario.FindAsync(id).ConfigureAwait(false);
         }
 

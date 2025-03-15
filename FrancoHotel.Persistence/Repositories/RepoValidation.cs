@@ -156,7 +156,7 @@ namespace FrancoHotel.Persistence.Repositories
         }
         public static bool ValidarCliente(Cliente entity)
         {
-            if (!RepoValidation.ValidarEntidad(entity) ||
+            if (!RepoValidation.ValidarEntidad(entity) || 
                 !RepoValidation.ValidarString(entity.TipoDocumento!) ||
                 !RepoValidation.ValidarLongitudString(entity.TipoDocumento!, 15) ||
                 !RepoValidation.ValidarString(entity.Documento!) ||
@@ -167,8 +167,7 @@ namespace FrancoHotel.Persistence.Repositories
                 !RepoValidation.ValidarLongitudString(entity.Correo!, 50) ||
                 !RepoValidation.ValidarEntidad(entity.EstadoYFecha.Estado!) ||
                 !RepoValidation.ValidarEntidad(entity.EstadoYFecha.FechaCreacion!) ||
-                !RepoValidation.ValidarID(entity.CreadorPorU) || 
-                !RepoValidation.ValidarID(entity.Id))
+                !RepoValidation.ValidarID(entity.CreadorPorU))
             {
                 return false;
             }

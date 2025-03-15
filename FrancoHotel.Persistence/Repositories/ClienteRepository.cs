@@ -26,7 +26,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public override async Task<bool> Exists(Expression<Func<Cliente, bool>> filter)
     {
-        return await _context.Cliente.AnyAsync(filter).ConfigureAwait(false);
+        return await _context.Cliente.AnyAsync(filter);
     }
 
     public override async Task<List<Cliente>> GetAllAsync()
@@ -55,7 +55,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
 
     public override async Task<Cliente?> GetEntityByIdAsync(int id)
     {
-        if (RepoValidation.ValidarID(id))
+        if (!RepoValidation.ValidarID(id))
         {
             return null;
         }

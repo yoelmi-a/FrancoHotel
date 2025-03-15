@@ -2,5 +2,6 @@
 {
     public class UpdateRolUsuarioDtos : RolUsuarioDtos
     {
+        public int? IdRolUsuario { get; set; }
     }
 }

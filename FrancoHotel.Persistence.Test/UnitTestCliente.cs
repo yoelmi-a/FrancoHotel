@@ -120,37 +120,6 @@ namespace FrancoHotel.Persistence.Test
             Assert.Equal(message, result.Message);
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public async void SaveEntityAsync_ShouldReturnFailure_WhenIdIsInvalid(int id)
-        {
-            // Arrange
-            Cliente cliente = new Cliente
-            {
-                Id = id,
-                TipoDocumento = "DNI",
-                Documento = "12345678",
-                NombreCompleto = "Juan Pérez",
-                Correo = "juan.perez@example.com",
-                EstadoYFecha = new BaseEstadoYFecha
-                {
-                    Estado = true,
-                    FechaCreacion = DateTime.UtcNow
-                },
-                CreadorPorU = 1
-            };
-
-            // Act
-            string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
-
-            // Assert
-            Assert.IsType<OperationResult>(result);
-            Assert.False(result.Success);
-            Assert.Equal(message, result.Message);
-        }
-
         //UpdateEntityAsync
 
         [Theory]

@@ -87,20 +87,6 @@ namespace FrancoHotel.Application.Services
                 return result;
             }
 
-            if (!await _rolUsuarioRepository.Exists(r => r.Id == dto.IdRolUsuario))
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorUsuario:RolNoExiste"];
-                return result;
-            }
-
-            if (await _usuarioRepository.Exists(u => u.Correo == dto.Correo))
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorUsuario:CorreoDuplicado"];
-                return result;
-            }
-
             var nuevoUsuario = _mapper.SaveDtoToEntity(dto);
             result = await _usuarioRepository.SaveEntityAsync(nuevoUsuario);
             return result;
@@ -109,14 +95,14 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> Update(UpdateUsuarioDtos dto)
         {
             OperationResult result = new OperationResult();
-            if (!dto.IdUsuario.HasValue)
+            if (dto.IdUsuario == null || dto.IdUsuario == 0)
             {
                 result.Success = false;
                 result.Message = _configuration["ErrorUsuario:IdObligatorio"];
                 return result;
             }
 
-            var usuarioExistente = await _usuarioRepository.GetEntityByIdAsync(dto.IdUsuario.Value);
+            var usuarioExistente = await _usuarioRepository.GetEntityByIdAsync(dto.IdUsuario);
             if (usuarioExistente == null || (usuarioExistente.Borrado ?? false))
             {
                 result.Success = false;
@@ -163,38 +149,6 @@ namespace FrancoHotel.Application.Services
             }
 
             usuario.Borrado = true;
-            result = await _usuarioRepository.UpdateEntityAsync(usuario);
-            return result;
-        }
-
-        public async Task<OperationResult> UpdateClave(Usuario usuario, string nuevaClave)
-        {
-            OperationResult result = new OperationResult();
-
-            if (string.IsNullOrWhiteSpace(nuevaClave))
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorUsuario:NuevaClaveVacia"];
-                return result;
-            }
-
-            usuario.Clave = nuevaClave;
-            result = await _usuarioRepository.UpdateEntityAsync(usuario);
-            return result;
-        }
-        public async Task<OperationResult> UpdateEstado(Usuario entity, bool nuevoEstado)
-        {
-            OperationResult result = new OperationResult();
-
-            Usuario usuario = await _usuarioRepository.GetEntityByIdAsync(entity.Id);
-            if (usuario == null)
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorUsuarioService:UsuarioNoExiste"];
-                return result;
-            }
-
-            usuario.EstadoYFecha.Estado = nuevoEstado;
             result = await _usuarioRepository.UpdateEntityAsync(usuario);
             return result;
         }

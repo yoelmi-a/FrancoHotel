@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using FrancoHotel.Persistence.Context;
+using FrancoHotel.Application.Dtos.PisoDtos;
+using FrancoHotel.Persistence.Repositories;
 
 namespace FrancoHotel.Application.Services
 {
@@ -35,21 +37,18 @@ namespace FrancoHotel.Application.Services
             _configuration = configuration;
         }
 
-        public ClienteService(HotelContext mockContext, ILogger<ClienteService> @object, IConfigurationRoot mockConfiguration)
+        public ClienteService(HotelContext mockContext, ILogger<ClienteService> logger, IConfigurationRoot mockConfiguration)
         {
             this.mockContext = mockContext;
-            this.@object = @object;
+            this.@object = logger;
             this.mockConfiguration = mockConfiguration;
+            this._configuration = mockConfiguration;
         }
+        private bool EsNombreValido(string nombre) => !string.IsNullOrWhiteSpace(nombre) && Regex.IsMatch(nombre, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$");
 
-        private bool EsNombreValido(string nombre) =>
-            !string.IsNullOrWhiteSpace(nombre) && Regex.IsMatch(nombre, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$");
+        private bool EsDocumentoValido(string documento) => Regex.IsMatch(documento, @"^\d+$");
 
-        private bool EsDocumentoValido(string documento) =>
-            Regex.IsMatch(documento, @"^\d+$");
-
-        private bool EsCorreoValido(string correo) =>
-            Regex.IsMatch(correo, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+        private bool EsCorreoValido(string correo) => Regex.IsMatch(correo, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
 
         public async Task<OperationResult> GetAll()
         {
@@ -82,6 +81,13 @@ namespace FrancoHotel.Application.Services
         {
             OperationResult result = new OperationResult();
 
+            if (dto == null)
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorClienteService:DatosInvalidos"];
+                return result;
+            }
+
             if (!EsNombreValido(dto.NombreCompleto))
             {
                 result.Success = false;
@@ -103,14 +109,8 @@ namespace FrancoHotel.Application.Services
                 return result;
             }
 
-            if (await _clienteRepository.Exists(c => c.Correo == dto.Correo))
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorClienteService:CorreoDuplicado"];
-                return result;
-            }
-
-            result = await _clienteRepository.SaveEntityAsync(_mapper.SaveDtoToEntity(dto));
+            var entity = _mapper.SaveDtoToEntity(dto);
+            result = await _clienteRepository.SaveEntityAsync(entity);
             return result;
         }
 
@@ -118,22 +118,37 @@ namespace FrancoHotel.Application.Services
         {
             OperationResult result = new OperationResult();
 
-            Cliente? cliente = await _clienteRepository.GetEntityByIdAsync(dto.IdCliente ?? 0);
-            if (cliente == null || cliente.Borrado == true)
+            if (dto == null)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorClienteService:ClienteNoRegistradoOEliminado"];
+                result.Message = _configuration["ErrorClienteService:DatosInvalidos"];
                 return result;
             }
 
-            if (!EsNombreValido(dto.NombreCompleto) || !EsDocumentoValido(dto.Documento) || !EsCorreoValido(dto.Correo))
+            if (!EsNombreValido(dto.NombreCompleto))
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorClienteService:DatosClienteInvalidos"];
+                result.Message = _configuration["ErrorClienteService:NombreInvalido"];
                 return result;
             }
 
+            if (!EsDocumentoValido(dto.Documento))
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorClienteService:DocumentoInvalido"];
+                return result;
+            }
+
+            if (!EsCorreoValido(dto.Correo))
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorClienteService:CorreoInvalido"];
+                return result;
+            }
+
+            Cliente? cliente = await _clienteRepository.GetEntityByIdAsync(dto.IdCliente);
             result = await _clienteRepository.UpdateEntityAsync(_mapper.UpdateDtoToEntity(dto, cliente));
+
             return result;
         }
 
@@ -141,7 +156,9 @@ namespace FrancoHotel.Application.Services
         {
             OperationResult result = new OperationResult();
 
+
             Cliente? cliente = await _clienteRepository.GetEntityByIdAsync(dto.IdCliente);
+
             if (cliente == null || cliente.Borrado == true)
             {
                 result.Success = false;
@@ -150,22 +167,23 @@ namespace FrancoHotel.Application.Services
             }
 
             cliente.Borrado = true;
-            result = await _clienteRepository.UpdateEntityAsync(cliente);
+            result = await _clienteRepository.RemoveEntityAsync(_mapper.RemoveDtoToEntity(dto, cliente));
+
             return result;
         }
 
-        public async Task<OperationResult> UpdateTipoDocumento(Cliente entity)
+        public async Task<OperationResult> UpdateTipoDocumento(UpdateClienteDtos dto)
         {
             OperationResult result = new OperationResult();
+            Cliente? existingCliente = await _clienteRepository.GetEntityByIdAsync(dto.IdCliente);
 
-            if (entity == null || string.IsNullOrEmpty(entity.TipoDocumento))
+            if (!EsDocumentoValido(dto.Documento))
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorClienteService:ClienteNuloOTipoDocumentoVacio"];
+                result.Message = _configuration["ErrorClienteService:DocumentoInvalido"];
                 return result;
             }
 
-            Cliente? existingCliente = await _clienteRepository.GetEntityByIdAsync(entity.Id);
             if (existingCliente == null)
             {
                 result.Success = false;
@@ -173,16 +191,24 @@ namespace FrancoHotel.Application.Services
                 return result;
             }
 
-            existingCliente.TipoDocumento = entity.TipoDocumento;
+            if (existingCliente == null || string.IsNullOrEmpty(existingCliente.TipoDocumento))
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorClienteService:ClienteNuloOTipoDocumentoVacio"];
+                return result;
+            }
+
+            existingCliente.TipoDocumento = dto.TipoDocumento;
             result = await _clienteRepository.UpdateEntityAsync(existingCliente);
             return result;
         }
 
-        public async Task<OperationResult> UpdateEstado(Cliente entity, bool nuevoEstado)
+        public async Task<OperationResult> UpdateEstado(UpdateClienteDtos dto, bool nuevoEstado)
         {
             OperationResult result = new OperationResult();
 
-            Cliente? cliente = await _clienteRepository.GetEntityByIdAsync(entity.Id);
+            Cliente? cliente = await _clienteRepository.GetEntityByIdAsync(dto.IdCliente);
+
             if (cliente == null)
             {
                 result.Success = false;
