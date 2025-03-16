@@ -191,10 +191,10 @@ namespace FrancoHotel.Application.Services
                 return result;
             }
 
-            if (existingCliente == null || string.IsNullOrEmpty(existingCliente.TipoDocumento))
+            if (string.IsNullOrEmpty(existingCliente.TipoDocumento))
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorClienteService:ClienteNuloOTipoDocumentoVacio"];
+                result.Message = _configuration["ErrorClienteService:ClienteTipoDocumentoVacio"];
                 return result;
             }
 
