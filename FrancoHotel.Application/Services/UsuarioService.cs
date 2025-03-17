@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace FrancoHotel.Application.Services
 {
@@ -28,6 +29,10 @@ namespace FrancoHotel.Application.Services
             _mapper = mapper;
             _configuration = configuration;
         }
+
+        private bool EsNombreValido(string nombre) => !string.IsNullOrWhiteSpace(nombre) && Regex.IsMatch(nombre, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$");
+
+        private bool EsCorreoValido(string correo) => Regex.IsMatch(correo, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
 
         public async Task<OperationResult> GetAll()
         {
@@ -80,10 +85,24 @@ namespace FrancoHotel.Application.Services
         {
             OperationResult result = new OperationResult();
 
-            if (string.IsNullOrWhiteSpace(dto.Correo) || !dto.Correo.Contains("@"))
+            if (dto == null)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorUsuario:CorreoFormatoInvalido"];
+                result.Message = _configuration["ErrorUsuarioService:DatosInvalidos"];
+                return result;
+            }
+
+            if (!EsNombreValido(dto.NombreCompleto))
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorUsuarioService:NombreInvalido"];
+                return result;
+            }
+
+            if (!EsCorreoValido(dto.Correo))
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorUsuarioService:CorreoInvalido"];
                 return result;
             }
 
@@ -95,7 +114,14 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> Update(UpdateUsuarioDtos dto)
         {
             OperationResult result = new OperationResult();
-            if (dto.IdUsuario == null || dto.IdUsuario == 0)
+            if (dto == null)
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorUsuarioService:DatosInvalidos"];
+                return result;
+            }
+
+            if (dto.IdUsuario <= 0)
             {
                 result.Success = false;
                 result.Message = _configuration["ErrorUsuario:IdObligatorio"];
@@ -110,24 +136,10 @@ namespace FrancoHotel.Application.Services
                 return result;
             }
 
-            if (string.IsNullOrWhiteSpace(dto.Correo) || !dto.Correo.Contains("@"))
+            if (!EsCorreoValido(dto.Correo))
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorUsuario:CorreoFormatoInvalido"];
-                return result;
-            }
-
-            if (await _usuarioRepository.Exists(u => u.Correo == dto.Correo && u.Id != dto.IdUsuario))
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorUsuario:CorreoDuplicado"];
-                return result;
-            }
-
-            if (!await _rolUsuarioRepository.Exists(r => r.Id == dto.IdRolUsuario))
-            {
-                result.Success = false;
-                result.Message = _configuration["ErrorUsuario:RolNoExiste"];
+                result.Message = _configuration["ErrorUsuarioService:CorreoInvalido"];
                 return result;
             }
 
@@ -141,10 +153,10 @@ namespace FrancoHotel.Application.Services
             OperationResult result = new OperationResult();
             var usuario = await _usuarioRepository.GetEntityByIdAsync(dto.IdUsuario);
 
-            if (usuario == null)
+            if (usuario == null || usuario.Borrado == true)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorUsuario:UsuarioNoEncontrado"];
+                result.Message = _configuration["ErrorUsuarioService:ClienteNoRegistradoOYaEliminado"];
                 return result;
             }
 

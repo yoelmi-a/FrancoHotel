@@ -61,6 +61,12 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> Save(SaveRolUsuarioDtos dto)
         {
             OperationResult result = new OperationResult();
+            if (dto == null)
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorUsuarioService:DatosInvalidos"];
+                return result;
+            }
 
             if (string.IsNullOrWhiteSpace(dto.Descripcion))
             {
@@ -77,8 +83,14 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> Update(UpdateRolUsuarioDtos dto)
         {
             OperationResult result = new OperationResult();
+            if (dto == null)
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorUsuarioService:DatosInvalidos"];
+                return result;
+            }
 
-            if (!dto.IdRolUsuario.HasValue)
+            if (!dto.IdRolUsuario.HasValue || dto.IdRolUsuario <= 0)
             {
                 result.Success = false;
                 result.Message = _configuration["ErrorRolUsuario:IdObligatorio"];
@@ -86,8 +98,7 @@ namespace FrancoHotel.Application.Services
             }
 
             var rolExistente = await _rolUsuarioRepository.GetEntityByIdAsync(dto.IdRolUsuario.Value);
-
-            if (rolExistente == null || (rolExistente.Borrado ?? false))
+            if (rolExistente == null)
             {
                 result.Success = false;
                 result.Message = _configuration["ErrorRolUsuario:RolNoEncontrado"];
@@ -154,6 +165,5 @@ namespace FrancoHotel.Application.Services
             result = await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
             return result;
         }
-
     }
 }

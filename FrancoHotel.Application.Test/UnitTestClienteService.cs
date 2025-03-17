@@ -1,5 +1,4 @@
-﻿
-using FrancoHotel.Application.Dtos.ClienteDtos;
+﻿using FrancoHotel.Application.Dtos.ClienteDtos;
 using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Application.Services;
 using FrancoHotel.Domain.Base;
@@ -7,7 +6,6 @@ using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Moq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FrancoHotel.Application.Test
 {
@@ -405,6 +403,5 @@ namespace FrancoHotel.Application.Test
             Assert.False(result.Success);
             Assert.Equal(message, result.Message);
         }
-
     }
 }
