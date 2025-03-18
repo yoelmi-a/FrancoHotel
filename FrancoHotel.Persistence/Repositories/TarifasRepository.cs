@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Immutable;
+using System.Linq.Expressions;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Base;
@@ -27,9 +28,10 @@ namespace FrancoHotel.Persistence.Repositories
         public async Task<OperationResult> UpdateTarifaByCategoria(string categoria, decimal precio)
         {
             OperationResult result = new OperationResult();
-            if (!RepoValidation.ValidarLongitudString(categoria, 20) || !RepoValidation.ValidarPrecio(precio))
+            if (!RepoValidation.ValidarLongitudString(categoria, 20) || 
+                !RepoValidation.ValidarPrecio(precio))
             {
-                result.Message = this._configuration["ErrorTarifasRepository:AddTarifaByCategoria"]!;
+                result.Message = this._configuration["ErrorTarifasRepository:AddTarifaByCategoriaInvalidData"]!;
             }
             try
             {
@@ -185,9 +187,11 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> SaveEntityAsync(Tarifas entity)
         {
             OperationResult result = new OperationResult();
-            if (!RepoValidation.ValidarID(entity.Id))
+            if (!RepoValidation.ValidarTarifas(entity))
             {
-                result.Message = _configuration["ErrorTarifasRepository:SaveEntityAsync"]!;
+                result.Message = _configuration["ErrorTarifasRepository:SaveEntityAsyncInvalidData"]!;
+                result.Success = false;
+                return result;
             }
             try
             {
@@ -206,22 +210,29 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> UpdateEntityAsync(Tarifas entity)
         {
             OperationResult result = new OperationResult();
+
+            if (!RepoValidation.ValidarTarifas(entity) ||
+                !RepoValidation.ValidarID(entity.Id) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) ||
+                !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+            {
+                result.Message = _configuration["ErrorTarifasRepository:UpdateEntityAsyncInvalidData"]!;
+                result.Success = false;
+                return result;
+            }
             try
             {
-                if (RepoValidation.ValidarID(entity.Id))
-                {
-                    result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
-                }
-
                 _context.Tarifas.Update(entity);
                 await _context.SaveChangesAsync();
 
-                return result;
             }
             catch (Exception)
             {
-                throw;
+                result.Message = _configuration["ErrorTarifasRepository:SaveEntityAsync"]!;
+                result.Success = false;
+                this._logger.LogError(result.Message);
             }
+            return result;
         }
 
         public override async Task<OperationResult> RemoveEntityAsync(Tarifas entity)
@@ -229,12 +240,11 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
 
             if (!RepoValidation.ValidarEntidad(entity) ||
-                !RepoValidation.ValidarID(entity.UsuarioMod) ||
                 !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
                 !RepoValidation.ValidarID(entity.BorradoPorU) ||
                 !RepoValidation.ValidarEntidad(entity.Borrado!))
             {
-                result.Message = _configuration["ErrorTarifasRepository:InvalidData"]!;
+                result.Message = _configuration["ErrorTarifasRepository:RemoveEntityAsyncInvalidData"]!;
                 result.Success = false;
                 return result;
             }
@@ -251,5 +261,6 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return result;
         }
+
     }
 }

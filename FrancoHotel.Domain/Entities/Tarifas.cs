@@ -10,12 +10,12 @@ namespace FrancoHotel.Domain.Entities
         [Key]
         public override int Id { get; set; }
         public int? IdCategoria { get; set; }
-        public DateTime FechaInicio { get; set; }
-        public DateTime FechaFin { get; set; }
-        public decimal PrecioPorNoche { get; set; }
-        public decimal Descuento { get; set; }
-        public string Descripcion { get; set; }
-        public string Estado { get; set; }
+        public DateTime? FechaInicio { get; set; }
+        public DateTime? FechaFin { get; set; }
+        public decimal? PrecioPorNoche { get; set; }
+        public decimal? Descuento { get; set; }
+        public string? Descripcion { get; set; }
+        public string? Estado { get; set; }
 
     }
 }

@@ -16,6 +16,8 @@ namespace FrancoHotel.Persistence.Repositories
         private readonly HotelContext _context;
         private readonly ILogger<RecepcionRepository> _logger;
         private readonly IConfiguration _configuration;
+        private ILogger<TarifasRepository> @object;
+        private IConfigurationRoot mockConfiguration;
 
         public RecepcionRepository(HotelContext context,
                               ILogger<RecepcionRepository> logger,
@@ -26,6 +28,13 @@ namespace FrancoHotel.Persistence.Repositories
             this._configuration = configuration;
 
         }
+
+        public RecepcionRepository(HotelContext context, ILogger<TarifasRepository> @object, IConfigurationRoot mockConfiguration) : base(context)
+        {
+            this.@object = @object;
+            this.mockConfiguration = mockConfiguration;
+        }
+
         public override async Task<OperationResult> SaveEntityAsync(Recepcion entity)
         {
             OperationResult result = new OperationResult();
@@ -33,29 +42,34 @@ namespace FrancoHotel.Persistence.Repositories
             
             if (!RepoValidation.ValidarRecepcion(entity))
             {
-                result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsync:InvalidData"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsyncInvalidData"]!;
+                result.Success = false;
+                return result;
             }
             try
             {
                 await _context.Recepcion.AddAsync(entity);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsync:Error"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsync"]!;
                 result.Success = false;
-                this._logger.LogError(result.Message, ToString());
+                this._logger.LogError(result.Message, ex.ToString());
             }
             return result;
         }
         
-        public override async Task<OperationResult> UpdateEntityAsync(Recepcion entity)
+        public override async Task<OperationResult> UpdateEntityAsync(Recepcion entity) 
         {
             OperationResult result = new OperationResult();
 
-            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarRecepcion(entity) || !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+            if (!RepoValidation.ValidarRecepcion(entity) || 
+                !RepoValidation.ValidarID(entity.Id) || 
+                !RepoValidation.ValidarID(entity.UsuarioMod) || 
+                !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
             {
-                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsync"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsyncInvalidData"]!;
                 result.Success = false;
                 return result;
             }
@@ -114,12 +128,11 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
 
             if (!RepoValidation.ValidarRecepcion(entity) ||
-                !RepoValidation.ValidarID(entity.UsuarioMod) ||
                 !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
                 !RepoValidation.ValidarID(entity.BorradoPorU) ||
                 !RepoValidation.ValidarEntidad(entity.Borrado!))
             {
-                result.Message = _configuration["ErrorRecepcionRepository:InvalidData"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:RemoveEntityAsyncInvalidData"]!;
                 result.Success = false;
                 return result;
             }
@@ -130,7 +143,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = _configuration["ErrorRecepcionRepository:RemoveEntity:Error"]!;
+                result.Message = _configuration["ErrorRecepcionRepository:RemoveEntity"]!;
                 result.Success = false;
                 _logger.LogError(result.Message, ex.ToString());
             }
