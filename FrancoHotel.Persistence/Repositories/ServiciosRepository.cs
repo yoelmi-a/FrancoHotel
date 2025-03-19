@@ -19,11 +19,11 @@ namespace FrancoHotel.Persistence.Repositories
     public class ServiciosRepository : BaseRepository<Servicios, int>, IServiciosRepository
     {
         private readonly HotelContext _context;
-        private readonly ILogger<PisoRepository> _logger;
+        private readonly ILogger<ServiciosRepository> _logger;
         private readonly IConfiguration _configuration;
 
         public ServiciosRepository(HotelContext context, 
-                                   ILogger<PisoRepository> logger, 
+                                   ILogger<ServiciosRepository> logger, 
                                    IConfiguration configuration) : base(context)
         {
             _context = context;
@@ -84,7 +84,7 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> UpdateEntityAsync(Servicios entity)
         {
             OperationResult result = new OperationResult();
-            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarServicio(entity) ||
+            if (!RepoValidation.ValidarServicio(entity) || !RepoValidation.ValidarID(entity.Id) ||
                 !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
             {
                 result.Message = _configuration["ErrorServiciosRepository:InvalidData"]!;
@@ -110,6 +110,7 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
 
             if (!RepoValidation.ValidarServicio(entity) ||
+                !RepoValidation.ValidarID(entity.Id) ||
                 !RepoValidation.ValidarID(entity.UsuarioMod) ||
                 !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
                 !RepoValidation.ValidarID(entity.BorradoPorU) ||

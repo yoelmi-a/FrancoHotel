@@ -127,7 +127,7 @@ namespace FrancoHotel.Persistence.Repositories
                !RepoValidation.ValidarString(servicio.Nombre) ||
                !RepoValidation.ValidarLongitudString(servicio.Nombre!, 200) ||
                !RepoValidation.ValidarString(servicio.Descripcion!) ||
-               !RepoValidation.ValidarLongitudString(servicio.Descripcion, 1073741823) ||
+               !RepoValidation.ValidarLongitudString(servicio.Descripcion, 1000) ||
                !RepoValidation.ValidarPrecio(servicio.Precio))
             {
                 return false;

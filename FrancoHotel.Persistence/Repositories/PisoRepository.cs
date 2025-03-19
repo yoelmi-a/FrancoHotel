@@ -82,10 +82,10 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> UpdateEntityAsync(Piso entity)
         {
             OperationResult result = new OperationResult();
-            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarPiso(entity) ||
+            if (!RepoValidation.ValidarPiso(entity) || !RepoValidation.ValidarID(entity.Id) ||
                 !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
             {
-                result.Message = _configuration["ErrorHabitacionRepository:InvalidData"]!;
+                result.Message = _configuration["ErrorPisoRepository:InvalidData"]!;
                 result.Success = false;
                 return result;
             }
@@ -108,6 +108,7 @@ namespace FrancoHotel.Persistence.Repositories
             OperationResult result = new OperationResult();
 
             if (!RepoValidation.ValidarPiso(entity) ||
+                !RepoValidation.ValidarID(entity.Id) ||
                 !RepoValidation.ValidarID(entity.UsuarioMod) ||
                 !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
                 !RepoValidation.ValidarID(entity.BorradoPorU) ||
@@ -124,7 +125,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                result.Message = _configuration["ErrorPisoRepository:RemoveEntity"]!;
+                result.Message = _configuration["ErrorPisoRepository:RemoveEntityAsync"]!;
                 result.Success = false;
                 _logger.LogError(result.Message, ex.ToString());
             }
