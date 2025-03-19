@@ -60,6 +60,16 @@ namespace FrancoHotel.Persistence.Repositories
             return true;
         }
 
+        public static bool ValidarPreciosExtra(decimal? precio)
+        {
+            if (precio < 0 || precio >= 9999999999.99M)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public static bool ValidarHabitacion(Habitacion entity)
         {
             if (!RepoValidation.ValidarEntidad(entity) ||
@@ -124,6 +134,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return true;
         }
+
         public static bool ValidarUsuario(Usuario entity)
         {
             if (!RepoValidation.ValidarEntidad(entity) ||
@@ -141,6 +152,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return true;
         }
+
         public static bool ValidarRolUsuario(RolUsuario entity)
         {
             if (!RepoValidation.ValidarEntidad(entity) ||
@@ -154,6 +166,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return true;
         }
+
         public static bool ValidarCliente(Cliente entity)
         {
             if (!RepoValidation.ValidarEntidad(entity) ||
@@ -168,6 +181,47 @@ namespace FrancoHotel.Persistence.Repositories
                 !RepoValidation.ValidarEntidad(entity.EstadoYFecha.Estado!) ||
                 !RepoValidation.ValidarEntidad(entity.EstadoYFecha.FechaCreacion!) ||
                 !RepoValidation.ValidarID(entity.CreadorPorU))
+            {
+                return false;
+            }
+            return true;
+        }
+        public static bool ValidarRecepcion(Recepcion entity)
+        {
+            if (!RepoValidation.ValidarEntidad(entity) || 
+                !RepoValidation.ValidarID(entity.CreadorPorU) ||
+                !RepoValidation.ValidarID(entity.IdCliente) ||
+                !RepoValidation.ValidarID(entity.IdHabitacion) ||
+                !RepoValidation.ValidarEntidad(entity.FechaEntrada!) ||
+                !RepoValidation.ValidarEntidad(entity.FechaSalida!) ||
+                !RepoValidation.ValidarPrecio(entity.PrecioInicial) ||
+                !RepoValidation.ValidarPrecio(entity.Adelanto) ||
+                !RepoValidation.ValidarPreciosExtra(entity.PrecioRestante) ||
+                !RepoValidation.ValidarPrecio(entity.TotalPagado) ||
+                !RepoValidation.ValidarPreciosExtra(entity.CostoPenalidad) ||
+                !RepoValidation.ValidarString(entity.Observacion!) ||
+                !RepoValidation.ValidarLongitudString(entity.Observacion!, 500) ||
+                !RepoValidation.ValidarID((int)entity.Estado) ||
+                !RepoValidation.ValidarID(entity.CantidadPersonas) ||
+                !RepoValidation.ValidarID(entity.IdServicioPorCategoria) ||
+                !RepoValidation.ValidarPreciosExtra(entity.PrecioServiciosExtra))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool ValidarTarifas(Tarifas entity)
+        {
+            if (!RepoValidation.ValidarEntidad(entity) ||
+                !RepoValidation.ValidarID(entity.Id) ||
+                !RepoValidation.ValidarID(entity.IdCategoria) || 
+                !RepoValidation.ValidarEntidad(entity.FechaInicio!) || 
+                !RepoValidation.ValidarEntidad(entity.FechaFin!) || 
+                !RepoValidation.ValidarPrecio(entity.PrecioPorNoche) || 
+                !RepoValidation.ValidarPreciosExtra(entity.Descuento) || 
+                !RepoValidation.ValidarLongitudString(entity.Descripcion!, 50) || 
+                !RepoValidation.ValidarLongitudString(entity.Estado!, 9))
             {
                 return false;
             }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using FrancoHotel.Application.Dtos.TarifasDto;
 using FrancoHotel.Application.Dtos.TarifasDtos;
 using FrancoHotel.Application.Mappers.Interfaces;

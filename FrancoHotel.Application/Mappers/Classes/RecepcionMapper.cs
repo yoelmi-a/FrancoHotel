@@ -1,4 +1,4 @@
-﻿
+﻿   
 using FrancoHotel.Application.Dtos.RecepcionDtos;
 using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Domain.Entities;
@@ -20,6 +20,7 @@ namespace FrancoHotel.Application.Mappers.Classes
             dto.IdHabitacion = entity.IdHabitacion;
             dto.FechaEntrada = entity.FechaEntrada;
             dto.FechaSalida = entity.FechaSalida;
+            dto.FechaSalidaConfirmacion = entity.FechaSalidaConfirmacion;
             dto.PrecioInicial = entity.PrecioInicial;
             dto.Adelanto = entity.Adelanto;
             dto.PrecioRestante = entity.PrecioRestante;
@@ -30,6 +31,8 @@ namespace FrancoHotel.Application.Mappers.Classes
             dto.CantidadPersonas = entity.CantidadPersonas;
             dto.IdServicioPorCategoria = entity.IdServicioPorCategoria;
             dto.PrecioServiciosExtra = entity.PrecioServiciosExtra;
+            dto.Usuario = (int)entity.UsuarioMod!;
+            dto.Fecha = (DateTime)entity.FechaModificacion!;
             return dto;
         }
 
@@ -60,11 +63,13 @@ namespace FrancoHotel.Application.Mappers.Classes
             entity.CantidadPersonas = dto.CantidadPersonas;
             entity.IdServicioPorCategoria = dto.IdServicioPorCategoria;
             entity.PrecioServiciosExtra = dto.PrecioServiciosExtra;
+            entity.Borrado = false;
             return entity;
         }
 
         public override Recepcion UpdateDtoToEntity(UpdateRecepcionDto dto, Recepcion entity)
         {
+            entity.Id = dto.Id;
             entity.IdCliente = dto.IdCliente;
             entity.IdHabitacion = dto.IdHabitacion;
             entity.FechaEntrada = dto.FechaEntrada;
@@ -76,11 +81,13 @@ namespace FrancoHotel.Application.Mappers.Classes
             entity.CostoPenalidad = dto.CostoPenalidad;
             entity.Observacion = dto.Observacion;
             entity.Estado = dto.Estado;
-            entity.UsuarioMod = dto.Usuario;
-            entity.FechaModificacion = dto.Fecha;
+            entity.CreadorPorU = dto.Usuario;
             entity.CantidadPersonas = dto.CantidadPersonas;
             entity.IdServicioPorCategoria = dto.IdServicioPorCategoria;
             entity.PrecioServiciosExtra = dto.PrecioServiciosExtra;
+            entity.UsuarioMod = dto.Usuario;
+            entity.FechaModificacion = dto.Fecha;
+            entity.FechaSalidaConfirmacion = dto.FechaSalidaConfirmacion;
             return entity;
         }
     }
