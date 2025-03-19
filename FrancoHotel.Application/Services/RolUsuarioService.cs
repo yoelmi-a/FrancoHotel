@@ -64,14 +64,14 @@ namespace FrancoHotel.Application.Services
             if (dto == null)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorUsuarioService:DatosInvalidos"];
+                result.Message = _configuration["ErrorRolUsuarioService:DatosInvalidos"];
                 return result;
             }
 
             if (string.IsNullOrWhiteSpace(dto.Descripcion))
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorRolUsuario:DescripcionVacia"];
+                result.Message = _configuration["ErrorRolUsuarioService:DescripcionVacia"];
                 return result;
             }
 
@@ -86,14 +86,14 @@ namespace FrancoHotel.Application.Services
             if (dto == null)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorUsuarioService:DatosInvalidos"];
+                result.Message = _configuration["ErrorRolUsuarioService:DatosInvalidos"];
                 return result;
             }
 
             if (!dto.IdRolUsuario.HasValue || dto.IdRolUsuario <= 0)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorRolUsuario:IdObligatorio"];
+                result.Message = _configuration["ErrorRolUsuarioService:IdObligatorio"];
                 return result;
             }
 
@@ -101,14 +101,14 @@ namespace FrancoHotel.Application.Services
             if (rolExistente == null)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorRolUsuario:RolNoEncontrado"];
+                result.Message = _configuration["ErrorRolUsuarioService:RolNoEncontrado"];
                 return result;
             }
 
             if (string.IsNullOrWhiteSpace(dto.Descripcion))
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorRolUsuario:DescripcionVacia"];
+                result.Message = _configuration["ErrorRolUsuarioService:DescripcionVacia"];
                 return result;
             }
 
@@ -125,7 +125,7 @@ namespace FrancoHotel.Application.Services
             if (rol == null)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorRolUsuario:RolNoEncontrado"];
+                result.Message = _configuration["ErrorRolUsuarioService:RolNoEncontrado"];
                 return result;
             }
 
@@ -141,7 +141,7 @@ namespace FrancoHotel.Application.Services
             if (string.IsNullOrWhiteSpace(nuevaDescripcion))
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorRolUsuario:NuevaDescripcionVacia"];
+                result.Message = _configuration["ErrorRolUsuarioService:NuevaDescripcionVacia"];
                 return result;
             }
 

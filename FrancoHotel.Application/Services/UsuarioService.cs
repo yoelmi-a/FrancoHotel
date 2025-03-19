@@ -50,7 +50,7 @@ namespace FrancoHotel.Application.Services
             if (usuario == null || (usuario.Borrado ?? false))
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorUsuario:UsuarioNoEncontrado"];
+                result.Message = _configuration["ErrorUsuarioService:UsuarioNoEncontrado"];
                 return result;
             }
 
@@ -66,7 +66,7 @@ namespace FrancoHotel.Application.Services
             if (!rolExiste)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorUsuario:RolNoExiste"];
+                result.Message = _configuration["ErrorUsuarioService:RolNoExiste"];
                 return result;
             }
 
@@ -124,7 +124,7 @@ namespace FrancoHotel.Application.Services
             if (dto.IdUsuario <= 0)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorUsuario:IdObligatorio"];
+                result.Message = _configuration["ErrorUsuarioService:IdObligatorio"];
                 return result;
             }
 
@@ -132,7 +132,7 @@ namespace FrancoHotel.Application.Services
             if (usuarioExistente == null || (usuarioExistente.Borrado ?? false))
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorUsuario:UsuarioNoEncontrado"];
+                result.Message = _configuration["ErrorUsuarioService:UsuarioNoEncontrado"];
                 return result;
             }
 

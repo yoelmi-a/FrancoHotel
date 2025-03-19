@@ -11,7 +11,7 @@ namespace FrancoHotel.Persistence.Test
         public UnitTestUsuario()
         {
             var mockLogger = MocksTest.GetLoggerMock<UsuarioRepository>();
-            var mockConfiguration = MocksTest.GetConfigurationBuilder();
+            var mockConfiguration = MocksTest.GetConfigurationBuilderELi();
             var mockContext = MocksTest.GetContextInMemory();
             _usuarioRepository = new UsuarioRepository(mockContext, mockLogger.Object, mockConfiguration);
         }

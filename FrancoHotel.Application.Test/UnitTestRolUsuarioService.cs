@@ -42,7 +42,7 @@ namespace FrancoHotel.Application.Test
             SaveRolUsuarioDtos rolUsuario = null;
 
             // Act
-            string message = "Los datos del usuario son inválidos";
+            string message = "Los datos del rol de usuario son inválidos";
             var result = await _rolUsuarioService.Save(rolUsuario);
 
             // Assert
@@ -64,7 +64,7 @@ namespace FrancoHotel.Application.Test
             };
 
             // Act
-            string message = "La descripción del rol no puede estar vacía";
+            string message = "La descripción no puede estar vacía";
             var result = await _rolUsuarioService.Save(rolUsuario);
 
             // Assert
@@ -82,7 +82,7 @@ namespace FrancoHotel.Application.Test
             UpdateRolUsuarioDtos rolUsuario = null;
 
             // Act
-            string message = "Los datos del usuario son inválidos";
+            string message = "Los datos del rol de usuario son inválidos";
             var result = await _rolUsuarioService.Update(rolUsuario);
 
             // Assert
@@ -167,7 +167,7 @@ namespace FrancoHotel.Application.Test
                 .ReturnsAsync(rolExistente);
 
             // Act
-            string message = "La descripción del rol no puede estar vacía";
+            string message = "La descripción no puede estar vacía";
             var result = await _rolUsuarioService.Update(rolUsuario);
 
             // Assert
@@ -227,7 +227,7 @@ namespace FrancoHotel.Application.Test
         //Remove
 
         [Fact]
-        public async Task Remove_ShouldReturnFailure_WhenClienteNotFoundOrAlreadyDeleted()
+        public async void Remove_ShouldReturnFailure_WhenClienteNotFoundOrAlreadyDeleted()
         {
             // Arrange
             var dto = new RemoveRolUsuarioDtos
