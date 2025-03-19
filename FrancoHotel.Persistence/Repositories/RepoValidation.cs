@@ -169,7 +169,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public static bool ValidarCliente(Cliente entity)
         {
-            if (!RepoValidation.ValidarEntidad(entity) ||
+            if (!RepoValidation.ValidarEntidad(entity) || 
                 !RepoValidation.ValidarString(entity.TipoDocumento!) ||
                 !RepoValidation.ValidarLongitudString(entity.TipoDocumento!, 15) ||
                 !RepoValidation.ValidarString(entity.Documento!) ||

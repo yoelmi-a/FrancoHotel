@@ -60,23 +60,6 @@ namespace FrancoHotel.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("UpdateClave")]
-        public async Task<IActionResult> PutClave([FromBody] UpdateUsuarioDtos updateUsuarioDto)
-        {
-            var usuario = await _usuarioService.GetById(updateUsuarioDto.IdUsuario.Value);
-            var result = await _usuarioService.UpdateClave((Usuario)usuario.Data, updateUsuarioDto.Clave);
-            return Ok(result);
-        }
-
-        [HttpPut("UpdateEstado")]
-        public async Task<IActionResult> PutEstado([FromBody] UpdateUsuarioDtos updateUsuarioDto)
-        {
-            var usuario = await _usuarioService.GetById(updateUsuarioDto.IdUsuario.Value);
-            var result = await _usuarioService.UpdateEstado((Usuario)usuario.Data, updateUsuarioDto.Estado.Value);
-            return Ok(result);
-        }
-
-
         [HttpDelete("RemoveUsuario")]
         public async Task<IActionResult> RemoveUsuario([FromBody] RemoveUsuarioDtos dto)
         {

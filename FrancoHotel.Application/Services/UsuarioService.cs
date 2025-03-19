@@ -3,6 +3,11 @@ using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
+using Microsoft.Extensions.Configuration;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace FrancoHotel.Application.Services
 {
@@ -11,16 +16,23 @@ namespace FrancoHotel.Application.Services
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IRolUsuarioRepository _rolUsuarioRepository;
         private readonly IUsuarioMapper _mapper;
+        private readonly IConfiguration _configuration;
 
         public UsuarioService(
             IUsuarioRepository usuarioRepository,
             IRolUsuarioRepository rolUsuarioRepository,
-            IUsuarioMapper mapper)
+            IUsuarioMapper mapper,
+            IConfiguration configuration)
         {
             _usuarioRepository = usuarioRepository;
             _rolUsuarioRepository = rolUsuarioRepository;
             _mapper = mapper;
+            _configuration = configuration;
         }
+
+        private bool EsNombreValido(string nombre) => !string.IsNullOrWhiteSpace(nombre) && Regex.IsMatch(nombre, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$");
+
+        private bool EsCorreoValido(string correo) => Regex.IsMatch(correo, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
 
         public async Task<OperationResult> GetAll()
         {
@@ -38,7 +50,7 @@ namespace FrancoHotel.Application.Services
             if (usuario == null || (usuario.Borrado ?? false))
             {
                 result.Success = false;
-                result.Message = "Usuario no encontrado";
+                result.Message = _configuration["ErrorUsuario:UsuarioNoEncontrado"];
                 return result;
             }
 
@@ -54,7 +66,7 @@ namespace FrancoHotel.Application.Services
             if (!rolExiste)
             {
                 result.Success = false;
-                result.Message = "El rol especificado no existe";
+                result.Message = _configuration["ErrorUsuario:RolNoExiste"];
                 return result;
             }
 
@@ -73,75 +85,66 @@ namespace FrancoHotel.Application.Services
         {
             OperationResult result = new OperationResult();
 
-            if (string.IsNullOrWhiteSpace(dto.Correo) || !dto.Correo.Contains("@"))
+            if (dto == null)
             {
                 result.Success = false;
-                result.Message = "Formato de correo inválido";
+                result.Message = _configuration["ErrorUsuarioService:DatosInvalidos"];
                 return result;
             }
 
-            if (!await _rolUsuarioRepository.Exists(r => r.Id == dto.IdRolUsuario))
+            if (!EsNombreValido(dto.NombreCompleto))
             {
                 result.Success = false;
-                result.Message = "El rol especificado no existe";
+                result.Message = _configuration["ErrorUsuarioService:NombreInvalido"];
                 return result;
             }
 
-            if (await _usuarioRepository.Exists(u => u.Correo == dto.Correo))
+            if (!EsCorreoValido(dto.Correo))
             {
                 result.Success = false;
-                result.Message = "El correo ya está registrado";
+                result.Message = _configuration["ErrorUsuarioService:CorreoInvalido"];
                 return result;
             }
 
             var nuevoUsuario = _mapper.SaveDtoToEntity(dto);
             result = await _usuarioRepository.SaveEntityAsync(nuevoUsuario);
-            result.Message = "Usuario creado correctamente";
             return result;
         }
 
         public async Task<OperationResult> Update(UpdateUsuarioDtos dto)
         {
             OperationResult result = new OperationResult();
-            if (!dto.IdUsuario.HasValue)
+            if (dto == null)
             {
                 result.Success = false;
-                result.Message = "El ID del usuario es obligatorio";
+                result.Message = _configuration["ErrorUsuarioService:DatosInvalidos"];
                 return result;
             }
 
-            var usuarioExistente = await _usuarioRepository.GetEntityByIdAsync(dto.IdUsuario.Value);
+            if (dto.IdUsuario <= 0)
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorUsuario:IdObligatorio"];
+                return result;
+            }
+
+            var usuarioExistente = await _usuarioRepository.GetEntityByIdAsync(dto.IdUsuario);
             if (usuarioExistente == null || (usuarioExistente.Borrado ?? false))
             {
                 result.Success = false;
-                result.Message = "Usuario no encontrado";
+                result.Message = _configuration["ErrorUsuario:UsuarioNoEncontrado"];
                 return result;
             }
 
-            if (string.IsNullOrWhiteSpace(dto.Correo) || !dto.Correo.Contains("@"))
+            if (!EsCorreoValido(dto.Correo))
             {
                 result.Success = false;
-                result.Message = "Formato de correo inválido";
-                return result;
-            }
-
-            if (await _usuarioRepository.Exists(u => u.Correo == dto.Correo && u.Id != dto.IdUsuario))
-            {
-                result.Success = false;
-                result.Message = "El correo ya está registrado";
-                return result;
-            }
-
-            if (!await _rolUsuarioRepository.Exists(r => r.Id == dto.IdRolUsuario))
-            {
-                result.Success = false;
-                result.Message = "El rol especificado no existe";
+                result.Message = _configuration["ErrorUsuarioService:CorreoInvalido"];
                 return result;
             }
 
             var usuarioActualizado = _mapper.UpdateDtoToEntity(dto, usuarioExistente);
             result = await _usuarioRepository.UpdateEntityAsync(usuarioActualizado);
-            result.Message = "Usuario actualizado correctamente";
             return result;
         }
 
@@ -150,42 +153,15 @@ namespace FrancoHotel.Application.Services
             OperationResult result = new OperationResult();
             var usuario = await _usuarioRepository.GetEntityByIdAsync(dto.IdUsuario);
 
-            if (usuario == null)
+            if (usuario == null || usuario.Borrado == true)
             {
                 result.Success = false;
-                result.Message = "Usuario no encontrado";
+                result.Message = _configuration["ErrorUsuarioService:ClienteNoRegistradoOYaEliminado"];
                 return result;
             }
 
             usuario.Borrado = true;
             result = await _usuarioRepository.UpdateEntityAsync(usuario);
-            result.Message = "Usuario eliminado correctamente";
-            return result;
-        }
-
-        public async Task<OperationResult> UpdateClave(Usuario usuario, string nuevaClave)
-        {
-            OperationResult result = new OperationResult();
-
-            if (string.IsNullOrWhiteSpace(nuevaClave))
-            {
-                result.Success = false;
-                result.Message = "La nueva contraseña no puede estar vacía";
-                return result;
-            }
-
-            usuario.Clave = nuevaClave;
-            result = await _usuarioRepository.UpdateEntityAsync(usuario);
-            result.Message = "Contraseña actualizada correctamente";
-            return result;
-        }
-
-        public async Task<OperationResult> UpdateEstado(Usuario usuario, bool nuevoEstado)
-        {
-            OperationResult result = new OperationResult();
-            usuario.EstadoYFecha.Estado = nuevoEstado;
-            result = await _usuarioRepository.UpdateEntityAsync(usuario);
-            result.Message = $"Estado actualizado a {(nuevoEstado ? "activo" : "inactivo")}";
             return result;
         }
     }

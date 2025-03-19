@@ -3,6 +3,11 @@ using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
+using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using FrancoHotel.Persistence.Repositories;
 
 namespace FrancoHotel.Application.Services
 {
@@ -10,13 +15,16 @@ namespace FrancoHotel.Application.Services
     {
         private readonly IRolUsuarioRepository _rolUsuarioRepository;
         private readonly IRolUsuarioMapper _mapper;
+        private readonly IConfiguration _configuration;
 
         public RolUsuarioService(
             IRolUsuarioRepository rolUsuarioRepository,
-            IRolUsuarioMapper mapper)
+            IRolUsuarioMapper mapper,
+            IConfiguration configuration)
         {
             _rolUsuarioRepository = rolUsuarioRepository;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         public async Task<OperationResult> GetAll()
@@ -30,16 +38,7 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> GetById(int id)
         {
             OperationResult result = new OperationResult();
-            var rol = await _rolUsuarioRepository.GetEntityByIdAsync(id);
-
-            if (rol == null || (rol.Borrado ?? false))
-            {
-                result.Success = false;
-                result.Message = "Rol de usuario no encontrado";
-                return result;
-            }
-
-            result.Data = _mapper.EntityToDto(rol);
+            result.Data = _mapper.EntityToDto(await _rolUsuarioRepository.GetEntityByIdAsync(id));
             return result;
         }
 
@@ -55,14 +54,6 @@ namespace FrancoHotel.Application.Services
         {
             OperationResult result = new OperationResult();
             var rol = await _rolUsuarioRepository.GetRolUsuarioByDescripcion(descripcion);
-
-            if (rol == null || (rol.Borrado ?? false))
-            {
-                result.Success = false;
-                result.Message = "Rol no encontrado";
-                return result;
-            }
-
             result.Data = _mapper.EntityToDto(rol);
             return result;
         }
@@ -70,66 +61,59 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> Save(SaveRolUsuarioDtos dto)
         {
             OperationResult result = new OperationResult();
+            if (dto == null)
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorUsuarioService:DatosInvalidos"];
+                return result;
+            }
 
             if (string.IsNullOrWhiteSpace(dto.Descripcion))
             {
                 result.Success = false;
-                result.Message = "La descripción no puede estar vacía";
-                return result;
-            }
-
-            if (await _rolUsuarioRepository.Exists(r => r.Descripcion == dto.Descripcion))
-            {
-                result.Success = false;
-                result.Message = "La descripción ya está registrada";
+                result.Message = _configuration["ErrorRolUsuario:DescripcionVacia"];
                 return result;
             }
 
             var nuevoRol = _mapper.SaveDtoToEntity(dto);
             result = await _rolUsuarioRepository.SaveEntityAsync(nuevoRol);
-            result.Message = "Rol de usuario creado correctamente";
             return result;
         }
 
         public async Task<OperationResult> Update(UpdateRolUsuarioDtos dto)
         {
             OperationResult result = new OperationResult();
-
-            if (!dto.IdRolUsuario.HasValue)
+            if (dto == null)
             {
                 result.Success = false;
-                result.Message = "El ID del rol de usuario es obligatorio";
+                result.Message = _configuration["ErrorUsuarioService:DatosInvalidos"];
+                return result;
+            }
+
+            if (!dto.IdRolUsuario.HasValue || dto.IdRolUsuario <= 0)
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorRolUsuario:IdObligatorio"];
                 return result;
             }
 
             var rolExistente = await _rolUsuarioRepository.GetEntityByIdAsync(dto.IdRolUsuario.Value);
-
-            if (rolExistente == null || (rolExistente.Borrado ?? false))
+            if (rolExistente == null)
             {
                 result.Success = false;
-                result.Message = "Rol de usuario no encontrado";
+                result.Message = _configuration["ErrorRolUsuario:RolNoEncontrado"];
                 return result;
             }
 
             if (string.IsNullOrWhiteSpace(dto.Descripcion))
             {
                 result.Success = false;
-                result.Message = "La descripción no puede estar vacía";
-                return result;
-            }
-
-            if (await _rolUsuarioRepository.Exists(r =>
-                    r.Descripcion == dto.Descripcion &&
-                    r.Id != dto.IdRolUsuario))
-            {
-                result.Success = false;
-                result.Message = "La descripción ya está registrada en otro rol";
+                result.Message = _configuration["ErrorRolUsuario:DescripcionVacia"];
                 return result;
             }
 
             var rolActualizado = _mapper.UpdateDtoToEntity(dto, rolExistente);
             result = await _rolUsuarioRepository.UpdateEntityAsync(rolActualizado);
-            result.Message = "Rol de usuario actualizado correctamente";
             return result;
         }
 
@@ -141,13 +125,12 @@ namespace FrancoHotel.Application.Services
             if (rol == null)
             {
                 result.Success = false;
-                result.Message = "Rol de usuario no encontrado";
+                result.Message = _configuration["ErrorRolUsuario:RolNoEncontrado"];
                 return result;
             }
 
             rol.Borrado = true;
             result = await _rolUsuarioRepository.UpdateEntityAsync(rol);
-            result.Message = "Rol de usuario eliminado correctamente";
             return result;
         }
 
@@ -158,31 +141,28 @@ namespace FrancoHotel.Application.Services
             if (string.IsNullOrWhiteSpace(nuevaDescripcion))
             {
                 result.Success = false;
-                result.Message = "La nueva descripción no puede estar vacía";
-                return result;
-            }
-
-            if (await _rolUsuarioRepository.Exists(r =>
-                    r.Descripcion == nuevaDescripcion &&
-                    r.Id != rol.Id))
-            {
-                result.Success = false;
-                result.Message = "La descripción ya está en uso por otro rol";
+                result.Message = _configuration["ErrorRolUsuario:NuevaDescripcionVacia"];
                 return result;
             }
 
             rol.Descripcion = nuevaDescripcion;
             result = await _rolUsuarioRepository.UpdateEntityAsync(rol);
-            result.Message = "Descripción actualizada correctamente";
             return result;
         }
-
         public async Task<OperationResult> UpdateEstado(RolUsuario rol, bool nuevoEstado)
         {
             OperationResult result = new OperationResult();
-            rol.EstadoYFecha.Estado = nuevoEstado;
-            result = await _rolUsuarioRepository.UpdateEntityAsync(rol);
-            result.Message = $"Estado actualizado a {(nuevoEstado ? "activo" : "inactivo")}";
+
+            RolUsuario rolUsuario = await _rolUsuarioRepository.GetEntityByIdAsync(rol.Id);
+            if (rolUsuario == null)
+            {
+                result.Success = false;
+                result.Message = _configuration["ErrorRolUsuarioService:RolNoExiste"];
+                return result;
+            }
+
+            rolUsuario.EstadoYFecha.Estado = nuevoEstado;
+            result = await _rolUsuarioRepository.UpdateEntityAsync(rolUsuario);
             return result;
         }
     }

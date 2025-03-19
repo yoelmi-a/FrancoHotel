@@ -24,7 +24,6 @@ namespace FrancoHotel.Application.Mappers.Classes
         public override UpdateClienteDtos EntityToDto(Cliente entity)
         {
             UpdateClienteDtos dto = new UpdateClienteDtos();
-            dto.IdCliente = entity.Id;
             dto.TipoDocumento = entity.TipoDocumento;
             dto.Documento = entity.Documento;
             dto.NombreCompleto = entity.NombreCompleto;

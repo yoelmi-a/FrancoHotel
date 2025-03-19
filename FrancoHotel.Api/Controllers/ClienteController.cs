@@ -60,14 +60,14 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpPut("UpdateTipoDocumento")]
-        public async Task<IActionResult> PutDocumento([FromBody] Cliente cliente)
+        public async Task<IActionResult> PutDocumento([FromBody] UpdateClienteDtos cliente)
         {
             var result = await _clienteService.UpdateTipoDocumento(cliente);
             return Ok(result);
         }
 
         [HttpPut("UpdateEstado")]
-        public async Task<IActionResult> PutEstado([FromBody] Cliente cliente, bool nuevoEstado)
+        public async Task<IActionResult> PutEstado([FromBody] UpdateClienteDtos cliente, bool nuevoEstado)
         {
             var result = await _clienteService.UpdateEstado(cliente, nuevoEstado);
             return Ok(result);
