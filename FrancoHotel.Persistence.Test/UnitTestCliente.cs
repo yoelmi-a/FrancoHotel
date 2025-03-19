@@ -10,7 +10,7 @@ namespace FrancoHotel.Persistence.Test
         public UnitTestCliente()
         {
             var mockLogger = MocksTest.GetLoggerMock<ClienteRepository>();
-            var mockConfiguration = MocksTest.GetConfigurationBuilderELi();
+            var mockConfiguration = MocksTest.GetConfigurationBuilder();
             var mockContext = MocksTest.GetContextInMemory();
             _clienteRepository = new ClienteRepository(mockContext, mockLogger.Object, mockConfiguration);
         }

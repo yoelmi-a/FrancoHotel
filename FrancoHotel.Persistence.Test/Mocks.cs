@@ -12,7 +12,7 @@ namespace FrancoHotel.Application.Test
         public static HotelContext GetContextInMemory()
         {
             var options = new DbContextOptionsBuilder<HotelContext>()
-                .UseInMemoryDatabase(databaseName: "DBHotelYoelmi")
+                .UseInMemoryDatabase(databaseName: "DBHotelGerardo")
                 .Options;
             return new HotelContext(options);
         }
@@ -33,6 +33,12 @@ namespace FrancoHotel.Application.Test
         {
             return new ConfigurationBuilder()
                 .AddJsonFile("C:\\Users\\ETIMADO\\Desktop\\Clases_Itla\\Clases\\cuatrimestre_4\\programacio_2\\ProjectEND\\App\\FrancoHotel.Web\\appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+        }
+        public static IConfigurationRoot GetConfigurationBuilderGerardo()
+        {
+            return new ConfigurationBuilder()
+                .AddJsonFile("C:\\Users\\joseg\\OneDrive\\Desktop\\FRANCIS HOTEL\\FrancoHotel.Web\\appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
         }
     }

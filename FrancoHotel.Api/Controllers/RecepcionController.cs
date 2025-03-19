@@ -69,8 +69,8 @@ namespace FrancoHotel.Api.Controllers
         [HttpPut("UpdateRecepcion")]
         public async Task<IActionResult> Put([FromBody] UpdateRecepcionDto  recepcion)
         {
-            await _recepcionService.Update(recepcion);
-            return Ok(recepcion);
+            var result = await _recepcionService.Update(recepcion);
+            return Ok(result);
         }
         
         [HttpDelete("RemoveRecepcion")]

@@ -9,8 +9,8 @@ namespace FrancoHotel.Domain.Entities
         [Column("IdRecepcion")]
         [Key]
         public override int Id { get; set; }
-        public int? IdCliente { get; set; }
-        public int? IdHabitacion { get; set; }
+        public int IdCliente { get; set; }
+        public int IdHabitacion { get; set; }
         public DateTime? FechaEntrada { get; set; }
         public DateTime? FechaSalida { get; set; }
         public DateTime? FechaSalidaConfirmacion { get; set; }
