@@ -53,7 +53,8 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> GetAll()
         {
             OperationResult result = new OperationResult();
-            result.Data = _mapper.DtoList(await _clienteRepository.GetAllAsync());
+            var clientes = await _clienteRepository.GetAllAsync();
+            result.Data = _mapper.DtoList(clientes.Where(c => !(c.Borrado ?? false)).ToList());
             return result;
         }
 

@@ -60,11 +60,12 @@ namespace FrancoHotel.Persistence.Repositories
             return await _context.Usuario.FindAsync(id).ConfigureAwait(false);
         }
 
-        public async Task<Usuario?> GetUsuarioByIdRolUsuario(int idRolUsuario)
+        public async Task<List<Usuario>> GetUsuarioByIdRolUsuario(int idRolUsuario)
         {
             return await _context.Usuario
                                  .AsNoTracking()
-                                 .FirstOrDefaultAsync(u => u.IdRolUsuario == idRolUsuario);
+                                 .Where(u => u.IdRolUsuario == idRolUsuario)
+                                 .ToListAsync();
         }
 
         public async Task<List<Usuario>> GetUsuariosByEstado(bool estado)

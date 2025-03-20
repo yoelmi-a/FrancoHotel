@@ -38,7 +38,7 @@ namespace FrancoHotel.Application.Services
         {
             OperationResult result = new OperationResult();
             var usuarios = await _usuarioRepository.GetAllAsync();
-            result.Data = _mapper.DtoList(usuarios);
+            result.Data = _mapper.DtoList(usuarios.Where(u => !(u.Borrado ?? false)).ToList());
             return result;
         }
 
@@ -58,7 +58,7 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
-        public async Task<OperationResult> GetUsuarioByIdRolUsuario(int idRolUsuario)
+        public async Task<List<OperationResult>> GetUsuarioByIdRolUsuario(int idRolUsuario)
         {
             OperationResult result = new OperationResult();
             bool rolExiste = await _rolUsuarioRepository.Exists(r => r.Id == idRolUsuario);
@@ -67,12 +67,13 @@ namespace FrancoHotel.Application.Services
             {
                 result.Success = false;
                 result.Message = _configuration["ErrorUsuarioService:RolNoExiste"];
-                return result;
+                return new List<OperationResult> { result };
             }
 
-            var usuario = await _usuarioRepository.GetUsuarioByIdRolUsuario(idRolUsuario);
-            result.Data = _mapper.EntityToDto(usuario);
-            return result;
+            var usuarios = await _usuarioRepository.GetUsuarioByIdRolUsuario(idRolUsuario);
+            var usuariosSinBorrados = usuarios.Where(u => !(u.Borrado ?? false)).ToList();
+            result.Data = _mapper.DtoList(usuariosSinBorrados);
+            return new List<OperationResult> { result };
         }
 
         public async Task<List<OperationResult>> GetUsuariosByEstado(bool estado)
