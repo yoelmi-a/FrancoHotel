@@ -1,6 +1,6 @@
 ﻿namespace FrancoHotel.Application.Dtos.ClienteDtos
 {
-    public class SaveClienteDtos : ClienteBaseDtos
+    public class SaveClienteDtos : ClienteDtos
     {
     }
 }

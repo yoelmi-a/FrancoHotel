@@ -32,6 +32,7 @@ public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepositor
     public override async Task<List<Cliente>> GetAllAsync()
     {
         return await _context.Cliente
+            .Where(c => c.Borrado == false)
             .AsNoTracking()
             .ToListAsync()
             .ConfigureAwait(false);

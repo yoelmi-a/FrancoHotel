@@ -15,15 +15,19 @@ namespace FrancoHotel.Application.Mappers.Classes
                 Estado = entity.EstadoYFecha.Estado,
                 Fecha = (DateTime)entity.EstadoYFecha.FechaCreacion!,
                 Usuario = (int)entity.CreadorPorU!
-            }).ToList();
+            }).OrderByDescending(dto => dto.Fecha).ToList();
         }
 
         public override UpdateRolUsuarioDtos EntityToDto(RolUsuario entity)
         {
-            UpdateRolUsuarioDtos dto = new UpdateRolUsuarioDtos();
-            dto.IdRolUsuario = entity.Id;
-            dto.Descripcion = entity.Descripcion;
-            dto.Estado = entity.EstadoYFecha.Estado;
+            UpdateRolUsuarioDtos dto = new UpdateRolUsuarioDtos()
+            {
+                IdRolUsuario = entity.Id,
+                Descripcion = entity.Descripcion,
+                Estado = entity.EstadoYFecha.Estado,
+                Fecha = (DateTime)entity.EstadoYFecha.FechaCreacion!,
+                Usuario = (int)entity.CreadorPorU!
+            };
             return dto;
         }
 

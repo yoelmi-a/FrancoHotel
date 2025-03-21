@@ -31,7 +31,7 @@ namespace FrancoHotel.Application.Services
         {
             OperationResult result = new OperationResult();
             var roles = await _rolUsuarioRepository.GetAllAsync();
-            result.Data = _mapper.DtoList(roles.Where(r => !(r.Borrado ?? false)).ToList());
+            result.Data = _mapper.DtoList(roles);
             return result;
         }
 

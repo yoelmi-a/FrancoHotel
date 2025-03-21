@@ -1,6 +1,6 @@
 ﻿namespace FrancoHotel.Application.Dtos.ClienteDtos
 {
-    public class ClienteBaseDtos : DtoBase
+    public class ClienteDtos : DtoBase
     {
         public string? TipoDocumento { get; set; }
         public string? Documento { get; set; }

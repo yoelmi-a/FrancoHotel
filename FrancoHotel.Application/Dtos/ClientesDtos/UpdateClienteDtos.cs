@@ -1,6 +1,6 @@
 ﻿namespace FrancoHotel.Application.Dtos.ClienteDtos
 {
-    public class UpdateClienteDtos : ClienteBaseDtos
+    public class UpdateClienteDtos : ClienteDtos
     {
         public int IdCliente { get; set; }
     }
