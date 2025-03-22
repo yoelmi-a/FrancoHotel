@@ -1,5 +1,7 @@
-﻿using FrancoHotel.Domain.Base;
+﻿using System.Linq.Expressions;
+using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
+using FrancoHotel.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.Configuration;
@@ -14,9 +16,7 @@ namespace FrancoHotel.Persistence.Repositories
             if (string.IsNullOrWhiteSpace(texto))
             {
                 return false;
-
             }
-
             return true;
         }
 
@@ -100,7 +100,6 @@ namespace FrancoHotel.Persistence.Repositories
             {
                 return false;
             }
-
             return true;
         }
 
@@ -115,7 +114,6 @@ namespace FrancoHotel.Persistence.Repositories
             {
                 return false;
             }
-
             return true;
         }
 
@@ -186,6 +184,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return true;
         }
+
         public static bool ValidarRecepcion(Recepcion entity)
         {
             if (!RepoValidation.ValidarEntidad(entity) || 
@@ -227,5 +226,8 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return true;
         }
+
+        
+        
     }
 }
