@@ -21,6 +21,10 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _rolUsuarioService.GetAll();
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
             return Ok(result);
         }
 
@@ -28,6 +32,10 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _rolUsuarioService.GetById(id);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
             return Ok(result);
         }
 
@@ -35,6 +43,10 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> GetByDescripcion(string descripcion)
         {
             var result = await _rolUsuarioService.GetRolUsuarioByDescripcion(descripcion);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
             return Ok(result);
         }
 
@@ -42,6 +54,10 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> Post([FromBody] SaveRolUsuarioDtos rolUsuario)
         {
             var result = await _rolUsuarioService.Save(rolUsuario);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
             return Ok(result);
         }
 
@@ -49,6 +65,10 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> Put([FromBody] UpdateRolUsuarioDtos rolUsuario)
         {
             var result = await _rolUsuarioService.Update(rolUsuario);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
             return Ok(result);
         }
 
@@ -56,6 +76,10 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> RemoveRolUsuario([FromBody] RemoveRolUsuarioDtos dto)
         {
             var result = await _rolUsuarioService.Remove(dto);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
             return Ok(result);
         }
     }

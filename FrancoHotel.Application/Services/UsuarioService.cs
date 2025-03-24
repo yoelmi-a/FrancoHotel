@@ -1,12 +1,8 @@
 ﻿using FrancoHotel.Application.Dtos.UsuariosDtos;
 using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Domain.Base;
-using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.Extensions.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace FrancoHotel.Application.Services
@@ -58,7 +54,7 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
-        public async Task<List<OperationResult>> GetUsuarioByIdRolUsuario(int idRolUsuario)
+        public async Task<OperationResult> GetUsuarioByIdRolUsuario(int idRolUsuario)
         {
             OperationResult result = new OperationResult();
             bool rolExiste = await _rolUsuarioRepository.Exists(r => r.Id == idRolUsuario);
@@ -67,19 +63,19 @@ namespace FrancoHotel.Application.Services
             {
                 result.Success = false;
                 result.Message = _configuration["ErrorUsuarioService:RolNoExiste"];
-                return new List<OperationResult> { result };
             }
 
             var usuarios = await _usuarioRepository.GetUsuarioByIdRolUsuario(idRolUsuario);
             var usuariosSinBorrados = usuarios.Where(u => !(u.Borrado ?? false)).ToList();
             result.Data = _mapper.DtoList(usuariosSinBorrados);
-            return new List<OperationResult> { result };
+            return result;
         }
 
-        public async Task<List<OperationResult>> GetUsuariosByEstado(bool estado)
+        public async Task<OperationResult> GetUsuariosByEstado(bool estado)
         {
-            var usuarios = await _usuarioRepository.GetUsuariosByEstado(estado);
-            return usuarios.Select(u => new OperationResult { Data = _mapper.EntityToDto(u) }).ToList();
+            OperationResult result = new OperationResult();
+            result.Data = _mapper.DtoList(await _usuarioRepository.GetUsuariosByEstado(estado));
+            return result;
         }
 
         public async Task<OperationResult> Save(SaveUsuarioDtos dto)

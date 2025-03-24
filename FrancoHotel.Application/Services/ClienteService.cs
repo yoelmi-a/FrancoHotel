@@ -1,5 +1,4 @@
 ﻿using FrancoHotel.Application.Dtos.ClienteDtos;
-using FrancoHotel.Application.Interfaces;
 using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
@@ -7,12 +6,6 @@ using FrancoHotel.Persistence.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using FrancoHotel.Persistence.Context;
-using FrancoHotel.Application.Dtos.PisoDtos;
-using FrancoHotel.Persistence.Repositories;
 
 namespace FrancoHotel.Application.Services
 {
@@ -22,9 +15,6 @@ namespace FrancoHotel.Application.Services
         private readonly IClienteMapper _mapper;
         private readonly ILogger<ClienteService> _logger;
         private readonly IConfiguration _configuration;
-        private HotelContext mockContext;
-        private ILogger<ClienteService> @object;
-        private IConfigurationRoot mockConfiguration;
 
         public ClienteService(IClienteRepository clienteRepository,
                               IClienteMapper clienteMapper,
@@ -37,13 +27,6 @@ namespace FrancoHotel.Application.Services
             _configuration = configuration;
         }
 
-        public ClienteService(HotelContext mockContext, ILogger<ClienteService> logger, IConfigurationRoot mockConfiguration)
-        {
-            this.mockContext = mockContext;
-            this.@object = logger;
-            this.mockConfiguration = mockConfiguration;
-            this._configuration = mockConfiguration;
-        }
         private bool EsNombreValido(string nombre) => !string.IsNullOrWhiteSpace(nombre) && Regex.IsMatch(nombre, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$");
 
         private bool EsDocumentoValido(string documento) => Regex.IsMatch(documento, @"^\d+$");
@@ -72,10 +55,11 @@ namespace FrancoHotel.Application.Services
             return result;
         }
 
-        public async Task<List<OperationResult>> GetClientesByEstado(bool estado)
+        public async Task<OperationResult> GetClientesByEstado(bool estado)
         {
-            var clientes = await _clienteRepository.GetClientesByEstado(estado);
-            return clientes.Select(c => new OperationResult { Data = _mapper.EntityToDto(c) }).ToList();
+            OperationResult result = new OperationResult();
+            result.Data = _mapper.DtoList(await _clienteRepository.GetClientesByEstado(estado));
+            return result;
         }
 
         public async Task<OperationResult> Save(SaveClienteDtos dto)

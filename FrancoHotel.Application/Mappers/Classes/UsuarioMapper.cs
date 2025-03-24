@@ -18,7 +18,7 @@ namespace FrancoHotel.Application.Mappers.Classes
                 Estado = entity.EstadoYFecha.Estado,
                 Fecha = (DateTime)entity.EstadoYFecha.FechaCreacion!,
                 Usuario = (int)entity.CreadorPorU!
-            }).OrderByDescending(dto => dto.Fecha).ToList();
+            }).OrderByDescending(dto => dto.IdUsuario).ToList();
         }
 
         public override UpdateUsuarioDtos EntityToDto(Usuario entity)
