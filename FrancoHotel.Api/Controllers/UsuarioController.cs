@@ -22,10 +22,6 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _usuarioService.GetAll();
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
             return Ok(result);
         }
 
@@ -33,10 +29,6 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _usuarioService.GetById(id);
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
             return Ok(result);
         }
 
@@ -44,10 +36,6 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> GetByRolUsuario(int idRolUsuario)
         {
             var result = await _usuarioService.GetUsuarioByIdRolUsuario(idRolUsuario);
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
             return Ok(result);
         }
 
@@ -55,10 +43,6 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> GetByEstado(bool estado)
         {
             var result = await _usuarioService.GetUsuariosByEstado(estado);
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
             return Ok(result);
         }
 
@@ -66,10 +50,6 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> Post([FromBody] SaveUsuarioDtos usuario)
         {
             var result = await _usuarioService.Save(usuario);
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
             return Ok(result);
         }
 
@@ -77,10 +57,6 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> Put([FromBody] UpdateUsuarioDtos usuario)
         {
             var result = await _usuarioService.Update(usuario);
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
             return Ok(result);
         }
 
@@ -88,10 +64,6 @@ namespace FrancoHotel.Api.Controllers
         public async Task<IActionResult> RemoveUsuario([FromBody] RemoveUsuarioDtos dto)
         {
             var result = await _usuarioService.Remove(dto);
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
             return Ok(result);
         }
     }
