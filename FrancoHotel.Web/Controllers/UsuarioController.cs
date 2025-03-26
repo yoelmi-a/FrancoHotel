@@ -98,13 +98,13 @@ namespace FrancoHotel.Web.Controllers
             }
         }
 /*
-        // GET: RolUsuarioController/Delete/5
+        // GET: UsuarioController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: RolUsuarioController/Delete/5
+        // POST: UsuarioController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

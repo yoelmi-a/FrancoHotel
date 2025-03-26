@@ -141,7 +141,6 @@ namespace FrancoHotel.Application.Services
         {
             OperationResult result = new OperationResult();
 
-
             Cliente? cliente = await _clienteRepository.GetEntityByIdAsync(dto.IdCliente);
 
             if (cliente == null || cliente.Borrado == true)
