@@ -34,6 +34,7 @@ namespace FrancoHotel.Application.Services
             _mapper = mapper;
         }
 
+
         public async Task<bool> Exists(Expression<Func<Recepcion, bool>> filter)
         {
             return await _recepcionRepository.Exists(filter);
@@ -90,10 +91,10 @@ namespace FrancoHotel.Application.Services
             if (await _recepcionRepository.Exists(filter)) 
             {
                 result.Success = false;
-                result.Message = "ErrorRecepcionService:ReservaExistente";
+                result.Message = "ErrorRecepcionServise:ReservaExistente";
                 return result;
             }
-            if (dto.FechaEntrada > DateTime.Now && 
+            if (dto.FechaEntrada > DateTime.Now || 
                 dto.FechaSalida > dto.FechaEntrada 
                 )
             {
