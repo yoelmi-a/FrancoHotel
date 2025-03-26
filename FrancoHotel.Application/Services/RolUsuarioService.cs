@@ -118,15 +118,16 @@ namespace FrancoHotel.Application.Services
             OperationResult result = new OperationResult();
             var rol = await _rolUsuarioRepository.GetEntityByIdAsync(dto.IdRolUsuario);
 
-            if (rol == null)
+            if (rol == null || rol.Borrado == true)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorRolUsuarioService:RolNoEncontrado"];
+                result.Message = _configuration["ErrorUsuarioService:RolUsuarioNoRegistradoOYaEliminado"];
                 return result;
             }
 
             rol.Borrado = true;
-            result = await _rolUsuarioRepository.UpdateEntityAsync(rol);
+            result = await _rolUsuarioRepository.RemoveEntityAsync(_mapper.RemoveDtoToEntity(dto, rol));
+
             return result;
         }
 

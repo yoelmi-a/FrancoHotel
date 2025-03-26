@@ -1,8 +1,6 @@
 ﻿using FrancoHotel.Application.Dtos.RolUsuariosDtos;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FrancoHotel.Web.Controllers
 {
@@ -97,20 +95,33 @@ namespace FrancoHotel.Web.Controllers
                 return View();
             }
         }
-/*
+
         // GET: RolUsuarioController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var result = await _rolUsuarioService.GetById(id);
+
+            if (result.Success)
+            {
+                RemoveRolUsuarioDtos remove = new RemoveRolUsuarioDtos()
+                {
+                    IdRolUsuario = result.Data.IdRolUsuario,
+                    Fecha = result.Data.Fecha,
+                    Usuario = result.Data.Usuario
+                };
+                return View(remove);
+            }
             return View();
         }
 
         // POST: RolUsuarioController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(RemoveRolUsuarioDtos removeRolUsuarioDtos)
         {
             try
             {
+                await _rolUsuarioService.Remove(removeRolUsuarioDtos);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -118,6 +129,5 @@ namespace FrancoHotel.Web.Controllers
                 return View();
             }
         }
-*/
     }
 }

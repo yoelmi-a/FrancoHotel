@@ -153,12 +153,13 @@ namespace FrancoHotel.Application.Services
             if (usuario == null || usuario.Borrado == true)
             {
                 result.Success = false;
-                result.Message = _configuration["ErrorUsuarioService:ClienteNoRegistradoOYaEliminado"];
+                result.Message = _configuration["ErrorUsuarioService:UsuarioNoRegistradoOYaEliminado"];
                 return result;
             }
 
             usuario.Borrado = true;
-            result = await _usuarioRepository.UpdateEntityAsync(usuario);
+            result = await _usuarioRepository.RemoveEntityAsync(_mapper.RemoveDtoToEntity(dto, usuario));
+
             return result;
         }
     }
