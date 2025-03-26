@@ -41,7 +41,7 @@ namespace FrancoHotel.Persistence.Repositories
             }
             try
             {
-                await _context.Recepcion.AddAsync(entity);
+                _context.Recepcion.Add(entity);
                 await _context.SaveChangesAsync();
             }
             catch (Exception)
@@ -153,11 +153,8 @@ namespace FrancoHotel.Persistence.Repositories
                     r => r.IdHabitacion,
                     h => h.Id,
                     (r, h) => new { r, h })
-                .Join(_context.Piso,
-                    rh => rh.h.IdPiso,
-                    p => idPiso,
-                    (rh, p) => new { rh.r })
-                .AnyAsync(x => DateTime.Now < x.r.FechaSalida);
+                .Where(x => x.h.IdPiso == idPiso && DateTime.Now < x.r.FechaSalida)
+                .AnyAsync();
         }
     }
 }

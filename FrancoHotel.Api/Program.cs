@@ -7,7 +7,7 @@ using FrancoHotel.IOC.Dependencies;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<HotelContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DbHotelEli")));
+builder.Services.AddDbContext<HotelContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DbHotelYoelmi")));
 builder.Services.AddPisoDependency();
 builder.Services.AddRecepcionDependency();
 builder.Services.AddRolUsuarioDependecy();

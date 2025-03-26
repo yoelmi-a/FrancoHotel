@@ -15,7 +15,6 @@ namespace FrancoHotel.Application.Services
     public class PisoService : IPisoService
     {
         private readonly IPisoRepository _pisoRepository;
-        private readonly IUsuarioRepository _usuarioRepository;
         private readonly IRecepcionRepository _recepcionRepository;
         private readonly ILogger<PisoService> _logger;
         private readonly IConfiguration _configuration;
@@ -25,14 +24,12 @@ namespace FrancoHotel.Application.Services
                            ILogger<PisoService> logger,
                            IConfiguration configuration,
                            IPisoMapper mapper,
-                           IUsuarioRepository usuarioRepository,
                            IRecepcionRepository recepcionRepository)
         {
             this._pisoRepository = pisoRepository;
             this._logger = logger;
             this._configuration = configuration;
             _mapper = mapper;
-            _usuarioRepository = usuarioRepository;
             _recepcionRepository = recepcionRepository;
         }
 
@@ -58,7 +55,7 @@ namespace FrancoHotel.Application.Services
             if (hasReservations)
             {
                 result.Success = false;
-                result.Message = "El piso no se puede remover porque tiene reservas activas";
+                result.Message = _configuration["ErrorPisoService:EntityHasReservations"]!;
                 return result;
             }
 
@@ -70,7 +67,7 @@ namespace FrancoHotel.Application.Services
             else
             {
                 result.Success = false;
-                result.Message = "No se pudo encontrar el piso para remover";
+                result.Message = _configuration["ErrorPisoService:EntityNotFound"]!;
             }
             return result;
         }
@@ -93,7 +90,8 @@ namespace FrancoHotel.Application.Services
             else
             {
                 result.Success = false;
-                result.Message = "El piso a modificar no está registrado"; 
+                result.Message = "El piso a modificar no está registrado";
+                result.Message = _configuration["ErrorPisoService:Update"]!;
             }
             return result;
         }

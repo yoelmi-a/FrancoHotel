@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using FrancoHotel.Persistence.Repositories;
+using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Application.Dtos.HabitacionDtos;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -13,64 +15,47 @@ namespace FrancoHotel.Api.Controllers
     public class HabitacionController : ControllerBase
     {
 
-        private readonly IHabitacionRepository _habitacionRepository;
+        private readonly IHabitacionService _habitacionService;
 
-        public HabitacionController(IHabitacionRepository habitacionRepository,
+        public HabitacionController(IHabitacionService habitacionService,
                                   ILogger<PisoController> logger)
         {
-            _habitacionRepository = habitacionRepository;
+            _habitacionService = _habitacionService;
         }
 
         [HttpGet("GetHabitacion")]
         public async Task<IActionResult> GetAll()
         {
-            var habitacion = await _habitacionRepository.GetAllAsync();
-            return Ok(habitacion);
-        }
-
-        [HttpGet("GetHabitacionByEstadoAndPrecioMax")]
-        public async Task<IActionResult> GetAllbyFilter([FromQuery]bool estado, [FromQuery]decimal precioMax)
-        {
-            Expression<Func<Habitacion, bool>> filter = h =>
-                h.EstadoYFecha.Estado == estado;
-            var estadoHabitacion = await _habitacionRepository.GetAllAsync(filter);
-            return Ok(estadoHabitacion);
+            var result = await _habitacionService.GetAll();
+            return Ok(result);
         }
 
         [HttpGet("GetHabitacionById")]
-        public async Task<IActionResult> GetById(short id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var estadoHabitacion = await _habitacionRepository.GetEntityByIdAsync(id);
-            return Ok(estadoHabitacion);
-        }
-
-        [HttpGet("ExistHabitacionByEstadoAndPrecioMax")]
-        public async Task<IActionResult> GetExistPiso([FromQuery]bool estado, [FromQuery]decimal precioMax)
-        {
-            Expression<Func<Habitacion, bool>> filter = h =>
-                h.EstadoYFecha.Estado == estado;
-            var estadoHabitacion = await _habitacionRepository.Exists(filter);
-            return Ok(estadoHabitacion);
+            var result = await _habitacionService.GetById(id);
+            return Ok(result);
         }
 
         [HttpPost("SaveHabitacion")]
-        public async Task<IActionResult> Post([FromBody] Habitacion habitacion)
+        public async Task<IActionResult> Post([FromBody] SaveHabitacionDto habitacion)
         {
-            await _habitacionRepository.SaveEntityAsync(habitacion);
-            return Ok(habitacion);
+            var result = await _habitacionService.Save(habitacion);
+            return Ok(result);
         }
 
         [HttpPut("UpdateHabitacion")]
-        public async Task<IActionResult> Put([FromBody] Habitacion habitacion)
+        public async Task<IActionResult> Put([FromBody] UpdateHabitacionDto habitacion)
         {
-            await _habitacionRepository.UpdateEntityAsync(habitacion);
-            return Ok(habitacion);
+            var result = await _habitacionService.Update(habitacion);
+            return Ok(result);
         }
 
         [HttpDelete("RemoveHabitacion")]
-        public async Task<IActionResult> RemoveHabitacion(int id, int idUsuarioMod)
+        public async Task<IActionResult> RemoveHabitacion(RemoveHabitacionDto habitacion)
         {
-            return Ok("Cliente borrado");
+            var result = await _habitacionService.Remove(habitacion);
+            return Ok(result);
         }
     }
 }
