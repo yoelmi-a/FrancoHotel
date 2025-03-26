@@ -43,7 +43,7 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> GetAll()
         {
             OperationResult result = new OperationResult();
-            result.Data = await _recepcionRepository.GetAllAsync();
+            result.Data = _mapper.DtoList( await _recepcionRepository.GetAllAsync());
             return result; 
         }
 
@@ -57,7 +57,7 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> GetById(int id)
         {
             OperationResult result = new OperationResult();
-            result.Data = await _recepcionRepository.GetEntityByIdAsync(id);
+            result.Data = _mapper.EntityToDto(await _recepcionRepository.GetEntityByIdAsync(id));
             return result;
         }
 
@@ -111,7 +111,7 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> Update(UpdateRecepcionDto dto)
         {
             OperationResult result = new OperationResult();
-            if (RepoValidation.ValidarID(dto.Id))
+            if (!RepoValidation.ValidarID(dto.Id))
             {
                 result.Success = false;
                 return result;
