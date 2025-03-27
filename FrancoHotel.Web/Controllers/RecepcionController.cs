@@ -33,7 +33,7 @@ namespace FrancoHotel.Web.Controllers
             var result = await (_recepcionService.GetById(id));
             if (result.Success)
             {
-                return View(result.Data);   
+                return View(result.Data);
             }
             return View();
         }
@@ -52,7 +52,7 @@ namespace FrancoHotel.Web.Controllers
             try
             {
                 await _recepcionService.Save(saveRecepcionDto);
-                    return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -88,18 +88,31 @@ namespace FrancoHotel.Web.Controllers
         }
 
         // GET: RecepcionController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var result = await _recepcionService.GetById(id);
+
+            if (result.Success)
+            {
+                RemoveRecepcionDto removeRecepcionDto = new RemoveRecepcionDto()
+                {
+                    Id = result.Data.Id,
+                    Fecha = result.Data.Fecha,
+                    Usuario = result.Data.Usuario
+                };
+                return View(removeRecepcionDto);
+            }
             return View();
         }
 
         // POST: RecepcionController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(RemoveRecepcionDto removeDto)
         {
             try
             {
+                await _recepcionService.Remove(removeDto);
                 return RedirectToAction(nameof(Index));
             }
             catch

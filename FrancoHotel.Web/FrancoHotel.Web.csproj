@@ -15,4 +15,8 @@
     <ProjectReference Include="..\FrancoHotel.IOC\FrancoHotel.IOC.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Tarifas\" />
+  </ItemGroup>
+
 </Project>

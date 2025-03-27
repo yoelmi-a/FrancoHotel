@@ -119,16 +119,6 @@ namespace FrancoHotel.Application.Services
 
             Recepcion? recepcion = await _recepcionRepository.GetEntityByIdAsync(dto.Id);
 
-            Expression<Func<Recepcion, bool>> filter = r => r.IdHabitacion == dto.IdHabitacion
-            && dto.FechaEntrada <= r.FechaEntrada && r.FechaEntrada <= dto.FechaSalida
-            || dto.FechaEntrada <= r.FechaSalida && r.FechaSalida <= dto.FechaEntrada;
-
-            if (await _recepcionRepository.Exists(filter))
-            {
-                result.Success = false;
-                result.Message = "ErrorRecepcionService:ReservaExistente";
-                return result;
-            }
             if (recepcion != null)
             {
                 result = await _recepcionRepository.UpdateEntityAsync(_mapper.UpdateDtoToEntity(dto, recepcion));
