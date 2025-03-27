@@ -2,7 +2,6 @@
 {
     public class ClienteBaseDtos : DtoBase
     {
-        public int? IdCliente { get; set; }
         public string? TipoDocumento { get; set; }
         public string? Documento { get; set; }
         public string? NombreCompleto { get; set; }

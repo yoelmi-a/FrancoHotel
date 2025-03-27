@@ -57,19 +57,11 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<Usuario?> GetEntityByIdAsync(int id)
         {
-            if (RepoValidation.ValidarID(id))
-            {
-                return null;
-            }
             return await _context.Usuario.FindAsync(id).ConfigureAwait(false);
         }
 
         public async Task<Usuario?> GetUsuarioByIdRolUsuario(int idRolUsuario)
         {
-            if (RepoValidation.ValidarID(idRolUsuario))
-            {
-                return null;
-            }
             return await _context.Usuario
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(u => u.IdRolUsuario == idRolUsuario);
@@ -112,7 +104,7 @@ namespace FrancoHotel.Persistence.Repositories
         {
             OperationResult result = new OperationResult();
 
-            if (!RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarUsuario(entity) || !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+            if (!RepoValidation.ValidarUsuario(entity) || !RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
             {
                 result.Message = _configuration["ErrorUsuarioRepository:InvalidData"]!;
                 result.Success = false;
@@ -194,7 +186,8 @@ namespace FrancoHotel.Persistence.Repositories
         {
             OperationResult result = new OperationResult();
 
-            if (!RepoValidation.ValidarUsuario(entity) ||
+            if (!RepoValidation.ValidarUsuario(entity) || 
+                !RepoValidation.ValidarID(entity.Id) ||
                 !RepoValidation.ValidarID(entity.UsuarioMod) ||
                 !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
                 !RepoValidation.ValidarID(entity.BorradoPorU) ||

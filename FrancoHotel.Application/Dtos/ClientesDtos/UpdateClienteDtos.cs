@@ -2,5 +2,6 @@
 {
     public class UpdateClienteDtos : ClienteBaseDtos
     {
+        public int IdCliente { get; set; }
     }
 }

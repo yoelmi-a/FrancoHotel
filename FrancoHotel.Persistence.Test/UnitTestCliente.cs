@@ -37,9 +37,19 @@ namespace FrancoHotel.Persistence.Test
         public async void SaveEntityAsync_ShouldReturnFailure_WhenClienteEstadoYFechaIsNull()
         {
             // Arrange
-            var cliente = new Cliente
+            Cliente cliente = new Cliente
             {
-                EstadoYFecha = new BaseEstadoYFecha { Estado = null, FechaCreacion = null }
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = null,
+                    FechaCreacion = null
+                },
+                CreadorPorU = 1
             };
 
             // Act
@@ -55,8 +65,21 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void SaveEntityAsync_ShouldReturnFailure_WhenStringIsEmpty()
         {
-            // Arrage
-            var cliente = new Cliente { TipoDocumento = " ", Documento = " ", NombreCompleto = " ", Correo = " " };
+            // Arrange
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = " ",
+                Documento = " ",
+                NombreCompleto = " ",
+                Correo = " ",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
+            };
 
             //Act
             string message = "Datos inválidos para la operación en ClienteRepository";
@@ -71,32 +94,27 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void SaveEntityAsync_ShouldReturnFailure_WhenStringIsLonger()
         {
-            // Arrage
-            var cliente = new Cliente { TipoDocumento = "DNIDNIDNIDNIDNIDNI", Documento = "1234567812345678", NombreCompleto = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación.", Correo = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación." };
+            // Arrange
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNIDNIDNIDNIDNIDNI",
+                Documento = "1234567812345678",
+                NombreCompleto = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación.",
+                Correo = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación.",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
+            };
 
             //Act
             string message = "Datos inválidos para la operación en ClienteRepository";
             var result = await _clienteRepository.SaveEntityAsync(cliente);
 
             //Assert
-            Assert.IsType<OperationResult>(result);
-            Assert.False(result.Success);
-            Assert.Equal(message, result.Message);
-        }
-
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public async void SaveEntityAsync_ShouldReturnFailure_WhenIdIsInvalid(int id)
-        {
-            // Arrange
-            var cliente = new Cliente { Id = id };
-
-            // Act
-            string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
-
-            // Assert
             Assert.IsType<OperationResult>(result);
             Assert.False(result.Success);
             Assert.Equal(message, result.Message);
@@ -110,11 +128,24 @@ namespace FrancoHotel.Persistence.Test
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenIdIsInvalid(int id)
         {
             // Arrange
-            var cliente = new Cliente { Id = id };
+            Cliente cliente = new Cliente
+            {
+                Id = id,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEntityAsync(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -128,11 +159,26 @@ namespace FrancoHotel.Persistence.Test
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenIdIsInvalidUsuarioMod(int id)
         {
             // Arrange
-            var cliente = new Cliente { UsuarioMod = id };
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
+                UsuarioMod = id
+
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEntityAsync(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -148,7 +194,7 @@ namespace FrancoHotel.Persistence.Test
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEntityAsync(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -160,14 +206,24 @@ namespace FrancoHotel.Persistence.Test
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenClienteEstadoYFechaIsNull()
         {
             // Arrange
-            var cliente = new Cliente
+            Cliente cliente = new Cliente
             {
-                EstadoYFecha = new BaseEstadoYFecha { Estado = null, FechaCreacion = null }
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = null,
+                    FechaCreacion = null
+                },
+                CreadorPorU = 1
             };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEntityAsync(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -179,11 +235,25 @@ namespace FrancoHotel.Persistence.Test
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenClienteFechaModificacionIsNull()
         {
             // Arrange
-            var cliente = new Cliente { FechaModificacion = null };
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
+                FechaModificacion = null
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEntityAsync(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -194,12 +264,25 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenStringIsEmpty()
         {
-            // Arrage
-            var cliente = new Cliente { TipoDocumento = " ", Documento = " ", NombreCompleto = " ", Correo = " " };
+            // Arrange
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = " ",
+                Documento = " ",
+                NombreCompleto = " ",
+                Correo = " ",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
+            };
 
             //Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEntityAsync(cliente);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -210,12 +293,25 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenStringIsLonger()
         {
-            // Arrage
-            var cliente = new Cliente { TipoDocumento = "DNIDNIDNIDNIDNIDNI", Documento = "1234567812345678", NombreCompleto = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación", Correo = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación" };
+            // Arrange
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNIDNIDNIDNIDNIDNI",
+                Documento = "1234567812345678",
+                NombreCompleto = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación.",
+                Correo = "Este es un texto de prueba con exactamente cien letras para que puedas utilizarlo en cualquier validación.",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
+            };
 
             //Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEntityAsync(cliente);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -231,11 +327,23 @@ namespace FrancoHotel.Persistence.Test
         public async void UpdateTipoDocumento_ShouldReturnFailure_WhenIdIsInvalid(int id)
         {
             // Arrange
-            var cliente = new Cliente { Id = id };
-
+            Cliente cliente = new Cliente
+            {
+                Id = id,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
+            };
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateTipoDocumento(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -249,11 +357,25 @@ namespace FrancoHotel.Persistence.Test
         public async void UpdateTipoDocumento_ShouldReturnFailure_WhenIdIsInvalidUsuarioMod(int id)
         {
             // Arrange
-            var cliente = new Cliente { UsuarioMod = id };
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
+                UsuarioMod = id
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateTipoDocumento(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -269,7 +391,7 @@ namespace FrancoHotel.Persistence.Test
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateTipoDocumento(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -281,11 +403,25 @@ namespace FrancoHotel.Persistence.Test
         public async void UpdateTipoDocumento_ShouldReturnFailure_WhenClienteFechaModificacionIsNull()
         {
             // Arrange
-            var cliente = new Cliente { FechaModificacion = null };
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
+                FechaModificacion = null
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateTipoDocumento(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -296,12 +432,25 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void UpdateTipoDocumento_ShouldReturnFailure_WhenStringIsEmpty()
         {
-            // Arrage
-            var cliente = new Cliente { TipoDocumento = " " };
+            // Arrange
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = " ",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
+            };
 
             //Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateTipoDocumento(cliente);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -312,12 +461,25 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void UpdateTipoDocumento_ShouldReturnFailure_WhenStringIsLonger()
         {
-            // Arrage
-            var cliente = new Cliente { TipoDocumento = "DNIDNIDNIDNIDNIDNI"};
+            // Arrange
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNIDNIDNIDNIDNIDNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
+            };
 
             //Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateTipoDocumento(cliente);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -333,11 +495,24 @@ namespace FrancoHotel.Persistence.Test
         public async void UpdateEstado_ShouldReturnFailure_WhenIdIsInvalid(int id)
         {
             // Arrange
-            var cliente = new Cliente { Id = id };
+            Cliente cliente = new Cliente
+            {
+                Id = id,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEstado(cliente, false);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -351,11 +526,25 @@ namespace FrancoHotel.Persistence.Test
         public async void UpdateEstado_ShouldReturnFailure_WhenIdIsInvalidUsuarioMod(int id)
         {
             // Arrange
-            var cliente = new Cliente { UsuarioMod = id };
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
+                UsuarioMod = id
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEstado(cliente, false);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -371,7 +560,7 @@ namespace FrancoHotel.Persistence.Test
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEstado(cliente, false);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -383,11 +572,25 @@ namespace FrancoHotel.Persistence.Test
         public async void UpdateEstado_ShouldReturnFailure_WhenClienteFechaModificacionIsNull()
         {
             // Arrange
-            var cliente = new Cliente { FechaModificacion = null };
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
+                FechaModificacion = null
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEstado(cliente, false);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -398,15 +601,25 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void UpdateEstado_ShouldReturnFailure_WhenStringIsEmpty()
         {
-            // Arrage
-            var cliente = new Cliente()
+            // Arrange
+            Cliente cliente = new Cliente
             {
-                EstadoYFecha = new BaseEstadoYFecha { Estado = null }
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = null,
+                    FechaCreacion = null
+                },
+                CreadorPorU = 1
             };
 
             //Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.UpdateEstado(cliente, false);
 
             //Assert
             Assert.IsType<OperationResult>(result);
@@ -422,13 +635,58 @@ namespace FrancoHotel.Persistence.Test
         public async void RemoveEntityAsync_ShouldReturnFailure_WhenIdIsInvalidUsuarioMod(int id)
         {
             // Arrange
-            var cliente = new Cliente { UsuarioMod = id };
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
+                UsuarioMod = id
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.RemoveEntityAsync(cliente);
 
             // Assert
+            Assert.IsType<OperationResult>(result);
+            Assert.False(result.Success);
+            Assert.Equal(message, result.Message);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public async void RemoveEntityAsync_ShouldReturnFailure_WhenIdIsInvalid(int id)
+        {
+            // Arrange
+            Cliente cliente = new Cliente
+            {
+                Id = id,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1
+            };
+
+            //Act
+            string message = "Datos inválidos para la operación en ClienteRepository";
+            var result = await _clienteRepository.RemoveEntityAsync(cliente);
+
+            //Assert
             Assert.IsType<OperationResult>(result);
             Assert.False(result.Success);
             Assert.Equal(message, result.Message);
@@ -440,11 +698,25 @@ namespace FrancoHotel.Persistence.Test
         public async void RemoveEntityAsync_ShouldReturnFailure_WhenIdIsInvalidBorradoPorU(int id)
         {
             // Arrange
-            var cliente = new Cliente { BorradoPorU = id };
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
+                BorradoPorU = id
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.RemoveEntityAsync(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -456,11 +728,25 @@ namespace FrancoHotel.Persistence.Test
         public async void RemoveEntityAsync_ShouldReturnFailure_WhenClienteFechaModificacionIsNull()
         {
             // Arrange
-            var cliente = new Cliente { FechaModificacion = null };
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
+                FechaModificacion = null
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.RemoveEntityAsync(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
@@ -472,11 +758,25 @@ namespace FrancoHotel.Persistence.Test
         public async void RemoveEntityAsync_ShouldReturnFailure_WhenClienteBorradoIsNull()
         {
             // Arrange
-            var cliente = new Cliente { Borrado = null };
+            Cliente cliente = new Cliente
+            {
+                Id = 1,
+                TipoDocumento = "DNI",
+                Documento = "12345678",
+                NombreCompleto = "Juan Pérez",
+                Correo = "juan.perez@example.com",
+                EstadoYFecha = new BaseEstadoYFecha
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.UtcNow
+                },
+                CreadorPorU = 1,
+                Borrado = null
+            };
 
             // Act
             string message = "Datos inválidos para la operación en ClienteRepository";
-            var result = await _clienteRepository.SaveEntityAsync(cliente);
+            var result = await _clienteRepository.RemoveEntityAsync(cliente);
 
             // Assert
             Assert.IsType<OperationResult>(result);
