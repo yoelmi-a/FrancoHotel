@@ -73,6 +73,7 @@ namespace FrancoHotel.Application.Services
 
             var nuevoRol = _mapper.SaveDtoToEntity(dto);
             result = await _rolUsuarioRepository.SaveEntityAsync(nuevoRol);
+            result.Data = dto;
             return result;
         }
 
@@ -110,6 +111,7 @@ namespace FrancoHotel.Application.Services
 
             var rolActualizado = _mapper.UpdateDtoToEntity(dto, rolExistente);
             result = await _rolUsuarioRepository.UpdateEntityAsync(rolActualizado);
+            result.Data = dto;
             return result;
         }
 

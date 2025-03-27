@@ -1,5 +1,7 @@
-﻿using FrancoHotel.Application.Dtos.UsuariosDtos;
+﻿using FrancoHotel.Application.Dtos.PisoDtos;
+using FrancoHotel.Application.Dtos.UsuariosDtos;
 using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Application.Services;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -60,8 +62,8 @@ namespace FrancoHotel.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("RemoveUsuario")]
-        public async Task<IActionResult> RemoveUsuario([FromBody] RemoveUsuarioDtos dto)
+        [HttpPut("RemoveUsuario")]
+        public async Task<IActionResult> RemoveUsuario(RemoveUsuarioDtos dto)
         {
             var result = await _usuarioService.Remove(dto);
             return Ok(result);

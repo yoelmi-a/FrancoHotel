@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.IOC", "FrancoHo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.Models", "FrancoHotel.Models\FrancoHotel.Models.csproj", "{2D9B047E-91E0-4C03-8E98-0A91AA3371A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.WebApi", "FrancoHotel.Web\FrancoHotel.WebApi\FrancoHotel.WebApi.csproj", "{30345F4A-33B8-411E-8D74-386F77E2039D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{2D9B047E-91E0-4C03-8E98-0A91AA3371A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D9B047E-91E0-4C03-8E98-0A91AA3371A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D9B047E-91E0-4C03-8E98-0A91AA3371A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30345F4A-33B8-411E-8D74-386F77E2039D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30345F4A-33B8-411E-8D74-386F77E2039D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30345F4A-33B8-411E-8D74-386F77E2039D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30345F4A-33B8-411E-8D74-386F77E2039D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +104,7 @@ Global
 		{40288F54-7CA5-428F-9BDA-69B16FE84D8B} = {B1A9F619-C814-4F81-AFCB-B27F600DB518}
 		{EE4BFDA4-504D-422B-8076-8D060ACAEE4F} = {5E0A0797-351A-49CE-BD47-EC84C8580875}
 		{2D9B047E-91E0-4C03-8E98-0A91AA3371A2} = {BF86E58C-044B-49B3-BC80-1B573E925F38}
+		{30345F4A-33B8-411E-8D74-386F77E2039D} = {BE0BAEC4-3EB4-42DB-8CAF-A3B54762BDCA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B18A3F0-1E5B-49D0-A8F5-167FA9E22731}

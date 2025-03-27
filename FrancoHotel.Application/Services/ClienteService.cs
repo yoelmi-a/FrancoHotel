@@ -96,6 +96,7 @@ namespace FrancoHotel.Application.Services
 
             var entity = _mapper.SaveDtoToEntity(dto);
             result = await _clienteRepository.SaveEntityAsync(entity);
+            result.Data = dto;
             return result;
         }
 
@@ -133,6 +134,7 @@ namespace FrancoHotel.Application.Services
 
             Cliente? cliente = await _clienteRepository.GetEntityByIdAsync(dto.IdCliente);
             result = await _clienteRepository.UpdateEntityAsync(_mapper.UpdateDtoToEntity(dto, cliente));
+            result.Data = dto;
 
             return result;
         }
