@@ -9,26 +9,7 @@ namespace FrancoHotel.Application.Mappers.Classes
     {
         public override List<UpdateRecepcionDto> DtoList(List<Recepcion> entities)
         {
-            return entities.Select(entity => new UpdateRecepcionDto()
-            {
-                Id = entity.Id,
-                IdCliente = entity.IdCliente,
-                IdHabitacion = entity.IdHabitacion,
-                FechaEntrada = entity.FechaEntrada,
-                FechaSalida = entity.FechaSalida,
-                FechaSalidaConfirmacion = entity.FechaSalidaConfirmacion,
-                PrecioInicial = entity.PrecioInicial,
-                Adelanto = entity.Adelanto,
-                PrecioRestante = entity.PrecioRestante,
-                TotalPagado = entity.TotalPagado,
-                CostoPenalidad = entity.CostoPenalidad,
-                Observacion = entity.Observacion,
-                Estado = entity.Estado,
-                CantidadPersonas = entity.CantidadPersonas,
-                IdServicioPorCategoria = entity.IdServicioPorCategoria,
-                PrecioServiciosExtra = entity.PrecioServiciosExtra,
-                Usuario = (int)entity.CreadorPorU!
-            }).ToList();
+            throw new NotImplementedException();
         }
 
         public override UpdateRecepcionDto EntityToDto(Recepcion entity)
@@ -50,7 +31,8 @@ namespace FrancoHotel.Application.Mappers.Classes
             dto.CantidadPersonas = entity.CantidadPersonas;
             dto.IdServicioPorCategoria = entity.IdServicioPorCategoria;
             dto.PrecioServiciosExtra = entity.PrecioServiciosExtra;
-            dto.Usuario = (int)entity.CreadorPorU!;
+            dto.Usuario = (int)entity.UsuarioMod!;
+            dto.Fecha = (DateTime)entity.FechaModificacion!;
             return dto;
         }
 

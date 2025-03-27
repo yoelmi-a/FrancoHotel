@@ -12,6 +12,7 @@ namespace FrancoHotel.Application.Interfaces
         Task<bool> Exists(Expression<Func<Recepcion, bool>> filter);
         Task<OperationResult> GetAllByFilter(Expression<Func<Recepcion, bool>> filter);
 
+        Task<OperationResult> TotalTarifa(int IdCategoria, int Days, int? ServiciosAdicionales);
     }
 }
     
