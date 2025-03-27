@@ -20,7 +20,7 @@ namespace FrancoHotel.Api.Controllers
         public HabitacionController(IHabitacionService habitacionService,
                                   ILogger<PisoController> logger)
         {
-            _habitacionService = _habitacionService;
+            _habitacionService = habitacionService;
         }
 
         [HttpGet("GetHabitacion")]

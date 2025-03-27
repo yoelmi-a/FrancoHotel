@@ -63,6 +63,7 @@ namespace FrancoHotel.Application.Services
             if (piso != null)
             {
                 result = await _pisoRepository.RemoveEntityAsync(_mapper.RemoveDtoToEntity(dto, piso));
+                result.Data = dto;
             }
             else
             {
@@ -76,6 +77,7 @@ namespace FrancoHotel.Application.Services
         {
             OperationResult result = new OperationResult();
             result = await _pisoRepository.SaveEntityAsync(_mapper.SaveDtoToEntity(dto));
+            result.Data = dto;
             return result;
         }
 
@@ -86,6 +88,7 @@ namespace FrancoHotel.Application.Services
             if (piso != null)
             {
                 result = await _pisoRepository.UpdateEntityAsync(_mapper.UpdateDtoToEntity(dto, piso));
+                result.Data = dto;
             }
             else
             {

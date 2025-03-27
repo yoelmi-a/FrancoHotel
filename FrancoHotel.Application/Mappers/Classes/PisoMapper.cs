@@ -10,9 +10,9 @@ namespace FrancoHotel.Application.Mappers.Classes
         {
             return entities.Select(e => new UpdatePisoDto()
             {
+                Id = e.Id,
                 Descripcion = e.Descripcion!,
                 Estado = e.EstadoYFecha.Estado,
-                Id = e.Id,
                 Usuario = (int)e.CreadorPorU!,
                 Fecha = (DateTime)e.EstadoYFecha.FechaCreacion!
             }).ToList();
