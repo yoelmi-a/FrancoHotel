@@ -18,7 +18,8 @@ namespace FrancoHotel.Application.Mappers.Classes
                 Estado = entity.EstadoYFecha.Estado,
                 Numero = entity.Numero!,
                 Fecha = (DateTime)entity.EstadoYFecha.FechaCreacion!,
-                Usuario = (int)entity.CreadorPorU!
+                Usuario = (int)entity.CreadorPorU!,
+                Capacidad = entity.Capacidad
             }).ToList();
         }
 
@@ -33,6 +34,8 @@ namespace FrancoHotel.Application.Mappers.Classes
             dto.Fecha = (DateTime)entity.EstadoYFecha.FechaCreacion!;
             dto.Usuario = (int)entity.CreadorPorU!;
             dto.Numero = entity.Numero!;
+            dto.Capacidad = entity.Capacidad;
+            dto.Detalle = entity.Detalle!;
             return dto;
         }
 

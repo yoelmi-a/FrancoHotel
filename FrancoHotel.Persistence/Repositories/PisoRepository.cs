@@ -29,7 +29,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<List<Piso>> GetAllAsync()
         {
-            return await _context.Piso.ToListAsync();
+            return await _context.Piso.Where(e => e.Borrado == false).ToListAsync();
         }
 
         public override async Task<bool> Exists(Expression<Func<Piso, bool>> filter)

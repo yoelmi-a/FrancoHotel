@@ -1,21 +1,24 @@
-﻿using FrancoHotel.Application.Dtos.PisoDtos;
+﻿using FrancoHotel.Application.Dtos.HabitacionDtos;
+using FrancoHotel.Application.Dtos.PisoDtos;
 using FrancoHotel.Application.Interfaces;
+using FrancoHotel.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.Web.Controllers
 {
-    public class PisoController : Controller
+    public class HabitacionController : Controller
     {
-        private readonly IPisoService _pisoService;
-        public PisoController(IPisoService pisoService)
+        private readonly IHabitacionService _habitacionService;
+
+        public HabitacionController(IHabitacionService habitacionService)
         {
-            _pisoService = pisoService;
+            _habitacionService = habitacionService;
         }
-        // GET: PisoController
+        // GET: HabitacionController
         public async Task<IActionResult> Index()
         {
-            var result = await _pisoService.GetAll();
+            var result = await _habitacionService.GetAll();
 
             if (result.Success)
             {
@@ -24,10 +27,10 @@ namespace FrancoHotel.Web.Controllers
             return View();
         }
 
-        // GET: PisoController/Details/5
+        // GET: HabitacionController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var result = await (_pisoService.GetById(id));
+            var result = await (_habitacionService.GetById(id));
             if (result.Success)
             {
                 return View(result.Data);
@@ -35,20 +38,20 @@ namespace FrancoHotel.Web.Controllers
             return View();
         }
 
-        // GET: PisoController/Create
+        // GET: HabitacionController/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: PisoController/Create
+        // POST: HabitacionController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SavePisoDto savePisoDto)
+        public async Task<IActionResult> Create(SaveHabitacionDto saveHabitacionDto)
         {
             try
             {
-                await _pisoService.Save(savePisoDto);
+                await _habitacionService.Save(saveHabitacionDto);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -57,10 +60,10 @@ namespace FrancoHotel.Web.Controllers
             }
         }
 
-        // GET: PisoController/Edit/5
+        // GET: HabitacionController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var result = await _pisoService.GetById(id);
+            var result = await _habitacionService.GetById(id);
 
             if (result.Success)
             {
@@ -69,14 +72,14 @@ namespace FrancoHotel.Web.Controllers
             return View();
         }
 
-        // POST: PisoController/Edit/5
+        // POST: HabitacionController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(UpdatePisoDto updatePisoDto)
+        public async Task<IActionResult> Edit(UpdateHabitacionDto updateHabitacionDto)
         {
             try
             {
-                await _pisoService.Update(updatePisoDto);
+                await _habitacionService.Update(updateHabitacionDto);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -85,32 +88,32 @@ namespace FrancoHotel.Web.Controllers
             }
         }
 
-        // GET: PisoController/Delete/5
+        // GET: HabitacionController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _pisoService.GetById(id);
+            var result = await _habitacionService.GetById(id);
 
             if (result.Success)
             {
-                RemovePisoDto pisoDto = new RemovePisoDto()
+                RemoveHabitacionDto dto = new RemoveHabitacionDto()
                 {
-                    Id = result.Data.Id,
+                    IdHabitacion = result.Data.IdHabitacion,
                     Fecha = result.Data.Fecha,
                     Usuario = result.Data.Usuario
                 };
-                return View(pisoDto);
+                return View(dto);
             }
             return View();
         }
 
-        // POST: PisoController/Delete/5
+        // POST: HabitacionController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(RemovePisoDto pisoDto)
+        public async Task<IActionResult> Delete(RemoveHabitacionDto removeHabitacionDto)
         {
             try
             {
-                await _pisoService.Remove(pisoDto);
+                await _habitacionService.Remove(removeHabitacionDto);
                 return RedirectToAction(nameof(Index));
             }
             catch

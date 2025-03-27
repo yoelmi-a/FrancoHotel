@@ -14,10 +14,11 @@ namespace FrancoHotel.Application.Services
         private readonly IEstadoHabitacionRepository _repository;
         private readonly IHabitacionRepository _habitacionRepository;
 
-        public EstadoHabitacionService(IEstadoHabitacionRepository serviciosRepository, IEstadoHabitacionMapper mapper)
+        public EstadoHabitacionService(IEstadoHabitacionRepository serviciosRepository, IEstadoHabitacionMapper mapper, IHabitacionRepository habitacionRepository)
         {
             _mapper = mapper;
             _repository = serviciosRepository;
+            _habitacionRepository = habitacionRepository;
         }
         public async Task<OperationResult> GetAll()
         {
