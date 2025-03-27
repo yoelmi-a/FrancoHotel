@@ -67,7 +67,6 @@ namespace FrancoHotel.Application.Services
 
         public async Task<OperationResult> Save(SaveTarifasDtos dto)
         {
-
             OperationResult result = new OperationResult();
             result = await _tarifasRepository.SaveEntityAsync(_mapper.SaveDtoToEntity(dto));
             return result;
