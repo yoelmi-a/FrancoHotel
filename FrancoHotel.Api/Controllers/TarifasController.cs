@@ -1,15 +1,10 @@
-﻿using FrancoHotel.Domain.Entities;
-using FrancoHotel.Persistence.Interfaces;
-using System.Linq.Expressions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using FrancoHotel.Persistence.Repositories;
+﻿using System.Linq.Expressions;
+using FrancoHotel.Application.Dtos.TarifasDto;
+using FrancoHotel.Application.Dtos.TarifasDtos;
 using FrancoHotel.Application.Interfaces;
 using FrancoHotel.Application.Services;
-using FrancoHotel.Application.Dtos.TarifasDto;
-using FrancoHotel.Application.Dtos.RecepcionDtos;
-using FrancoHotel.Application.Dtos.TarifasDtos;
-using FrancoHotel.Domain.Base;
+using FrancoHotel.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -17,7 +12,7 @@ namespace FrancoHotel.Api.Controllers
     [ApiController]
     public class TarifasController : ControllerBase
     {
-        private readonly  TarifasService _tarifasService;
+        private readonly TarifasService _tarifasService;
         public TarifasController(ITarifasService tarifasService)
         {
             _tarifasService = (TarifasService?)tarifasService;
@@ -92,7 +87,7 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpPut("UpdateTarifasByFechas")]
-        public async Task<IActionResult> Put([FromQuery]  DateTime fechaInicio, [FromQuery]  DateTime fechaFin, [FromQuery] decimal porcentajeCambio)
+        public async Task<IActionResult> Put([FromQuery] DateTime fechaInicio, [FromQuery] DateTime fechaFin, [FromQuery] decimal porcentajeCambio)
         {
             var result = await _tarifasService.UpdateTarifasByFechas(fechaInicio, fechaFin, porcentajeCambio);
             return Ok(new { message = "Tarifas actualizadas correctamente." });

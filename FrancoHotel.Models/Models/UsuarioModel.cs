@@ -1,4 +1,4 @@
-﻿ namespace FrancoHotel.Models.Models
+﻿namespace FrancoHotel.Models.Models
 {
     public class UsuarioModel
     {

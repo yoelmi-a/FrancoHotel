@@ -1,18 +1,10 @@
-﻿using FrancoHotel.Application.Dtos.ClienteDtos;
-using FrancoHotel.Application.Dtos.RolUsuariosDtos;
-using FrancoHotel.Application.Dtos.UsuariosDtos;
+﻿using FrancoHotel.Application.Dtos.RolUsuariosDtos;
 using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Application.Services;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FrancoHotel.Application.Test
 {

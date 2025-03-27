@@ -1,14 +1,8 @@
-﻿
-using Castle.Components.DictionaryAdapter;
-using FrancoHotel.Application.Dtos.ClienteDtos;
-using FrancoHotel.Application.Dtos.RecepcionDtos;
-using FrancoHotel.Application.Interfaces;
+﻿using FrancoHotel.Application.Dtos.RecepcionDtos;
 using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Application.Services;
 using FrancoHotel.Domain.Base;
-using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Moq;
 
 namespace FrancoHotel.Application.Test
@@ -26,8 +20,8 @@ namespace FrancoHotel.Application.Test
 
             _recepcionService = new RecepcionService(
                 _recepcionRepositoryMock.Object,
-                Mocks.GetLoggerMock<RecepcionService>().Object,
-                Mocks.GetConfigurationBuilderGerardo(),
+                MocksTest.GetLoggerMock<RecepcionService>().Object,
+                MocksTest.GetConfigurationBuilderGerardo(),
                 _recepcionMapperMock.Object
             );
         }
@@ -105,6 +99,6 @@ namespace FrancoHotel.Application.Test
             Assert.False(result.Success);
             Assert.Equal(message, result.Message);
         }
-    
+
     }
 }

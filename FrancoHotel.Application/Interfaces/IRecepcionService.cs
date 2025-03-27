@@ -14,7 +14,7 @@ namespace FrancoHotel.Application.Interfaces
 
     }
 }
-    
+
 
 
 

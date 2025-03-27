@@ -1,16 +1,14 @@
 ﻿using FrancoHotel.Application.Test;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
-using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace FrancoHotel.Persistence.Test
 {
     public class UnitTestTarifas
     {
         private readonly TarifasRepository _tarifasRepository;
-        public UnitTestTarifas() 
+        public UnitTestTarifas()
         {
             var mockLogger = MocksTest.GetLoggerMock<TarifasRepository>();
             var mockConfiguration = MocksTest.GetConfigurationBuilderGerardo();
@@ -146,7 +144,7 @@ namespace FrancoHotel.Persistence.Test
             //Arrange
             var tarifas = new Tarifas
             {
-                Descripcion = new string ('a', 50)
+                Descripcion = new string('a', 50)
             };
 
             //Act
@@ -165,7 +163,7 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var tarifas = new Tarifas
             {
-                Estado = "Desconocido" 
+                Estado = "Desconocido"
             };
 
             //Act
@@ -383,7 +381,7 @@ namespace FrancoHotel.Persistence.Test
         public async void UpdateEntityAsync_ShouldReturnFailure_WhenTarifasFechaModificacionIsNull()
         {
             // Arrange
-            var tarifas = new Tarifas{ FechaModificacion = null };
+            var tarifas = new Tarifas { FechaModificacion = null };
 
             // Act
             string message = "Error al actualizar Tarifas por datos invalidos";

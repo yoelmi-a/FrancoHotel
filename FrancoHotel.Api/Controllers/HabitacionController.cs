@@ -1,10 +1,7 @@
-﻿using FrancoHotel.Domain.Entities;
+﻿using System.Linq.Expressions;
+using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
-using System.Linq.Expressions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using FrancoHotel.Persistence.Repositories;
 
 namespace FrancoHotel.Api.Controllers
 {
@@ -29,7 +26,7 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpGet("GetHabitacionByEstadoAndPrecioMax")]
-        public async Task<IActionResult> GetAllbyFilter([FromQuery]bool estado, [FromQuery]decimal precioMax)
+        public async Task<IActionResult> GetAllbyFilter([FromQuery] bool estado, [FromQuery] decimal precioMax)
         {
             Expression<Func<Habitacion, bool>> filter = h =>
                 h.EstadoYFecha.Estado == estado;
@@ -45,7 +42,7 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpGet("ExistHabitacionByEstadoAndPrecioMax")]
-        public async Task<IActionResult> GetExistPiso([FromQuery]bool estado, [FromQuery]decimal precioMax)
+        public async Task<IActionResult> GetExistPiso([FromQuery] bool estado, [FromQuery] decimal precioMax)
         {
             Expression<Func<Habitacion, bool>> filter = h =>
                 h.EstadoYFecha.Estado == estado;

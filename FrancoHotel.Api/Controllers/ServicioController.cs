@@ -1,11 +1,6 @@
-﻿using FrancoHotel.Domain.Entities;
-using FrancoHotel.Persistence.Interfaces;
-using System.Linq.Expressions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using FrancoHotel.Persistence.Repositories;
+﻿using FrancoHotel.Application.Dtos.ServiciosDto;
 using FrancoHotel.Application.Interfaces;
-using FrancoHotel.Application.Dtos.ServiciosDto;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.Api.Controllers
 {

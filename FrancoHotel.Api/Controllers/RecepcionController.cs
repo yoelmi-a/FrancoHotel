@@ -1,13 +1,8 @@
 ﻿using System.Linq.Expressions;
 using FrancoHotel.Application.Dtos.RecepcionDtos;
-using FrancoHotel.Application.Dtos.UsuariosDtos;
 using FrancoHotel.Application.Interfaces;
-using FrancoHotel.Application.Services;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
-using FrancoHotel.Persistence.Interfaces;
-using FrancoHotel.Persistence.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.Api.Controllers
@@ -22,7 +17,7 @@ namespace FrancoHotel.Api.Controllers
             _recepcionService = recepcionService;
         }
 
-        
+
         [HttpGet("GetRecepcionByFilter")]
         public async Task<IActionResult> GetAllByFilter([FromQuery] DateTime fechaInicio,
                                                  [FromQuery] DateTime fechaFin,
@@ -31,7 +26,7 @@ namespace FrancoHotel.Api.Controllers
             Expression<Func<Recepcion, bool>> filter = r =>
                 r.FechaEntrada >= fechaInicio &&
                 r.FechaSalida <= fechaFin &&
-                r.Estado == estado; 
+                r.Estado == estado;
 
             var recepciones = await _recepcionService.GetAllByFilter(filter);
             return Ok(recepciones);
@@ -42,14 +37,14 @@ namespace FrancoHotel.Api.Controllers
             var recepcion = await _recepcionService.GetAll();
             return Ok(recepcion);
         }
-        
+
         [HttpGet("GetRecepcionById")]
         public async Task<IActionResult> GetById(short id)
         {
             var recepcion = await _recepcionService.GetById(id);
             return Ok(recepcion);
         }
-        
+
         [HttpGet("ExistRecepcion")]
         public async Task<IActionResult> GetExist([FromQuery] int id)
         {
@@ -57,7 +52,7 @@ namespace FrancoHotel.Api.Controllers
             var recepcion = await _recepcionService.Exists(filter);
             return Ok(recepcion);
         }
-        
+
         [HttpPost("SaveRecepcion")]
         public async Task<IActionResult> Post([FromBody] SaveRecepcionDto recepcion)
         {
@@ -66,12 +61,12 @@ namespace FrancoHotel.Api.Controllers
         }
 
         [HttpPut("UpdateRecepcion")]
-        public async Task<IActionResult> Put([FromBody] UpdateRecepcionDto  recepcion)
+        public async Task<IActionResult> Put([FromBody] UpdateRecepcionDto recepcion)
         {
             var result = await _recepcionService.Update(recepcion);
             return Ok(result);
         }
-        
+
         [HttpDelete("RemoveRecepcion")]
         public async Task<IActionResult> RemoveRecepcion([FromBody] RemoveRecepcionDto recepcionDto)
         {

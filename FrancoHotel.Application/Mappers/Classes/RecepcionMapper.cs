@@ -1,4 +1,4 @@
-﻿   
+﻿
 using FrancoHotel.Application.Dtos.RecepcionDtos;
 using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Domain.Entities;
@@ -35,7 +35,7 @@ namespace FrancoHotel.Application.Mappers.Classes
         {
             UpdateRecepcionDto dto = new UpdateRecepcionDto();
             dto.Id = entity.Id;
-            dto.IdCliente = entity.IdCliente; 
+            dto.IdCliente = entity.IdCliente;
             dto.IdHabitacion = entity.IdHabitacion;
             dto.FechaEntrada = entity.FechaEntrada;
             dto.FechaSalida = entity.FechaSalida;

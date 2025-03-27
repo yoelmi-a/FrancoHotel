@@ -1,11 +1,4 @@
-﻿using System.Linq.Expressions;
-using FrancoHotel.Domain.Base;
-using FrancoHotel.Domain.Entities;
-using FrancoHotel.Persistence.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using FrancoHotel.Domain.Entities;
 
 namespace FrancoHotel.Persistence.Repositories
 {
@@ -167,7 +160,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public static bool ValidarCliente(Cliente entity)
         {
-            if (!RepoValidation.ValidarEntidad(entity) || 
+            if (!RepoValidation.ValidarEntidad(entity) ||
                 !RepoValidation.ValidarString(entity.TipoDocumento!) ||
                 !RepoValidation.ValidarLongitudString(entity.TipoDocumento!, 15) ||
                 !RepoValidation.ValidarString(entity.Documento!) ||
@@ -187,7 +180,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public static bool ValidarRecepcion(Recepcion entity)
         {
-            if (!RepoValidation.ValidarEntidad(entity) || 
+            if (!RepoValidation.ValidarEntidad(entity) ||
                 !RepoValidation.ValidarID(entity.CreadorPorU) ||
                 !RepoValidation.ValidarID(entity.IdCliente) ||
                 !RepoValidation.ValidarID(entity.IdHabitacion) ||
@@ -213,13 +206,12 @@ namespace FrancoHotel.Persistence.Repositories
         public static bool ValidarTarifas(Tarifas entity)
         {
             if (!RepoValidation.ValidarEntidad(entity) ||
-                !RepoValidation.ValidarID(entity.Id) ||
-                !RepoValidation.ValidarID(entity.IdCategoria) || 
-                !RepoValidation.ValidarEntidad(entity.FechaInicio!) || 
-                !RepoValidation.ValidarEntidad(entity.FechaFin!) || 
-                !RepoValidation.ValidarPrecio(entity.PrecioPorNoche) || 
-                !RepoValidation.ValidarPreciosExtra(entity.Descuento) || 
-                !RepoValidation.ValidarLongitudString(entity.Descripcion!, 50) || 
+                !RepoValidation.ValidarID(entity.IdCategoria) ||
+                !RepoValidation.ValidarEntidad(entity.FechaInicio!) ||
+                !RepoValidation.ValidarEntidad(entity.FechaFin!) ||
+                !RepoValidation.ValidarPrecio(entity.PrecioPorNoche) ||
+                !RepoValidation.ValidarPreciosExtra(entity.Descuento) ||
+                !RepoValidation.ValidarLongitudString(entity.Descripcion!, 50) ||
                 !RepoValidation.ValidarLongitudString(entity.Estado!, 9))
             {
                 return false;
@@ -227,7 +219,7 @@ namespace FrancoHotel.Persistence.Repositories
             return true;
         }
 
-        
-        
+
+
     }
 }

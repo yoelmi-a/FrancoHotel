@@ -1,8 +1,6 @@
-using FrancoHotel.Persistence.Context;
-using FrancoHotel.Persistence.Interfaces;
-using FrancoHotel.Persistence.Repositories;
-using Microsoft.EntityFrameworkCore;
 using FrancoHotel.IOC.Dependencies;
+using FrancoHotel.Persistence.Context;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,8 +1,5 @@
-﻿using AspNetCoreGeneratedDocument;
-using FrancoHotel.Application.Dtos.PisoDtos;
-using FrancoHotel.Application.Dtos.RecepcionDtos;
+﻿using FrancoHotel.Application.Dtos.RecepcionDtos;
 using FrancoHotel.Application.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.Web.Controllers

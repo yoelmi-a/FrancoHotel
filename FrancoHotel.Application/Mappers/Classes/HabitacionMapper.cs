@@ -44,7 +44,7 @@ namespace FrancoHotel.Application.Mappers.Classes
             entity.BorradoPorU = dto.Usuario;
             return entity;
         }
-        
+
         public override Habitacion SaveDtoToEntity(SaveHabitacionDto dto)
         {
             Habitacion h = new Habitacion();

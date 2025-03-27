@@ -1,5 +1,4 @@
 ﻿using FrancoHotel.Persistence.Context;
-using FrancoHotel.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

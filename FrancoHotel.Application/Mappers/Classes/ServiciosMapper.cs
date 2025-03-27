@@ -1,5 +1,4 @@
-﻿using FrancoHotel.Application.Dtos.PisoDtos;
-using FrancoHotel.Application.Dtos.ServiciosDto;
+﻿using FrancoHotel.Application.Dtos.ServiciosDto;
 using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Domain.Entities;
 

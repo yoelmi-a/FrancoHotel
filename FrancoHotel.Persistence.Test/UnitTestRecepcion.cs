@@ -1,9 +1,7 @@
 ﻿using FrancoHotel.Application.Test;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
-using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace FrancoHotel.Persistence.Test
 {
@@ -36,7 +34,7 @@ namespace FrancoHotel.Persistence.Test
             Assert.False(result.Success);
             Assert.Equal(message, result.Message);
         }
-        
+
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
@@ -159,7 +157,7 @@ namespace FrancoHotel.Persistence.Test
             Assert.Equal(message, result.Message);
         }
 
-        
+
         [Theory]
         [InlineData(0)]
         [InlineData(999999999)]
@@ -202,7 +200,7 @@ namespace FrancoHotel.Persistence.Test
             Assert.False(result.Success);
             Assert.Equal(message, result.Message);
         }
-        
+
 
         [Theory]
         [InlineData(0)]
@@ -336,7 +334,7 @@ namespace FrancoHotel.Persistence.Test
             var recepcion = new Recepcion
             {
                 IdServicioPorCategoria = id
-            }; 
+            };
 
             //Act
             string message = "Error al crear Recepcion por datos invalidos";

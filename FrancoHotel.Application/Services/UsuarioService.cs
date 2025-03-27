@@ -1,13 +1,9 @@
-﻿using FrancoHotel.Application.Dtos.UsuariosDtos;
+﻿using System.Text.RegularExpressions;
+using FrancoHotel.Application.Dtos.UsuariosDtos;
 using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Domain.Base;
-using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.Extensions.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace FrancoHotel.Application.Services
 {

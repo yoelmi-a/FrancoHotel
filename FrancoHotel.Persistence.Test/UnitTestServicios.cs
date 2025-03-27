@@ -2,7 +2,6 @@
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Repositories;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FrancoHotel.Persistence.Test
 {

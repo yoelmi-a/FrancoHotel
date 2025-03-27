@@ -1,7 +1,6 @@
 ﻿using FrancoHotel.Application.Base;
 using FrancoHotel.Application.Dtos.ClienteDtos;
 using FrancoHotel.Domain.Base;
-using FrancoHotel.Domain.Entities;
 
 namespace FrancoHotel.Persistence.Interfaces
 {

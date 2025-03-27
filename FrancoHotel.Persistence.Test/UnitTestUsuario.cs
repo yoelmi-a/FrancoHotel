@@ -40,15 +40,15 @@ namespace FrancoHotel.Persistence.Test
             // Arrange
             var usuario = new Usuario()
             {
-                Id = 1, 
+                Id = 1,
                 NombreCompleto = "Juan Pérez",
                 Correo = "juan.perez@example.com",
                 IdRolUsuario = 2,
                 Clave = "ClaveSegura123",
                 EstadoYFecha = new BaseEstadoYFecha
                 {
-                    Estado = null,  
-                    FechaCreacion = null 
+                    Estado = null,
+                    FechaCreacion = null
                 },
                 CreadorPorU = 1
             };
@@ -234,7 +234,7 @@ namespace FrancoHotel.Persistence.Test
                     FechaCreacion = DateTime.UtcNow
                 },
                 CreadorPorU = 1,
-                FechaModificacion = null    
+                FechaModificacion = null
             };
 
             // Act
@@ -432,7 +432,7 @@ namespace FrancoHotel.Persistence.Test
                     FechaCreacion = DateTime.UtcNow
                 },
                 CreadorPorU = 1,
-                FechaModificacion = null   
+                FechaModificacion = null
             };
 
             // Act

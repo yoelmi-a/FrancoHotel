@@ -1,6 +1,4 @@
 ﻿using FrancoHotel.Application.Dtos.ClienteDtos;
-using FrancoHotel.Application.Interfaces;
-using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

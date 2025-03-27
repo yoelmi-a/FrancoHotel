@@ -1,4 +1,4 @@
-﻿ 
+﻿
 
 using System.Linq.Expressions;
 using FrancoHotel.Application.Dtos.RecepcionDtos;
@@ -8,10 +8,8 @@ using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 
 
 namespace FrancoHotel.Application.Services
@@ -23,9 +21,9 @@ namespace FrancoHotel.Application.Services
         private readonly IConfiguration _configuration;
         private readonly IRecepcionMapper _mapper;
 
-        public RecepcionService(IRecepcionRepository recepcionRepository, 
-                                ILogger<RecepcionService> logger, 
-                                IConfiguration configuration, 
+        public RecepcionService(IRecepcionRepository recepcionRepository,
+                                ILogger<RecepcionService> logger,
+                                IConfiguration configuration,
                                 IRecepcionMapper mapper)
         {
             _recepcionRepository = recepcionRepository;
@@ -43,8 +41,8 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> GetAll()
         {
             OperationResult result = new OperationResult();
-            result.Data = _mapper.DtoList( await _recepcionRepository.GetAllAsync());
-            return result; 
+            result.Data = _mapper.DtoList(await _recepcionRepository.GetAllAsync());
+            return result;
         }
 
         public async Task<OperationResult> GetAllByFilter(Expression<Func<Recepcion, bool>> filter)
@@ -77,7 +75,7 @@ namespace FrancoHotel.Application.Services
             {
                 result.Success = false;
                 result.Message = "La entidad es nula";
-                return result; 
+                return result;
             }
         }
 
@@ -86,16 +84,16 @@ namespace FrancoHotel.Application.Services
             OperationResult result = new OperationResult();
             Expression<Func<Recepcion, bool>> filter = r => r.IdHabitacion == dto.IdHabitacion
             && dto.FechaEntrada <= r.FechaEntrada && r.FechaEntrada <= dto.FechaSalida
-            || dto.FechaEntrada <= r.FechaSalida && r.FechaSalida <= dto.FechaEntrada;         
- 
-            if (await _recepcionRepository.Exists(filter)) 
+            || dto.FechaEntrada <= r.FechaSalida && r.FechaSalida <= dto.FechaEntrada;
+
+            if (await _recepcionRepository.Exists(filter))
             {
                 result.Success = false;
                 result.Message = "ErrorRecepcionServise:ReservaExistente";
                 return result;
             }
-            if (dto.FechaEntrada > DateTime.Now || 
-                dto.FechaSalida > dto.FechaEntrada 
+            if (dto.FechaEntrada > DateTime.Now ||
+                dto.FechaSalida > dto.FechaEntrada
                 )
             {
                 result = await _recepcionRepository.SaveEntityAsync(_mapper.SaveDtoToEntity(dto));
@@ -103,7 +101,7 @@ namespace FrancoHotel.Application.Services
             else
             {
                 result.Success = false;
-                result.Message = "ErrorRecepcionServise:ErrorFecha"; 
+                result.Message = "ErrorRecepcionServise:ErrorFecha";
             }
             return result;
         }
@@ -126,7 +124,7 @@ namespace FrancoHotel.Application.Services
             else
             {
                 result.Success = false;
-                result.Message = "No se encontro la entidad"; 
+                result.Message = "No se encontro la entidad";
             }
             return result;
         }

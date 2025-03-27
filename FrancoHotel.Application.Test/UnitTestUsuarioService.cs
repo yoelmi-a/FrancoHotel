@@ -1,13 +1,10 @@
-﻿using FrancoHotel.Application.Dtos.ClienteDtos;
-using FrancoHotel.Application.Dtos.UsuariosDtos;
+﻿using FrancoHotel.Application.Dtos.UsuariosDtos;
 using FrancoHotel.Application.Mappers.Interfaces;
 using FrancoHotel.Application.Services;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Moq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FrancoHotel.Application.Test
 {
@@ -31,7 +28,7 @@ namespace FrancoHotel.Application.Test
         }
 
         //Save
-        
+
         [Fact]
         public async void Save_ShouldReturnFailure_WhenUsuarioIsNull()
         {
@@ -52,11 +49,11 @@ namespace FrancoHotel.Application.Test
         [InlineData("María123")]
         [InlineData("José-Pérez")]
         [InlineData("Luís_Álvarez")]
-        [InlineData("Ana!")]         
-        [InlineData("Juan@")]         
-        [InlineData("Claudia#")]       
-        [InlineData("María López3")]   
-        [InlineData("Juan3 Carlos")]   
+        [InlineData("Ana!")]
+        [InlineData("Juan@")]
+        [InlineData("Claudia#")]
+        [InlineData("María López3")]
+        [InlineData("Juan3 Carlos")]
         public async void Save_ShouldReturnFailure_WhenNombreIsInvalid(string nombre)
         {
             // Arrange

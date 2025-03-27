@@ -4,10 +4,6 @@ using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using FrancoHotel.Persistence.Repositories;
 
 namespace FrancoHotel.Application.Services
 {

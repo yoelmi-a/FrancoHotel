@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Linq.Expressions;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
@@ -39,7 +38,7 @@ namespace FrancoHotel.Persistence.Repositories
         {
             OperationResult result = new OperationResult();
 
-            
+
             if (!RepoValidation.ValidarRecepcion(entity))
             {
                 result.Message = _configuration["ErrorRecepcionRepository:SaveEntityAsyncInvalidData"]!;
@@ -59,14 +58,14 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return result;
         }
-        
-        public override async Task<OperationResult> UpdateEntityAsync(Recepcion entity) 
+
+        public override async Task<OperationResult> UpdateEntityAsync(Recepcion entity)
         {
             OperationResult result = new OperationResult();
 
-            if (!RepoValidation.ValidarRecepcion(entity) || 
-                !RepoValidation.ValidarID(entity.Id) || 
-                !RepoValidation.ValidarID(entity.UsuarioMod) || 
+            if (!RepoValidation.ValidarRecepcion(entity) ||
+                !RepoValidation.ValidarID(entity.Id) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) ||
                 !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
             {
                 result.Message = _configuration["ErrorRecepcionRepository:UpdateEntityAsyncInvalidData"]!;
@@ -120,7 +119,7 @@ namespace FrancoHotel.Persistence.Repositories
             {
                 return null;
             }
-                return await _context.Recepcion.FindAsync(id);
+            return await _context.Recepcion.FindAsync(id);
         }
 
         public override async Task<OperationResult> RemoveEntityAsync(Recepcion entity)

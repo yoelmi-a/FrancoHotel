@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Base;
@@ -12,7 +7,6 @@ using FrancoHotel.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FrancoHotel.Persistence.Repositories
 {
@@ -22,8 +16,8 @@ namespace FrancoHotel.Persistence.Repositories
         private readonly ILogger<ServiciosRepository> _logger;
         private readonly IConfiguration _configuration;
 
-        public ServiciosRepository(HotelContext context, 
-                                   ILogger<ServiciosRepository> logger, 
+        public ServiciosRepository(HotelContext context,
+                                   ILogger<ServiciosRepository> logger,
                                    IConfiguration configuration) : base(context)
         {
             _context = context;
@@ -50,7 +44,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<Servicios?> GetEntityByIdAsync(int id)
         {
-            if(!RepoValidation.ValidarID(id))
+            if (!RepoValidation.ValidarID(id))
             {
                 return null;
             }
@@ -61,7 +55,7 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> SaveEntityAsync(Servicios entity)
         {
             OperationResult result = new OperationResult();
-            if(!RepoValidation.ValidarServicio(entity))
+            if (!RepoValidation.ValidarServicio(entity))
             {
                 result.Message = _configuration["ErrorServiciosRepository:InvalidData"]!;
                 result.Success = false;

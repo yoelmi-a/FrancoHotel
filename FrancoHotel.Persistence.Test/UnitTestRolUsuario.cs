@@ -1,13 +1,7 @@
 ﻿using FrancoHotel.Application.Test;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
-using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FrancoHotel.Persistence.Test
 {
@@ -47,13 +41,13 @@ namespace FrancoHotel.Persistence.Test
             var rolUsuario = new RolUsuario()
             {
                 Id = 1,
-                Descripcion = "Administrador", 
+                Descripcion = "Administrador",
                 EstadoYFecha = new BaseEstadoYFecha
                 {
-                    Estado = null,      
-                    FechaCreacion = null 
+                    Estado = null,
+                    FechaCreacion = null
                 },
-                CreadorPorU = 1 
+                CreadorPorU = 1
             };
 
             // Act

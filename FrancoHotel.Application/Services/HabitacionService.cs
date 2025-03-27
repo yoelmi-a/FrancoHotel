@@ -13,8 +13,8 @@ namespace FrancoHotel.Application.Services
         private readonly IHabitacionRepository _habitacionRepository;
         private readonly IHabitacionMapper _mapper;
         private readonly IRecepcionRepository _recepcionRepository;
-        public HabitacionService(IHabitacionRepository habitacionRepository, 
-                                 IHabitacionMapper habitacionMapper, 
+        public HabitacionService(IHabitacionRepository habitacionRepository,
+                                 IHabitacionMapper habitacionMapper,
                                  IRecepcionRepository recepcionRepository)
         {
             _habitacionRepository = habitacionRepository;

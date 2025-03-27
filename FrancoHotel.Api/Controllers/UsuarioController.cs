@@ -1,9 +1,6 @@
 ﻿using FrancoHotel.Application.Dtos.UsuariosDtos;
-using FrancoHotel.Application.Interfaces;
-using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace FrancoHotel.Api.Controllers
 {

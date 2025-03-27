@@ -1,15 +1,13 @@
-﻿using FrancoHotel.Application.Interfaces;
-using FrancoHotel.Domain.Base;
-using FrancoHotel.Application.Base;
+﻿using System.Linq.Expressions;
 using FrancoHotel.Application.Dtos.TarifasDto;
 using FrancoHotel.Application.Dtos.TarifasDtos;
+using FrancoHotel.Application.Interfaces;
 using FrancoHotel.Application.Mappers.Interfaces;
+using FrancoHotel.Domain.Base;
+using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using FrancoHotel.Domain.Entities;
-using FrancoHotel.Persistence.Repositories;
-using System.Linq.Expressions;
 
 namespace FrancoHotel.Application.Services
 {
@@ -39,7 +37,7 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> GetAll()
         {
             OperationResult result = new OperationResult();
-            result.Data = await _tarifasRepository.GetAllAsync();
+            result.Data = _mapper.DtoList(await _tarifasRepository.GetAllAsync());
             return result;
         }
 
@@ -53,7 +51,7 @@ namespace FrancoHotel.Application.Services
         public async Task<OperationResult> GetById(int id)
         {
             OperationResult result = new OperationResult();
-            result.Data = await _tarifasRepository.GetEntityByIdAsync(id);
+            result.Data = _mapper.EntityToDto(await _tarifasRepository.GetEntityByIdAsync(id));
             return result;
         }
 

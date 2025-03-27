@@ -1,14 +1,12 @@
 ﻿using System.Linq.Expressions;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
-using FrancoHotel.Models.Models;
 using FrancoHotel.Persistence.Base;
 using FrancoHotel.Persistence.Context;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FrancoHotel.Persistence.Repositories
 {
@@ -18,8 +16,8 @@ namespace FrancoHotel.Persistence.Repositories
         private readonly ILogger<PisoRepository> _logger;
         private readonly IConfiguration _configuration;
 
-        public PisoRepository(HotelContext context, 
-                              ILogger<PisoRepository> logger, 
+        public PisoRepository(HotelContext context,
+                              ILogger<PisoRepository> logger,
                               IConfiguration configuration) : base(context)
         {
             _context = context;
@@ -39,14 +37,14 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<OperationResult> GetAllAsync(Expression<Func<Piso, bool>> filter)
         {
-            OperationResult result = new OperationResult(); 
+            OperationResult result = new OperationResult();
             result.Data = await _context.Piso.Where(filter).Where(p => p.Borrado == false).AsNoTracking().ToListAsync();
             return result;
         }
 
         public override async Task<Piso?> GetEntityByIdAsync(int id)
         {
-            if(!RepoValidation.ValidarID(id))
+            if (!RepoValidation.ValidarID(id))
             {
                 return null;
             }
@@ -57,7 +55,7 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> SaveEntityAsync(Piso entity)
         {
             OperationResult result = new OperationResult();
-            if(!RepoValidation.ValidarPiso(entity))
+            if (!RepoValidation.ValidarPiso(entity))
             {
                 result.Message = _configuration["ErrorPisoRepository:InvalidData"]!;
                 result.Success = false;

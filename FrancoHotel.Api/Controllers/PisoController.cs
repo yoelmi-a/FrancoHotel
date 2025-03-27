@@ -1,9 +1,5 @@
-﻿using System.Linq.Expressions;
-using FrancoHotel.Application.Dtos.PisoDtos;
+﻿using FrancoHotel.Application.Dtos.PisoDtos;
 using FrancoHotel.Application.Interfaces;
-using FrancoHotel.Domain.Base;
-using FrancoHotel.Domain.Entities;
-using FrancoHotel.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.Api.Controllers

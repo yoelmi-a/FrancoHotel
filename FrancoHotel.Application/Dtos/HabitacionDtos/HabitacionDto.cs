@@ -1,6 +1,4 @@
-﻿using FrancoHotel.Domain.Base;
-
-namespace FrancoHotel.Application.Dtos.HabitacionDtos
+﻿namespace FrancoHotel.Application.Dtos.HabitacionDtos
 {
     public class HabitacionDto : DtoBase
     {

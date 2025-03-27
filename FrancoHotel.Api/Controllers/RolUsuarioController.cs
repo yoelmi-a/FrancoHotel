@@ -1,8 +1,6 @@
 ﻿using FrancoHotel.Application.Dtos.RolUsuariosDtos;
-using FrancoHotel.Application.Interfaces;
 using FrancoHotel.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace FrancoHotel.Api.Controllers
 {

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Base;
@@ -53,7 +52,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<Habitacion?> GetEntityByIdAsync(int id)
         {
-            if(!RepoValidation.ValidarID(id))
+            if (!RepoValidation.ValidarID(id))
             {
                 return null;
             }

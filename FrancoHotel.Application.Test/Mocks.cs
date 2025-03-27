@@ -1,5 +1,4 @@
 ﻿using FrancoHotel.Persistence.Context;
-using FrancoHotel.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -12,7 +11,7 @@ namespace FrancoHotel.Application.Test
         public static HotelContext GetContextInMemory()
         {
             var options = new DbContextOptionsBuilder<HotelContext>()
-                .UseInMemoryDatabase(databaseName: "DBHotelYoelmi")
+                .UseInMemoryDatabase(databaseName: "DBHotelGerardo")
                 .Options;
             return new HotelContext(options);
         }

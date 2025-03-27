@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
 using FrancoHotel.Persistence.Base;
@@ -28,25 +27,25 @@ namespace FrancoHotel.Persistence.Repositories
         public async Task<OperationResult> UpdateTarifaByCategoria(string categoria, decimal precio)
         {
             OperationResult result = new OperationResult();
-            if (!RepoValidation.ValidarLongitudString(categoria, 20) || 
+            if (!RepoValidation.ValidarLongitudString(categoria, 20) ||
                 !RepoValidation.ValidarPrecio(precio))
             {
                 result.Message = this._configuration["ErrorTarifasRepository:AddTarifaByCategoriaInvalidData"]!;
             }
             try
             {
-                 await _context.Tarifas
-                    .Join(_context.Habitacion,
-                        t => t.IdCategoria,
-                        h => h.Id,
-                        (t, h) => new { t, h })
-                    .Join(_context.Categoria,
-                        th => th.h.IdCategoria,
-                        c => c.Id,
-                        (th, c) => new { th.t, th.h, c })
-                    .Where(x => x.c.Descripcion == categoria)
-                    .Select(x => x.t)
-                    .ExecuteUpdateAsync(setters => setters.SetProperty(t => t.PrecioPorNoche, precio));
+                await _context.Tarifas
+                   .Join(_context.Habitacion,
+                       t => t.IdCategoria,
+                       h => h.Id,
+                       (t, h) => new { t, h })
+                   .Join(_context.Categoria,
+                       th => th.h.IdCategoria,
+                       c => c.Id,
+                       (th, c) => new { th.t, th.h, c })
+                   .Where(x => x.c.Descripcion == categoria)
+                   .Select(x => x.t)
+                   .ExecuteUpdateAsync(setters => setters.SetProperty(t => t.PrecioPorNoche, precio));
 
                 result.Success = true;
             }
@@ -92,7 +91,7 @@ namespace FrancoHotel.Persistence.Repositories
         public async Task<OperationResult> TotalTarifa(int IdCategoria, int Days, int? ServiciosAdicionales)
         {
             OperationResult result = new OperationResult();
-            if(!RepoValidation.ValidarID(IdCategoria))
+            if (!RepoValidation.ValidarID(IdCategoria))
             {
                 result.Message = _configuration["ErrorTarifasRepository:UpdateTarifasByFechas"]!;
             }
@@ -181,7 +180,7 @@ namespace FrancoHotel.Persistence.Repositories
             {
                 return null;
             }
-                return await _context.Tarifas.FindAsync(id).ConfigureAwait(false);
+            return await _context.Tarifas.FindAsync(id);
         }
 
         public override async Task<OperationResult> SaveEntityAsync(Tarifas entity)

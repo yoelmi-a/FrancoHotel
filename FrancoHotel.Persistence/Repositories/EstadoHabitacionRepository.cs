@@ -52,7 +52,7 @@ namespace FrancoHotel.Persistence.Repositories
 
         public override async Task<EstadoHabitacion?> GetEntityByIdAsync(int id)
         {
-            if(!RepoValidation.ValidarID(id))
+            if (!RepoValidation.ValidarID(id))
             {
                 return null;
             }
@@ -87,7 +87,7 @@ namespace FrancoHotel.Persistence.Repositories
         public override async Task<OperationResult> UpdateEntityAsync(EstadoHabitacion entity)
         {
             OperationResult result = new OperationResult();
-            if(!RepoValidation.ValidarEstadoHabitacion(entity) || !RepoValidation.ValidarID(entity.Id) ||
+            if (!RepoValidation.ValidarEstadoHabitacion(entity) || !RepoValidation.ValidarID(entity.Id) ||
                 !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
             {
                 result.Message = _configuration["ErrorEstadoHabitacionRepository:InvalidData"]!;

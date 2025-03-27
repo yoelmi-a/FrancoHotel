@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
-using FrancoHotel.Models.Models;
 using FrancoHotel.Persistence.Base;
 using FrancoHotel.Persistence.Context;
 using FrancoHotel.Persistence.Interfaces;
@@ -186,7 +185,7 @@ namespace FrancoHotel.Persistence.Repositories
         {
             OperationResult result = new OperationResult();
 
-            if (!RepoValidation.ValidarUsuario(entity) || 
+            if (!RepoValidation.ValidarUsuario(entity) ||
                 !RepoValidation.ValidarID(entity.Id) ||
                 !RepoValidation.ValidarID(entity.UsuarioMod) ||
                 !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||

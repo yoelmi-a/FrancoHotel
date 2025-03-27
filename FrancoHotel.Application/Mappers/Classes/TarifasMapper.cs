@@ -1,4 +1,5 @@
 ﻿
+using FrancoHotel.Application.Dtos.RecepcionDtos;
 using FrancoHotel.Application.Dtos.TarifasDto;
 using FrancoHotel.Application.Dtos.TarifasDtos;
 using FrancoHotel.Application.Mappers.Interfaces;
@@ -10,9 +11,21 @@ namespace FrancoHotel.Application.Mappers.Classes
     {
         public override List<UpdateTarifasDto> DtoList(List<Tarifas> entities)
         {
-            throw new NotImplementedException();
+            return entities.Select(entity => new UpdateTarifasDto()
+            {
+                Id = entity.Id,
+                IdCategoria = entity.IdCategoria,
+                FechaInicio = entity.FechaInicio,
+                FechaFin = entity.FechaFin,
+                PrecioPorNoche = entity.PrecioPorNoche,
+                Descuento = entity.Descuento,
+                Descripcion = entity.Descripcion,
+                Estado = entity.Estado,
+                Usuario = (int)entity.CreadorPorU!,
+                Fecha = entity.FechaModificacion
+            }).ToList();
         }
-
+            
         public override UpdateTarifasDto EntityToDto(Tarifas entity)
         {
             UpdateTarifasDto dto = new UpdateTarifasDto();

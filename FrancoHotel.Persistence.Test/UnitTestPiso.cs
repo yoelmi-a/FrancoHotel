@@ -1,16 +1,7 @@
-﻿using System.Threading.Channels;
-using FrancoHotel.Application.Test;
+﻿using FrancoHotel.Application.Test;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
-using FrancoHotel.Persistence.Context;
-using FrancoHotel.Persistence.Interfaces;
 using FrancoHotel.Persistence.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Moq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FrancoHotel.Persistence.Test
 {
@@ -28,7 +19,7 @@ namespace FrancoHotel.Persistence.Test
         [Fact]
         public async void SaveEntityAsync_ShouldReturnFailure_WhenPisoIsNull()
         {
-            
+
             //Arange
 
             Piso piso = null;

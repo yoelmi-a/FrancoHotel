@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
+using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Repository;
 using FrancoHotel.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
-using FrancoHotel.Domain.Base;
 
 namespace FrancoHotel.Persistence.Base
 {
@@ -40,7 +40,7 @@ namespace FrancoHotel.Persistence.Base
         }
 
         public virtual async Task<List<TEntity>> GetAllAsync()
-        { 
+        {
             return await Entity.ToListAsync();
         }
 
