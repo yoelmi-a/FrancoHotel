@@ -1,0 +1,89 @@
+﻿@model IEnumerable<FrancoHotel.WebApi.Models.HabitacionModels.GetHabitacionModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdHabitacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Numero)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Detalle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdEstadoHabitacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdPiso)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCategoria)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Capacidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Usuario)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdHabitacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Numero)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Detalle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdEstadoHabitacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdPiso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdCategoria)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Capacidad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fecha)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Usuario)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.IdHabitacion }) |
+                @Html.ActionLink("Details", "Details", new { id=item.IdHabitacion }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.IdHabitacion })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
