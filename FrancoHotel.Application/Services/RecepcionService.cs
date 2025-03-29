@@ -69,7 +69,7 @@ namespace FrancoHotel.Application.Services
             {
                 recepcion = await _recepcionRepository.GetEntityByIdAsync(dto.Id);
                 result = await _recepcionRepository.RemoveEntityAsync(_mapper.RemoveDtoToEntity(dto, recepcion));
-                return result;
+                return result.Data = dto;
             }
             else
             {
@@ -103,7 +103,7 @@ namespace FrancoHotel.Application.Services
                 result.Success = false;
                 result.Message = "ErrorRecepcionServise:ErrorFecha";
             }
-            return result;
+            return result.Data = dto;
         }
 
         public async Task<OperationResult> Update(UpdateRecepcionDto dto)
@@ -120,6 +120,7 @@ namespace FrancoHotel.Application.Services
             if (recepcion != null)
             {
                 result = await _recepcionRepository.UpdateEntityAsync(_mapper.UpdateDtoToEntity(dto, recepcion));
+                return result.Data = dto;
             }
             else
             {

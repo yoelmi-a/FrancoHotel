@@ -18,7 +18,7 @@ namespace FrancoHotel.Api.Controllers
             _tarifasService = (TarifasService?)tarifasService;
         }
 
-        [HttpGet("GetTarigas")]
+        [HttpGet("GetTarifas")]
         public async Task<IActionResult> GetAll()
         {
             var tarifas = await _tarifasService.GetAll();
@@ -100,7 +100,7 @@ namespace FrancoHotel.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("RemoveTarifa")]
+        [HttpPut("RemoveTarifas")]
         public async Task<IActionResult> RemoveTarifa([FromBody] RemoveTarifasDto tarifasDto)
         {
             var result = await _tarifasService.Remove(tarifasDto);

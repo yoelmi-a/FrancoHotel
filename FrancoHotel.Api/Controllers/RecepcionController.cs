@@ -67,7 +67,7 @@ namespace FrancoHotel.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("RemoveRecepcion")]
+        [HttpPut("RemoveRecepcion")]
         public async Task<IActionResult> RemoveRecepcion([FromBody] RemoveRecepcionDto recepcionDto)
         {
             var result = await _recepcionService.Remove(recepcionDto);

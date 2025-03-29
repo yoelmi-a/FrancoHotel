@@ -12,7 +12,7 @@
         public decimal? PrecioRestante { get; set; }
         public decimal? TotalPagado { get; set; }
         public decimal? CostoPenalidad { get; set; }
-        public string? Obsevacion { get; set; }
+        public string? Observacion { get; set; }
         public bool? Estado { get; set; }
     }
 }
