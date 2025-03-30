@@ -227,5 +227,17 @@ namespace FrancoHotel.Persistence.Repositories
             }
             return true;
         }
+
+        public static bool ValidarCategoria(Categoria entity)
+        {
+            if (!RepoValidation.ValidarEntidad(entity) ||
+                !RepoValidation.ValidarString(entity.Descripcion!) ||
+                !RepoValidation.ValidarLongitudString(entity.Descripcion!, 50) ||
+                !RepoValidation.ValidarEntidad(entity.EstadoYFecha.Estado!))
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
