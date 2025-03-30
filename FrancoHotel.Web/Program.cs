@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<HotelContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DbHotelEli")));
 
 builder.Services.AddPisoDependency();
+builder.Services.AddCategoriaDependency();
 builder.Services.AddRecepcionDependency();
 builder.Services.AddRolUsuarioDependecy();
 builder.Services.AddClienteDependency();

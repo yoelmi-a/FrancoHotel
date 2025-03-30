@@ -9,209 +9,212 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepository
+namespace FrancoHotel.Persistence.Repositories
 {
-    private readonly HotelContext _context;
-    private readonly ILogger<ClienteRepository> _logger;
-    private readonly IConfiguration _configuration;
-
-    public ClienteRepository(HotelContext context,
-                             ILogger<ClienteRepository> logger,
-                             IConfiguration configuration) : base(context)
+    public class ClienteRepository : BaseRepository<Cliente, int>, IClienteRepository
     {
-        _context = context;
-        _logger = logger;
-        _configuration = configuration;
-    }
+        private readonly HotelContext _context;
+        private readonly ILogger<ClienteRepository> _logger;
+        private readonly IConfiguration _configuration;
 
-    public override async Task<bool> Exists(Expression<Func<Cliente, bool>> filter)
-    {
-        return await _context.Cliente.AnyAsync(filter);
-    }
-
-    public override async Task<List<Cliente>> GetAllAsync()
-    {
-        return await _context.Cliente
-            .Where(c => c.Borrado == false)
-            .AsNoTracking()
-            .ToListAsync()
-            .ConfigureAwait(false);
-    }
-
-    public override async Task<OperationResult> GetAllAsync(Expression<Func<Cliente, bool>> filter)
-    {
-        var clientes = await _context.Cliente
-            .Where(c => c.Borrado == false)
-            .AsNoTracking()
-            .Where(filter)
-            .ToListAsync()
-            .ConfigureAwait(false);
-
-        return new OperationResult
+        public ClienteRepository(HotelContext context,
+                                 ILogger<ClienteRepository> logger,
+                                 IConfiguration configuration) : base(context)
         {
-            Success = true,
-            Data = clientes
-        };
-    }
-
-    public override async Task<Cliente?> GetEntityByIdAsync(int id)
-    {
-        if (!RepoValidation.ValidarID(id))
-        {
-            return null;
+            _context = context;
+            _logger = logger;
+            _configuration = configuration;
         }
-        return await _context.Cliente.FindAsync(id).ConfigureAwait(false);
-    }
 
-    public async Task<Cliente?> GetClienteByDocumento(string documento)
-    {
-        return await _context.Cliente
-                             .AsNoTracking()
-                             .Where(c => c.Documento == documento)
-                             .FirstOrDefaultAsync()
-                             .ConfigureAwait(false);
-    }
-
-    public async Task<List<Cliente>> GetClientesByEstado(bool estado)
-    {
-        return await _context.Cliente
-                             .AsNoTracking()
-                             .Where(c => c.EstadoYFecha.Estado == estado)
-                             .ToListAsync();
-    }
-
-    public override async Task<OperationResult> SaveEntityAsync(Cliente entity)
-    {
-        OperationResult result = new OperationResult();
-
-        if (!RepoValidation.ValidarCliente(entity))
+        public override async Task<bool> Exists(Expression<Func<Cliente, bool>> filter)
         {
-            result.Message = this._configuration["ErrorClienteRepository:InvalidData"]!;
-            result.Success = false;
-            return result;
+            return await _context.Cliente.AnyAsync(filter);
         }
-        try
-        {
-            _context.Cliente.Add(entity);
-            await _context.SaveChangesAsync();
 
+        public override async Task<List<Cliente>> GetAllAsync()
+        {
+            return await _context.Cliente
+                .Where(c => c.Borrado == false)
+                .AsNoTracking()
+                .ToListAsync()
+                .ConfigureAwait(false);
         }
-        catch (Exception ex)
+
+        public override async Task<OperationResult> GetAllAsync(Expression<Func<Cliente, bool>> filter)
         {
-            result.Message = this._configuration["ErrorClienteRepository:SaveEntityAsync"]!;
-            result.Success = false;
-            this._logger.LogError(result.Message, ex.ToString());
+            var clientes = await _context.Cliente
+                .Where(c => c.Borrado == false)
+                .AsNoTracking()
+                .Where(filter)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            return new OperationResult
+            {
+                Success = true,
+                Data = clientes
+            };
         }
-        return result;
-    }
 
-    public override async Task<OperationResult> UpdateEntityAsync(Cliente entity)
-    {
-        OperationResult result = new OperationResult();
-
-        if (!RepoValidation.ValidarCliente(entity) || !RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+        public override async Task<Cliente?> GetEntityByIdAsync(int id)
         {
-            result.Message = _configuration["ErrorClienteRepository:InvalidData"]!;
-            result.Success = false;
-            return result;
+            if (!RepoValidation.ValidarID(id))
+            {
+                return null;
+            }
+            return await _context.Cliente.FindAsync(id).ConfigureAwait(false);
         }
-        try
-        {
-            _context.Cliente.Update(entity);
-            await _context.SaveChangesAsync();
 
+        public async Task<Cliente?> GetClienteByDocumento(string documento)
+        {
+            return await _context.Cliente
+                                 .AsNoTracking()
+                                 .Where(c => c.Documento == documento)
+                                 .FirstOrDefaultAsync()
+                                 .ConfigureAwait(false);
         }
-        catch (Exception ex)
+
+        public async Task<List<Cliente>> GetClientesByEstado(bool estado)
         {
-            result.Message = this._configuration["ErrorClienteRepository:UpdateEntityAsync"]!;
-            result.Success = false;
-            this._logger.LogError(result.Message, ex.ToString());
+            return await _context.Cliente
+                                 .AsNoTracking()
+                                 .Where(c => c.EstadoYFecha.Estado == estado)
+                                 .ToListAsync();
         }
-        return result;
-    }
 
-    public async Task<OperationResult> UpdateTipoDocumento(Cliente entity)
-    {
-        OperationResult result = new OperationResult();
-
-        if (!RepoValidation.ValidarCliente(entity) ||
-            !RepoValidation.ValidarID(entity.UsuarioMod) ||
-            !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+        public override async Task<OperationResult> SaveEntityAsync(Cliente entity)
         {
-            result.Message = _configuration["ErrorClienteRepository:InvalidData"]!;
-            result.Success = false;
+            OperationResult result = new OperationResult();
+
+            if (!RepoValidation.ValidarCliente(entity))
+            {
+                result.Message = this._configuration["ErrorClienteRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            try
+            {
+                _context.Cliente.Add(entity);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                result.Message = this._configuration["ErrorClienteRepository:SaveEntityAsync"]!;
+                result.Success = false;
+                this._logger.LogError(result.Message, ex.ToString());
+            }
             return result;
         }
 
-        try
+        public override async Task<OperationResult> UpdateEntityAsync(Cliente entity)
         {
-            _context.Cliente.Update(entity);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            result.Success = true;
-        }
-        catch (Exception ex)
-        {
-            result.Message = _configuration["ErrorClienteRepository:UpdateEntityAsync"]!;
-            result.Success = false;
-            _logger.LogError(result.Message, ex);
-        }
-        return result;
-    }
+            OperationResult result = new OperationResult();
 
-    public async Task<OperationResult> UpdateEstado(Cliente entity, bool nuevoEstado)
-    {
-        OperationResult result = new OperationResult();
+            if (!RepoValidation.ValidarCliente(entity) || !RepoValidation.ValidarID(entity.Id) || !RepoValidation.ValidarID(entity.UsuarioMod) || !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+            {
+                result.Message = _configuration["ErrorClienteRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            try
+            {
+                _context.Cliente.Update(entity);
+                await _context.SaveChangesAsync();
 
-        if (!RepoValidation.ValidarCliente(entity) ||
-            !RepoValidation.ValidarID(entity.UsuarioMod) ||
-            !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
-        {
-            result.Message = _configuration["ErrorClienteRepository:InvalidData"]!;
-            result.Success = false;
+            }
+            catch (Exception ex)
+            {
+                result.Message = this._configuration["ErrorClienteRepository:UpdateEntityAsync"]!;
+                result.Success = false;
+                this._logger.LogError(result.Message, ex.ToString());
+            }
             return result;
         }
-        try
+
+        public async Task<OperationResult> UpdateTipoDocumento(Cliente entity)
         {
-            entity.EstadoYFecha.Estado = nuevoEstado;
-            _context.Cliente.Update(entity);
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            result.Message = _configuration["ErrorClienteRepository:UpdateEntityAsync"]!;
-            result.Success = false;
-            _logger.LogError(result.Message, ex.ToString());
-        }
+            OperationResult result = new OperationResult();
 
-        return result;
-    }
-
-    public override async Task<OperationResult> RemoveEntityAsync(Cliente entity)
-    {
-        OperationResult result = new OperationResult();
-
-        if (!RepoValidation.ValidarCliente(entity) ||
-            !RepoValidation.ValidarID(entity.Id) ||
+            if (!RepoValidation.ValidarCliente(entity) ||
                 !RepoValidation.ValidarID(entity.UsuarioMod) ||
-                !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
-                !RepoValidation.ValidarID(entity.BorradoPorU) ||
-                !RepoValidation.ValidarEntidad(entity.Borrado!))
-        {
-            result.Message = _configuration["ErrorClienteRepository:InvalidData"]!;
-            result.Success = false;
+                !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+            {
+                result.Message = _configuration["ErrorClienteRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+
+            try
+            {
+                _context.Cliente.Update(entity);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                result.Success = true;
+            }
+            catch (Exception ex)
+            {
+                result.Message = _configuration["ErrorClienteRepository:UpdateEntityAsync"]!;
+                result.Success = false;
+                _logger.LogError(result.Message, ex);
+            }
             return result;
         }
-        try
+
+        public async Task<OperationResult> UpdateEstado(Cliente entity, bool nuevoEstado)
         {
-            _context.Cliente.Update(entity);
-            await _context.SaveChangesAsync();
+            OperationResult result = new OperationResult();
+
+            if (!RepoValidation.ValidarCliente(entity) ||
+                !RepoValidation.ValidarID(entity.UsuarioMod) ||
+                !RepoValidation.ValidarEntidad(entity.FechaModificacion!))
+            {
+                result.Message = _configuration["ErrorClienteRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            try
+            {
+                entity.EstadoYFecha.Estado = nuevoEstado;
+                _context.Cliente.Update(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                result.Message = _configuration["ErrorClienteRepository:UpdateEntityAsync"]!;
+                result.Success = false;
+                _logger.LogError(result.Message, ex.ToString());
+            }
+
+            return result;
         }
-        catch (Exception ex)
+
+        public override async Task<OperationResult> RemoveEntityAsync(Cliente entity)
         {
-            result.Message = _configuration["ErrorClienteRepository:RemoveEntity"]!;
-            result.Success = false;
-            _logger.LogError(result.Message, ex.ToString());
+            OperationResult result = new OperationResult();
+
+            if (!RepoValidation.ValidarCliente(entity) ||
+                !RepoValidation.ValidarID(entity.Id) ||
+                    !RepoValidation.ValidarID(entity.UsuarioMod) ||
+                    !RepoValidation.ValidarEntidad(entity.FechaModificacion!) ||
+                    !RepoValidation.ValidarID(entity.BorradoPorU) ||
+                    !RepoValidation.ValidarEntidad(entity.Borrado!))
+            {
+                result.Message = _configuration["ErrorClienteRepository:InvalidData"]!;
+                result.Success = false;
+                return result;
+            }
+            try
+            {
+                _context.Cliente.Update(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                result.Message = _configuration["ErrorClienteRepository:RemoveEntity"]!;
+                result.Success = false;
+                _logger.LogError(result.Message, ex.ToString());
+            }
+            return result;
         }
-        return result;
     }
 }
