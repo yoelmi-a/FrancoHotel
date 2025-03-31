@@ -1,6 +1,7 @@
 ﻿using FrancoHotel.Application.Test;
 using FrancoHotel.Domain.Base;
 using FrancoHotel.Domain.Entities;
+using FrancoHotel.Persistence.Repositories;
 
 namespace FrancoHotel.Persistence.Test
 {
