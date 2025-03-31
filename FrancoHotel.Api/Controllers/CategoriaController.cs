@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.Api.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class CategoriaController : Controller
     {
         private readonly ICategoriaService _categoriaService;
