@@ -1,7 +1,16 @@
+using FrancoHotel.WebApi.Repositories.Classes;
+using FrancoHotel.WebApi.Repositories.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient("ApiClient", client =>
+{
+    var configuration = builder.Configuration;
+    client.BaseAddress = new Uri(configuration["ApiSettings:BaseUrl"]!);
+});
+builder.Services.AddScoped<IHabitacionRepository, HabitacionRepository>();
 
 var app = builder.Build();
 
