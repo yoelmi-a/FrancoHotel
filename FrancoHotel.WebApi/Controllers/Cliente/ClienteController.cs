@@ -1,5 +1,6 @@
 ﻿using FrancoHotel.WebApi.Models;
 using FrancoHotel.WebApi.Models.ClienteModels;
+using FrancoHotel.WebApi.Repository.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -8,45 +9,38 @@ namespace FrancoHotel.WebApi.Controllers.Cliente
 {
     public class ClienteController : Controller
     {
+        private readonly IClienteRepository _repository;
+        public ClienteController(IClienteRepository repository)
+        {
+            _repository = repository;
+        }
         // GET: ClienteController
         public async Task<IActionResult> Index()
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync("Cliente/GetClientes");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<List<GetClienteModel>>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener clientes";
-                    return View();
-                }
+                var result = await _repository.GetAllAsync();
+                return View(result);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al obtener los clientes";
+                return View();
             }
         }
 
         // GET: ClienteController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Cliente/GetClienteById?id={id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetClienteModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al ver el detalle del cliente";
-                    return View();
-                }
+                var cliente = await _repository.GetByIdAsync(id);
+                return View(cliente);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al ver el detalle del cliente";
+                return View();
             }
         }
 
@@ -63,25 +57,12 @@ namespace FrancoHotel.WebApi.Controllers.Cliente
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PostAsJsonAsync<PostClienteModel>("Cliente/SaveCliente", clienteModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<PostClienteModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al crear el cliente";
-                        return View();
-                    }
-                }
+                await _repository.CreateEntityAsync(clienteModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al crear el cliente";
                 return View();
             }
         }
@@ -89,21 +70,15 @@ namespace FrancoHotel.WebApi.Controllers.Cliente
         // GET: ClienteController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Cliente/GetClienteById?id={id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetClienteModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el cliente";
-                    return View();
-                }
+                var cliente = await _repository.GetByIdAsync(id);
+                return View(cliente);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al editar el cliente";
+                return View();
             }
         }
 
@@ -114,26 +89,12 @@ namespace FrancoHotel.WebApi.Controllers.Cliente
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PutAsJsonAsync("Cliente/UpdateCliente", clienteModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetClienteModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al editar el cliente";
-                        return View();
-                    }
-                }
-
+                await _repository.UpdateEntityAsync(clienteModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al editar el cliente";
                 return View();
             }
         }
@@ -141,22 +102,15 @@ namespace FrancoHotel.WebApi.Controllers.Cliente
         // GET: ClienteController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Cliente/GetClienteById?id={id}");
-
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemoveClienteModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el cliente";
-                    return View();
-                }
+                var cliente = await _repository.GetByIdRemoveAsync(id);
+                return View(cliente);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al eliminar el cliente";
+                return View();
             }
         }
 
@@ -167,25 +121,12 @@ namespace FrancoHotel.WebApi.Controllers.Cliente
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PutAsJsonAsync<RemoveClienteModel>("Cliente/RemoveCliente", clienteModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemoveClienteModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al remover el cliente";
-                        return View();
-                    }
-                }
+                await _repository.RemoveEntityAsync(clienteModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al eliminar el cliente";
                 return View();
             }
         }

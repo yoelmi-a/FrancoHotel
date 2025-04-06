@@ -1,50 +1,42 @@
-﻿using FrancoHotel.WebApi.Models;
-using FrancoHotel.WebApi.Models.RolUsuarioModels;
-using Microsoft.AspNetCore.Http;
+﻿using FrancoHotel.WebApi.Models.RolUsuarioModels;
+using FrancoHotel.WebApi.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.WebApi.Controllers.RolUsuario
 {
     public class RolUsuarioController : Controller
     {
+        private readonly IRolUsuarioRepository _repository;
+        public RolUsuarioController(IRolUsuarioRepository repository)
+        {
+            _repository = repository;
+        }
         // GET: RolUsuarioController
         public async Task<IActionResult> Index()
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync("RolUsuario/GetRolUsuarios");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<List<GetRolUsuarioModel>>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener los roles";
-                    return View();
-                }
+                var result = await _repository.GetAllAsync();
+                return View(result);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al obtener los roles";
+                return View();
             }
         }
         // GET: RolUsuarioController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"RolUsuario/GetRolUsuarioById?id={id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetRolUsuarioModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el rol";
-                    return View();
-                }
+                var result = await _repository.GetByIdAsync(id);
+                return View(result);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al ver el detalle del rol";
+                return View();
             }
         }
 
@@ -61,25 +53,12 @@ namespace FrancoHotel.WebApi.Controllers.RolUsuario
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PostAsJsonAsync<PostRolUsuarioModel>("RolUsuario/SaveRolUsuario", rolModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<PostRolUsuarioModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al guardar el rol";
-                        return View();
-                    }
-                }
+                await _repository.CreateEntityAsync(rolModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al crear el rol";
                 return View();
             }
         }
@@ -87,21 +66,15 @@ namespace FrancoHotel.WebApi.Controllers.RolUsuario
         // GET: RolUsuarioController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"RolUsuario/GetRolUsuarioById?id={id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetRolUsuarioModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el rol";
-                    return View();
-                }
+                var result = await _repository.GetByIdAsync(id);
+                return View(result);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al obtener el rol para editar";
+                return View();
             }
         }
 
@@ -112,25 +85,12 @@ namespace FrancoHotel.WebApi.Controllers.RolUsuario
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PutAsJsonAsync<GetRolUsuarioModel>("RolUsuario/UpdateRolUsuario", rolModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetRolUsuarioModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al actualizar el rol";
-                        return View();
-                    }
-                }
+                await _repository.UpdateEntityAsync(rolModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al editar el rol";
                 return View();
             }
         }
@@ -138,21 +98,15 @@ namespace FrancoHotel.WebApi.Controllers.RolUsuario
         // GET: RolUsuarioController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"RolUsuario/GetRolUsuarioById?id={id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemoveRolUsuarioModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el rol";
-                    return View();
-                }
+                var result = await _repository.GetByIdRemoveAsync(id);
+                return View(result);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al obtener el rol para eliminar";
+                return View();
             }
         }
 
@@ -163,25 +117,12 @@ namespace FrancoHotel.WebApi.Controllers.RolUsuario
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PutAsJsonAsync<RemoveRolUsuarioModel>("RolUsuario/RemoveRolUsuario", rolModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemoveRolUsuarioModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al remover el rol";
-                        return View();
-                    }
-                }
+                await _repository.RemoveEntityAsync(rolModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al eliminar el rol";
                 return View();
             }
         }
