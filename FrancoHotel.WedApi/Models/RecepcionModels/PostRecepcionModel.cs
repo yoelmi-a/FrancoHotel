@@ -1,6 +1,6 @@
 ﻿using FrancoHotel.Domain.Base;
 
-namespace FrancoHotel.WedApi.Models
+namespace FrancoHotel.WedApi.Models.RecepcionModels
 {
     public class PostRecepcionModel
     {

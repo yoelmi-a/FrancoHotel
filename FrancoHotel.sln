@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.IOC", "FrancoHo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.Models", "FrancoHotel.Models\FrancoHotel.Models.csproj", "{2D9B047E-91E0-4C03-8E98-0A91AA3371A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.WedApi", "FrancoHotel.WedApi\FrancoHotel.WedApi.csproj", "{8C23FDE8-D82D-45DA-B9E7-DCDF6EB2AAB3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrancoHotel.WebApi", "FrancoHotel.WedApi\FrancoHotel.WebApi.csproj", "{8C23FDE8-D82D-45DA-B9E7-DCDF6EB2AAB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

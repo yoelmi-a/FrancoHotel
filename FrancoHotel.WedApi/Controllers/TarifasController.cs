@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using FrancoHotel.WedApi.Models;
+using FrancoHotel.WedApi.Models.TarifasModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

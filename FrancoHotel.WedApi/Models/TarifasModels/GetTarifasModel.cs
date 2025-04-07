@@ -1,9 +1,10 @@
 ﻿using FrancoHotel.Domain.Base;
 
-namespace FrancoHotel.WedApi.Models
+namespace FrancoHotel.WedApi.Models.TarifasModels
 {
-    public class PostTarifasModel
+    public class GetTarifasModel
     {
+        public int Id { get; set; }
         public int Usuario { get; set; }
         public DateTime? Fecha { get; set; }
         public int? IdCategoria { get; set; }

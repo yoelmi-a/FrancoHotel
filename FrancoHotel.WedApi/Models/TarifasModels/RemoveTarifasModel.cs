@@ -1,6 +1,8 @@
-﻿namespace FrancoHotel.WedApi.Models
+﻿using FrancoHotel.Domain.Base;
+
+namespace FrancoHotel.WedApi.Models.TarifasModels
 {
-    public class RemoveRecepcionModel
+    public class RemoveTarifasModel
     {
         public int Id { get; set; }
         public DateTime? Fecha { get; set; }

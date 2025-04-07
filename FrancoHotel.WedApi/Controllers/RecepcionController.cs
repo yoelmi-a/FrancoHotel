@@ -1,4 +1,6 @@
-﻿using FrancoHotel.WedApi.Models;
+﻿using FrancoHotel.WedApi.Interfaces;
+using FrancoHotel.WedApi.Models;
+using FrancoHotel.WedApi.Models.RecepcionModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,45 +8,38 @@ namespace FrancoHotel.WedApi.Controllers
 {
     public class RecepcionController : Controller
     {
+        private readonly IRecepcionRepository _repository;
+        public RecepcionController(IRecepcionRepository repository)
+        {
+            _repository = repository;
+        }
         // GET: RecepcionController
         public async Task<IActionResult> Index()
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync("Recepcion/GetRecepcion");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<List<GetRecepcionModel>>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener los Reserva";
-                    return View();
-                }
+                var recepcion = await _repository.GetAllAsync();
+                return View(recepcion);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al obtener las recepciones.";
+                return View();
             }
         }
 
         // GET: RecepcionController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Recepcion/GetRecepcionById?id={id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetRecepcionModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el Recepcion";
-                    return View();
-                }
+                var recepcion = await _repository.GetByIdUpdateAsync(id);
+                return View(recepcion);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al obtener la reserva.";
+                return View();
             }
         }
 
@@ -61,20 +56,12 @@ namespace FrancoHotel.WedApi.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PostAsJsonAsync<PostRecepcionModel>("Recepcion/SaveRecepcion", postRecepcionModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<PostRecepcionModel>>();
-                    }
-                }
+                await _repository.CreateEntityAsync(postRecepcionModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al guardar la Reserva.";
                 return View();
             }
         }
@@ -82,84 +69,65 @@ namespace FrancoHotel.WedApi.Controllers
         // GET: RecepcionController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Recepcion/GetRecepcionById?id={id}");
+                var recepcion = await _repository.GetByIdUpdateAsync(id);
+                return View(recepcion);
+            }
+            catch (Exception)
+            {
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetRecepcionModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el piso";
-                    return View();
-                }
+                ViewBag.Message = "Error al obtener la reserva.";
+                return View();
             }
         }
 
         // POST: RecepcionController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(GetRecepcionModel recepcion)
+        public async Task<IActionResult> Edit(GetRecepcionModel recepcionModel)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.PutAsJsonAsync<GetRecepcionModel>("Recepcion/UpdateRecepcion", recepcion);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetRecepcionModel>>();
-                }
+                await _repository.UpdateEntityAsync(recepcionModel);
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al actualizar la reserva.";
+                return View();
+            }
         }
 
         // GET: RecepcionController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Recepcion/GetRecepcionById?id={id}");
+                var recepcion = await _repository.GetByIdRemoveAsync(id);
+                return View(recepcion);
+            }
+            catch (Exception)
+            {
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemoveRecepcionModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el Recepcion";
-                    return View();
-                }
+                ViewBag.Message = "Error al obtener la reserva.";
+                return View();
             }
         }
 
         // POST: RecepcionController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(RemoveRecepcionModel remove)
+        public async Task<IActionResult> Delete(RemoveRecepcionModel recepcionModel)
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PutAsJsonAsync<RemoveRecepcionModel>("Recepcion/RemoveRecepcion", remove);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemoveRecepcionModel>>();
-                    }
-                }
+                await _repository.RemoveEntityAsync(recepcionModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al remover la reserva.";
                 return View();
             }
         }
