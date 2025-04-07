@@ -3,50 +3,44 @@ using FrancoHotel.WebApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using FrancoHotel.WebApi.Models.EstadoHabitacionModels;
+using FrancoHotel.WebApi.Repositories.Interfaces;
 
 namespace FrancoHotel.WebApi.Controllers
 {
     public class EstadoHabitacionController : Controller
     {
+        private readonly IEstadoHabitacionRepository _repository;
+        public EstadoHabitacionController(IEstadoHabitacionRepository repository)
+        {
+            _repository = repository;
+        }
         // GET: EstadoHabitacionController
         public async Task<IActionResult> Index()
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync("EstadoHabitacion/GetEstadoHabitacion");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<List<GetEstadoHabitacionModel>>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener los estados de habitaciones.";
-                    return View();
-                }
+                var habitaciones = await _repository.GetAllAsync();
+                return View(habitaciones);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al obtener los estados de habitaciones.";
+                return View();
             }
         }
 
         // GET: EstadoHabitacionController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"EstadoHabitacion/GetEstadoHabitacionById?id={id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetEstadoHabitacionModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el estado de habitación.";
-                    return View();
-                }
+                var habitacion = await _repository.GetByIdUpdateAsync(id);
+                return View(habitacion);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al obtener el estado de habitación.";
+                return View();
             }
         }
 
@@ -63,25 +57,12 @@ namespace FrancoHotel.WebApi.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PostAsJsonAsync<PostEstadoHabitacionModel>("EstadoHabitacion/SaveEstadoHabitacion", estadoHabitacionModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<PostEstadoHabitacionModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al guardar el estado de habitación.";
-                        return View();
-                    }
-                }
+                await _repository.CreateEntityAsync(estadoHabitacionModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al guardar el estado de habitación.";
                 return View();
             }
         }
@@ -89,21 +70,16 @@ namespace FrancoHotel.WebApi.Controllers
         // GET: EstadoHabitacionController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"EstadoHabitacion/GetEstadoHabitacionById?id={id}");
+                var habitacion = await _repository.GetByIdUpdateAsync(id);
+                return View(habitacion);
+            }
+            catch (Exception)
+            {
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetEstadoHabitacionModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el estado de habitación.";
-                    return View();
-                }
+                ViewBag.Message = "Error al obtener el estado de habitación.";
+                return View();
             }
         }
 
@@ -114,25 +90,12 @@ namespace FrancoHotel.WebApi.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PutAsJsonAsync<GetEstadoHabitacionModel>("EstadoHabitacion/UpdateEstadoHabitacion", estadoHabitacionModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetEstadoHabitacionModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al actualizar el estado de habitación.";
-                        return View();
-                    }
-                }
+                await _repository.UpdateEntityAsync(estadoHabitacionModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al actualizar el estado de habitación."; ;
                 return View();
             }
         }
@@ -140,21 +103,16 @@ namespace FrancoHotel.WebApi.Controllers
         // GET: EstadoHabitacionController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"EstadoHabitacion/GetEstadoHabitacionById?id={id}");
+                var habitacion = await _repository.GetByIdRemoveAsync(id);
+                return View(habitacion);
+            }
+            catch (Exception)
+            {
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemoveEstadoHabitacionModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el estado de habitación.";
-                    return View();
-                }
+                ViewBag.Message = "Error al obtener el estado de habitación.";
+                return View();
             }
         }
 
@@ -165,25 +123,12 @@ namespace FrancoHotel.WebApi.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PutAsJsonAsync<RemoveEstadoHabitacionModel>("EstadoHabitacion/RemoveEstadoHabitacion", estadoHabitacionModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemoveEstadoHabitacionModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al remover  el estado de habitación.";
-                        return View();
-                    }
-                }
+                await _repository.RemoveEntityAsync(estadoHabitacionModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al remover  el estado de habitación.";
                 return View();
             }
         }

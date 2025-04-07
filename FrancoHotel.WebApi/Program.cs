@@ -11,6 +11,9 @@ builder.Services.AddHttpClient("ApiClient", client =>
     client.BaseAddress = new Uri(configuration["ApiSettings:BaseUrl"]!);
 });
 builder.Services.AddScoped<IHabitacionRepository, HabitacionRepository>();
+builder.Services.AddScoped<IPisoRepository, PisoRepository>();
+builder.Services.AddScoped<IServiciosRepository, ServiciosRepository>();
+builder.Services.AddScoped<IEstadoHabitacionRepository, EstadoHabitacionRepository>();
 
 var app = builder.Build();
 

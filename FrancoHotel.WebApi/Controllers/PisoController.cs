@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using FrancoHotel.WebApi.Models;
 using FrancoHotel.WebApi.Models.PisoModels;
+using FrancoHotel.WebApi.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,20 +9,22 @@ namespace FrancoHotel.WebApi.Controllers
 {
     public class PisoController : Controller
     {
+        private readonly IPisoRepository _repository;
+        public PisoController(IPisoRepository repository)
+        {
+            _repository = repository;
+        }
         // GET: PisoController
         public async Task<IActionResult> Index()
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync("Piso/GetPisos");
-
-                if (response.IsSuccessStatusCode)
+                try
                 {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<List<GetPisoModel>>>();
-                    return View(result.Data);
+                    var pisos = await _repository.GetAllAsync();
+                    return View(pisos);
                 }
-                else
+                catch (Exception)
                 {
                     ViewBag.Message = "Error al obtener los pisos";
                     return View();
@@ -32,21 +35,15 @@ namespace FrancoHotel.WebApi.Controllers
         // GET: PisoController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Piso/GetPisoById?id={id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetPisoModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el piso";
-                    return View();
-                }
+                var piso = await _repository.GetByIdUpdateAsync(id);
+                return View(piso);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al obtener el piso";
+                return View();
             }
         }
 
@@ -63,47 +60,30 @@ namespace FrancoHotel.WebApi.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PostAsJsonAsync<PostPisoModel>("Piso/SavePiso", pisoModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<PostPisoModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al guardar el piso";
-                        return View();
-                    }
-                }
+                await _repository.CreateEntityAsync(pisoModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al guardar el piso";
                 return View();
             }
+
         }
 
         // GET: PisoController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Piso/GetPisoById?id={id}");
+                var piso = await _repository.GetByIdUpdateAsync(id);
+                return View(piso);
+            }
+            catch (Exception)
+            {
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetPisoModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el piso";
-                    return View();
-                }
+                ViewBag.Message = "Error al obtener el piso";
+                return View();
             }
         }
 
@@ -112,45 +92,31 @@ namespace FrancoHotel.WebApi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(GetPisoModel pisoModel)
         {
-
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.PutAsJsonAsync<GetPisoModel>("Piso/UpdatePiso", pisoModel);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetPisoModel>>();
-                }
-                else
-                {
-                    ViewBag.Message = "Error al actualizar el piso";
-                    return View();
-                }
+                await _repository.UpdateEntityAsync(pisoModel);
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
-
-
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al actualizar el piso";
+                return View();
+            }
         }
 
         // GET: PisoController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Piso/GetPisoById?id={id}");
+                var habitacion = await _repository.GetByIdRemoveAsync(id);
+                return View(habitacion);
+            }
+            catch (Exception)
+            {
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemovePisoModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el piso";
-                    return View();
-                }
+                ViewBag.Message = "Error al obtener el piso";
+                return View();
             }
         }
 
@@ -161,25 +127,12 @@ namespace FrancoHotel.WebApi.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PutAsJsonAsync<RemovePisoModel>("Piso/RemovePiso", pisoModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemovePisoModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al remover el piso";
-                        return View();
-                    }
-                }
+                await _repository.RemoveEntityAsync(pisoModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al remover el piso";
                 return View();
             }
         }

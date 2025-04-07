@@ -3,50 +3,44 @@ using FrancoHotel.WebApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using FrancoHotel.WebApi.Models.ServiciosModels;
+using FrancoHotel.WebApi.Repositories.Interfaces;
 
 namespace FrancoHotel.WebApi.Controllers
 {
     public class ServiciosController : Controller
     {
+        private readonly IServiciosRepository _repository;
+        public ServiciosController(IServiciosRepository repository)
+        {
+            _repository = repository;
+        }
         // GET: ServiciosController
         public async Task<IActionResult> Index()
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync("Servicio/GetServicios");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<List<GetServiciosModel>>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener los servicios.";
-                    return View();
-                }
+                var habitaciones = await _repository.GetAllAsync();
+                return View(habitaciones);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al obtener los servicios.";
+                return View();
             }
         }
 
         // GET: ServiciosController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Servicio/GetServicioById?id={id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetServiciosModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el servicio.";
-                    return View();
-                }
+                var habitacion = await _repository.GetByIdUpdateAsync(id);
+                return View(habitacion);
+            }
+            catch (Exception)
+            {
+                ViewBag.Message = "Error al obtener el servicio.";
+                return View();
             }
         }
 
@@ -63,25 +57,12 @@ namespace FrancoHotel.WebApi.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PostAsJsonAsync<PostServiciosModel>("Servicio/SaveServicio", serviciosModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<PostServiciosModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al guardar el servicio.";
-                        return View();
-                    }
-                }
+                await _repository.CreateEntityAsync(serviciosModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al guardar el servicio.";
                 return View();
             }
         }
@@ -89,21 +70,16 @@ namespace FrancoHotel.WebApi.Controllers
         // GET: ServiciosController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Servicio/GetServicioById?id={id}");
+                var habitacion = await _repository.GetByIdUpdateAsync(id);
+                return View(habitacion);
+            }
+            catch (Exception)
+            {
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetServiciosModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el servicio.";
-                    return View();
-                }
+                ViewBag.Message = "Error al obtener el servicio.";
+                return View();
             }
         }
 
@@ -114,25 +90,12 @@ namespace FrancoHotel.WebApi.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PutAsJsonAsync<GetServiciosModel>("Servicio/UpdateServicio", serviciosModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<GetServiciosModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al actualizar el servicio.";
-                        return View();
-                    }
-                }
+                await _repository.UpdateEntityAsync(serviciosModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al actualizar el servicio.";
                 return View();
             }
         }
@@ -140,21 +103,16 @@ namespace FrancoHotel.WebApi.Controllers
         // GET: ServiciosController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://localhost:5089/api/");
-                var response = await client.GetAsync($"Servicio/GetServicioById?id={id}");
+                var habitacion = await _repository.GetByIdRemoveAsync(id);
+                return View(habitacion);
+            }
+            catch (Exception)
+            {
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemoveServiciosModel>>();
-                    return View(result.Data);
-                }
-                else
-                {
-                    ViewBag.Message = "Error al obtener el servicio.";
-                    return View();
-                }
+                ViewBag.Message = "Error al obtener el servicio.";
+                return View();
             }
         }
 
@@ -165,25 +123,12 @@ namespace FrancoHotel.WebApi.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("http://localhost:5089/api/");
-                    var response = await client.PutAsJsonAsync<RemoveServiciosModel>("Servicio/RemoveServicio", serviciosModel);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<OperationResultModel<RemoveServiciosModel>>();
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Error al remover  el servicio.";
-                        return View();
-                    }
-                }
+                await _repository.RemoveEntityAsync(serviciosModel);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
+                ViewBag.Message = "Error al remover  el servicio.";
                 return View();
             }
         }
