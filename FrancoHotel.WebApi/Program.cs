@@ -1,5 +1,7 @@
 using FrancoHotel.WebApi.Repository.Classes;
 using FrancoHotel.WebApi.Repository.Interfaces;
+using FrancoHotel.WebApi.Service.Interfaces;
+using FrancoHotel.WebApi.Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,11 @@ builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IRolUsuarioRepository, RolUsuarioRepository>();
+
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IRolUsuarioService, RolUsuarioService>();
 
 var app = builder.Build();
 

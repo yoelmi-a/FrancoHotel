@@ -1,43 +1,28 @@
 ﻿using FrancoHotel.WebApi.Models.RolUsuarioModels;
 using FrancoHotel.WebApi.Repository.Interfaces;
+using FrancoHotel.WebApi.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrancoHotel.WebApi.Controllers.RolUsuario
 {
     public class RolUsuarioController : Controller
     {
-        private readonly IRolUsuarioRepository _repository;
-        public RolUsuarioController(IRolUsuarioRepository repository)
+        private readonly IRolUsuarioService _service;
+        public RolUsuarioController(IRolUsuarioService service)
         {
-            _repository = repository;
+            _service = service;
         }
         // GET: RolUsuarioController
         public async Task<IActionResult> Index()
         {
-            try
-            {
-                var result = await _repository.GetAllAsync();
-                return View(result);
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al obtener los roles";
-                return View();
-            }
+            var roles = await _service.GetAllAsync();
+            return View(roles);
         }
         // GET: RolUsuarioController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            try
-            {
-                var result = await _repository.GetByIdAsync(id);
-                return View(result);
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al ver el detalle del rol";
-                return View();
-            }
+            var roles = await _service.GetByIdAsync(id);
+            return View(roles);
         }
 
         // GET: RolUsuarioController/Create
@@ -51,31 +36,15 @@ namespace FrancoHotel.WebApi.Controllers.RolUsuario
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PostRolUsuarioModel rolModel)
         {
-            try
-            {
-                await _repository.CreateEntityAsync(rolModel);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al crear el rol";
-                return View();
-            }
+            await _service.CreateEntityAsync(rolModel);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: RolUsuarioController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            try
-            {
-                var result = await _repository.GetByIdAsync(id);
-                return View(result);
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al obtener el rol para editar";
-                return View();
-            }
+            var rol = await _service.GetByIdAsync(id);
+            return View(rol);
         }
 
         // POST: RolUsuarioController/Edit/5
@@ -83,31 +52,15 @@ namespace FrancoHotel.WebApi.Controllers.RolUsuario
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(GetRolUsuarioModel rolModel)
         {
-            try
-            {
-                await _repository.UpdateEntityAsync(rolModel);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al editar el rol";
-                return View();
-            }
+            await _service.UpdateEntityAsync(rolModel);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: RolUsuarioController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                var result = await _repository.GetByIdRemoveAsync(id);
-                return View(result);
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al obtener el rol para eliminar";
-                return View();
-            }
+            var rol = await _service.GetByIdRemoveAsync(id);
+            return View(rol);
         }
 
         // POST: RolUsuarioController/Delete/5
@@ -115,16 +68,8 @@ namespace FrancoHotel.WebApi.Controllers.RolUsuario
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(RemoveRolUsuarioModel rolModel)
         {
-            try
-            {
-                await _repository.RemoveEntityAsync(rolModel);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al eliminar el rol";
-                return View();
-            }
+            await _service.RemoveEntityAsync(rolModel);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

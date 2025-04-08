@@ -1,7 +1,6 @@
 ﻿using FrancoHotel.WebApi.Models;
 using FrancoHotel.WebApi.Models.ClienteModels;
-using FrancoHotel.WebApi.Repository.Interfaces;
-using Microsoft.AspNetCore.Http;
+using FrancoHotel.WebApi.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -9,39 +8,24 @@ namespace FrancoHotel.WebApi.Controllers.Cliente
 {
     public class ClienteController : Controller
     {
-        private readonly IClienteRepository _repository;
-        public ClienteController(IClienteRepository repository)
+        private readonly IClienteService _service;
+        public ClienteController(IClienteService service)
         {
-            _repository = repository;
+            _service = service;
         }
+
         // GET: ClienteController
         public async Task<IActionResult> Index()
         {
-            try
-            {
-                var result = await _repository.GetAllAsync();
-                return View(result);
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al obtener los clientes";
-                return View();
-            }
+            var clientes = await _service.GetAllAsync();
+            return View(clientes);
         }
 
         // GET: ClienteController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            try
-            {
-                var cliente = await _repository.GetByIdAsync(id);
-                return View(cliente);
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al ver el detalle del cliente";
-                return View();
-            }
+            var cliente = await _service.GetByIdAsync(id);
+            return View(cliente);
         }
 
         // GET: ClienteController/Create
@@ -55,31 +39,15 @@ namespace FrancoHotel.WebApi.Controllers.Cliente
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(PostClienteModel clienteModel)
         {
-            try
-            {
-                await _repository.CreateEntityAsync(clienteModel);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al crear el cliente";
-                return View();
-            }
+            await _service.CreateEntityAsync(clienteModel);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ClienteController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            try
-            {
-                var cliente = await _repository.GetByIdAsync(id);
-                return View(cliente);
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al editar el cliente";
-                return View();
-            }
+            var cliente = await _service.GetByIdAsync(id);
+            return View(cliente);
         }
 
         // PUT: ClienteController/Edit/5
@@ -87,31 +55,15 @@ namespace FrancoHotel.WebApi.Controllers.Cliente
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(GetClienteModel clienteModel)
         {
-            try
-            {
-                await _repository.UpdateEntityAsync(clienteModel);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al editar el cliente";
-                return View();
-            }
+            await _service.UpdateEntityAsync(clienteModel);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ClienteController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                var cliente = await _repository.GetByIdRemoveAsync(id);
-                return View(cliente);
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al eliminar el cliente";
-                return View();
-            }
+            var cliente = await _service.GetByIdRemoveAsync(id);
+            return View(cliente);
         }
 
         // POST: ClienteController/Delete/5
@@ -119,16 +71,8 @@ namespace FrancoHotel.WebApi.Controllers.Cliente
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(RemoveClienteModel clienteModel)
         {
-            try
-            {
-                await _repository.RemoveEntityAsync(clienteModel);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-                ViewBag.Message = "Error al eliminar el cliente";
-                return View();
-            }
+            await _service.RemoveEntityAsync(clienteModel);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
